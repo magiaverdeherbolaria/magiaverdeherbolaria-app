@@ -1,7 +1,7 @@
 // Service worker de Magia Verde: permite instalar la app y abrirla rápido.
 // Los datos SIEMPRE se piden a Google (nunca se guardan aquí); solo se guarda la "cáscara" de la app.
 // Al publicar cambios en index.html, sube el número de VERSION para que los celulares tomen la versión nueva.
-const VERSION = 'mv-v1';
+const VERSION = 'mv-v2';
 const SHELL = ['./', 'index.html', 'manifest.json', 'logo.png', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/favicon.svg'];
 
 self.addEventListener('install', e => {

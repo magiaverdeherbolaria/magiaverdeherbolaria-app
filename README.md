@@ -64,4 +64,12 @@ Nunca subas al repositorio la URL /exec ni la clave: van solo en Configuración 
 - Nada con historia se borra: insumos y productos usados se **archivan**; compras y lotes se **anulan** (y devuelven el stock).
 - El stock siempre es la suma de movimientos; los ajustes quedan registrados con su motivo.
 - El costo de cada insumo es el de su **última compra** activa; si anulas esa compra, vuelve al de la anterior.
-- Compras con boleta: elige «Con IVA» y la app guarda el costo neto.
+- Compras: se ingresa siempre el **total pagado**. Con **factura** el costo se calcula sin IVA (se recupera como crédito fiscal);
+  con **boleta o sin documento** el costo es todo lo pagado.
+
+## Versiones
+
+- **1.1** — Compra por formato (ej. 2 bolsas × 250 g), selector Factura / Boleta con el costo correcto en cada caso,
+  costo de referencia por kg o litro, notas explicativas (botón ⓘ) en los campos clave.
+  Al actualizar, la planilla agrega sola las columnas nuevas; los datos existentes no se tocan.
+- **1.0** — Insumos y compras, productos y recetas, producción, inventario.

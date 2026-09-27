@@ -102,6 +102,14 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
 .tag.warn{background:var(--alerta-bg);color:var(--alerta)}
 .tag.bad{background:var(--peligro-bg);color:var(--peligro)}
 .warn-t{color:var(--alerta);font-weight:700} .bad-t{color:var(--peligro);font-weight:700} .ok-t{color:var(--oliva-texto);font-weight:700}
+.tip{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;border:1px solid #a9a896;background:transparent;color:var(--gris-osc);font:italic 700 12px Georgia,serif;cursor:pointer;margin-left:5px;padding:0;vertical-align:-4px;text-transform:none;letter-spacing:0}
+.tip:hover{border-color:var(--oliva);color:var(--oliva)}
+.tip[aria-expanded="true"]{background:var(--oliva);border-color:var(--oliva);color:#fff}
+.tipbox{display:none;background:#fff;border:1px solid var(--borde);border-radius:var(--r);padding:10px 12px;margin:0 0 8px;font-size:13px;font-weight:400;line-height:1.5;color:var(--gris-osc);white-space:pre-line}
+.tipbox.on{display:block}
+.unitw{position:relative}
+.unitw span{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--gris);pointer-events:none}
+.unitw input{padding-right:42px}
 .box{background:var(--suave);border-radius:var(--r);padding:14px;font-size:14px}
 .box .ln{display:flex;justify-content:space-between;gap:10px;padding:3px 0}
 .box .tot{border-top:1px solid var(--borde);margin-top:6px;padding-top:9px;font-weight:700;font-size:16px}
@@ -214,7 +222,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
         <div class="card kpi"><div class="lbl">Valor insumos en bodega</div><div class="val" id="kInsumos">—</div></div>
         <div class="card kpi"><div class="lbl">Valor productos (a costo)</div><div class="val" id="kProductos">—</div></div>
         <div class="card kpi"><div class="lbl">Unidades producidas este mes</div><div class="val" id="kProd">—</div></div>
-        <div class="card kpi"><div class="lbl">Compras de insumos este mes</div><div class="val" id="kCompras">—</div></div>
+        <div class="card kpi"><div class="lbl">Pagado en insumos este mes</div><div class="val" id="kCompras">—</div></div>
       </div>
       <div class="grid g3">
         <div class="card"><div class="head" style="margin-bottom:6px"><h2>Insumos bajo el mínimo</h2><span class="tag warn" id="cBajo">0</span></div><div id="lBajo"></div></div>
@@ -232,8 +240,8 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
           <h2 style="margin-bottom:14px">Registrar lote</h2>
           <div class="fld"><label class="f" for="pProd">Producto</label><select class="in" id="pProd"></select></div>
           <div class="row3">
-            <div class="fld"><label class="f" for="pLotes">Lotes</label><input class="in r" id="pLotes" inputmode="decimal" value="1"></div>
-            <div class="fld"><label class="f" for="pUnid">Unidades obtenidas</label><input class="in r" id="pUnid" inputmode="decimal"></div>
+            <div class="fld"><label class="f" for="pLotes">Lotes <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Cuántas veces preparaste la receta completa. Puede ser 0,5 si hiciste media receta.">i</button></label><input class="in r" id="pLotes" inputmode="decimal" value="1"></div>
+            <div class="fld"><label class="f" for="pUnid">Unidades obtenidas <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Las unidades que realmente salieron. Si lo dejas vacío se usa lotes × rendimiento. Si salió menos (o más), anota lo real: así el costo por unidad queda exacto.">i</button></label><input class="in r" id="pUnid" inputmode="decimal"></div>
             <div class="fld"><label class="f" for="pFecha">Fecha</label><input class="in" id="pFecha" type="date"></div>
           </div>
           <div class="fld"><label class="f" for="pNotas">Notas (opcional)</label><input class="in" id="pNotas" placeholder="Ej: lote para feria de octubre"></div>
@@ -279,7 +287,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
       </div>
       <div class="card">
         <h2 style="margin-bottom:6px">Compras recientes</h2>
-        <div class="tw"><table><thead><tr><th>N°</th><th>Fecha</th><th>Insumo</th><th class="r">Cantidad</th><th class="r">Total neto</th><th class="r hide-m">Costo unit.</th><th></th></tr></thead><tbody id="tCompras"></tbody></table></div>
+        <div class="tw"><table><thead><tr><th>N°</th><th>Fecha</th><th>Insumo</th><th class="r">Cantidad</th><th class="r">Pagado</th><th class="r hide-m">Costo unit.</th><th></th></tr></thead><tbody id="tCompras"></tbody></table></div>
       </div>
     </section>
 
@@ -343,11 +351,15 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
   <div class="fld"><label class="f" for="insNom">Nombre</label><input class="in" id="insNom" placeholder="Ej: Cera de abeja"></div>
   <div class="row2">
     <div class="fld"><label class="f" for="insTipo">Tipo</label><select class="in" id="insTipo"><option>Materia prima</option><option>Envase</option><option>Etiqueta</option><option>Otro</option></select></div>
-    <div class="fld"><label class="f" for="insUni">Unidad</label><select class="in" id="insUni"><option value="g">gramos (g)</option><option value="ml">mililitros (ml)</option><option value="u">unidades (u)</option><option value="gotas">gotas</option><option value="cm">centímetros (cm)</option></select></div>
+    <div class="fld"><label class="f" for="insUni">Unidad <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="La unidad en que se mide el insumo en recetas y stock. Ej: cera en gramos, aceites en ml, frascos y etiquetas en unidades. Todo el sistema usa esta unidad; no se puede cambiar después de tener movimientos.">i</button></label><select class="in" id="insUni"><option value="g">gramos (g)</option><option value="ml">mililitros (ml)</option><option value="u">unidades (u)</option><option value="gotas">gotas</option><option value="cm">centímetros (cm)</option></select></div>
   </div>
   <div class="row2">
-    <div class="fld"><label class="f" for="insMin">Stock mínimo</label><input class="in r" id="insMin" inputmode="decimal" placeholder="0"></div>
-    <div class="fld"><label class="f" for="insCosto">Costo por unidad (neto)</label><input class="in r" id="insCosto" inputmode="decimal" placeholder="$0"></div>
+    <div class="fld"><label class="f" for="insMin">Stock mínimo <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Cantidad bajo la cual la app avisa que hay que volver a comprar (aparece en Inicio). No bloquea nada. Una guía: lo que usa un lote × los lotes que haces mientras esperas al proveedor. Déjalo en 0 si no quieres aviso.">i</button></label><input class="in r" id="insMin" inputmode="decimal" placeholder="0"></div>
+    <div class="fld"><label class="f" for="insCosto">Costo por <span id="insCostoU">g</span> <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Cuánto cuesta 1 gramo, 1 ml o 1 unidad del insumo. Normalmente NO hace falta llenarlo: se calcula solo al registrar una compra. Úsalo solo para dar un costo inicial si aún no registras compras.">i</button></label><input class="in r" id="insCosto" inputmode="decimal" placeholder="$0"></div>
+  </div>
+  <div class="row2">
+    <div class="fld"><label class="f" for="insFmt">Formato de compra <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Cómo lo compras normalmente: bolsa, frasco, caja, bidón… Al registrar una compra se propone solo, así solo anotas cuántos compraste.">i</button></label><input class="in" id="insFmt" placeholder="Ej: Bolsa"></div>
+    <div class="fld"><label class="f" for="insFmtC">Contenido del formato</label><div class="unitw"><input class="in r" id="insFmtC" inputmode="decimal" placeholder="Ej: 250"><span id="insFmtU">g</span></div></div>
   </div>
   <div class="fld"><label class="f" for="insProv">Proveedor habitual (opcional)</label><input class="in" id="insProv"></div>
   <p class="note" id="insNota">El costo se actualiza solo con cada compra que registres. Úsalo aquí para el costo inicial.</p>
@@ -364,16 +376,21 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
 <div class="ov" id="mCom"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mComT">
   <div class="mh"><h2 id="mComT">Registrar compra</h2><button class="closeb" data-close aria-label="Cerrar">×</button></div>
   <div class="fld"><label class="f" for="comIns">Insumo</label><select class="in" id="comIns"></select></div>
-  <div class="row2">
-    <div class="fld"><label class="f" for="comCant">Cantidad comprada <span id="comUni"></span></label><input class="in r" id="comCant" inputmode="decimal"></div>
-    <div class="fld"><label class="f" for="comTot">Total pagado</label><input class="in r" id="comTot" inputmode="numeric" placeholder="$0"></div>
+  <div class="small bold muted" style="margin:2px 0 8px">Qué compraste</div>
+  <div class="row3">
+    <div class="fld"><label class="f" for="comN">Cantidad</label><input class="in r" id="comN" inputmode="decimal" value="1"></div>
+    <div class="fld"><label class="f" for="comFmt">Formato</label><input class="in" id="comFmt" placeholder="Ej: Bolsa"></div>
+    <div class="fld"><label class="f" for="comFmtC">Contenido c/u <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Cuánto trae cada formato, en la unidad del insumo. Ej: 2 bolsas de 250 g → Cantidad 2, Formato Bolsa, Contenido 250. La app suma 500 g al stock.">i</button></label><div class="unitw"><input class="in r" id="comFmtC" inputmode="decimal"><span id="comUni">g</span></div></div>
   </div>
-  <div class="fld"><div class="seg" id="comIva"><button data-v="no" class="on">Neto (con factura)</button><button data-v="si">Con IVA (boleta)</button></div></div>
   <div class="row2">
+    <div class="fld"><label class="f" for="comTot">Total pagado <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Lo que realmente salió del bolsillo por esta compra, con IVA si lo tenía. La app decide qué parte es costo según el documento.">i</button></label><input class="in r" id="comTot" inputmode="numeric" placeholder="$0"></div>
     <div class="fld"><label class="f" for="comFecha">Fecha</label><input class="in" id="comFecha" type="date"></div>
-    <div class="fld"><label class="f" for="comDoc">N° documento (opcional)</label><input class="in" id="comDoc"></div>
   </div>
-  <div class="fld"><label class="f" for="comProv">Proveedor (opcional)</label><input class="in" id="comProv" list="provList"><datalist id="provList"></datalist></div>
+  <div class="fld"><label class="f">Documento <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Factura: el IVA se recupera como crédito fiscal, por eso el costo del insumo se calcula sin IVA.&#10;Boleta o sin documento: el IVA no se recupera, así que el costo es todo lo pagado.">i</button></label><div class="seg" id="comDocT"><button type="button" data-v="factura" class="on">Factura</button><button type="button" data-v="boleta">Boleta / sin doc.</button></div></div>
+  <div class="row2">
+    <div class="fld"><label class="f" for="comDoc">N° documento (opcional)</label><input class="in" id="comDoc"></div>
+    <div class="fld"><label class="f" for="comProv">Proveedor (opcional)</label><input class="in" id="comProv" list="provList"><datalist id="provList"></datalist></div>
+  </div>
   <div class="box" id="comPrev"></div>
   <div class="mf"><button class="btn ghost" data-close>Cancelar</button><button class="btn pri" id="comSave">Guardar compra</button></div>
 </div></div>
@@ -390,19 +407,19 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
         <div class="fld"><label class="f" for="prdPres">Presentación</label><input class="in" id="prdPres" placeholder="30 g"></div>
       </div>
       <div class="row2">
-        <div class="fld"><label class="f" for="prdRinde">Rinde por lote (u)</label><input class="in r" id="prdRinde" inputmode="decimal"></div>
-        <div class="fld"><label class="f" for="prdMin">Stock mínimo (u)</label><input class="in r" id="prdMin" inputmode="decimal" placeholder="0"></div>
+        <div class="fld"><label class="f" for="prdRinde">Rinde por lote (u) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Cuántas unidades terminadas salen de una preparación completa de la receta. Ej: la receta da para 20 frascos → 20. El costo por unidad = costo del lote ÷ este número.">i</button></label><input class="in r" id="prdRinde" inputmode="decimal"></div>
+        <div class="fld"><label class="f" for="prdMin">Stock mínimo (u) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Bajo esta cantidad en bodega, la app avisa en Inicio que conviene volver a producir. 0 = sin aviso.">i</button></label><input class="in r" id="prdMin" inputmode="decimal" placeholder="0"></div>
       </div>
       <div class="small bold muted" style="margin:6px 0 8px">Precios generales</div>
-      <div class="fld"><label class="f" for="prdPP">Público (con IVA)</label><input class="in r" id="prdPP" inputmode="numeric" placeholder="$0"></div>
+      <div class="fld"><label class="f" for="prdPP">Público (con IVA) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="El precio que paga el cliente final en ferias o venta directa al público, con IVA incluido. Para calcular el margen la app le quita el IVA.">i</button></label><input class="in r" id="prdPP" inputmode="numeric" placeholder="$0"></div>
       <div class="row2">
-        <div class="fld"><label class="f" for="prdPD">Venta directa (neto)</label><input class="in r" id="prdPD" inputmode="numeric" placeholder="$0"></div>
-        <div class="fld"><label class="f" for="prdPC">Consignación (neto)</label><input class="in r" id="prdPC" inputmode="numeric" placeholder="$0"></div>
+        <div class="fld"><label class="f" for="prdPD">Venta directa (neto) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Precio general sin IVA para negocios que compran el producto (se les factura al entregar). Si con una empresa negocias otro precio, ese se guarda en su ficha de cliente (próxima fase).">i</button></label><input class="in r" id="prdPD" inputmode="numeric" placeholder="$0"></div>
+        <div class="fld"><label class="f" for="prdPC">Consignación (neto) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Precio general sin IVA para negocios que reciben en consignación: pagan solo lo que venden.">i</button></label><input class="in r" id="prdPC" inputmode="numeric" placeholder="$0"></div>
       </div>
       <p class="note">Los precios negociados con cada empresa se agregan en Clientes (siguiente fase) y reemplazan a estos.</p>
     </div>
     <div>
-      <div class="head" style="margin-bottom:10px"><h2>Receta por lote</h2><span class="small muted">Costos según la última compra de cada insumo</span></div>
+      <div class="head" style="margin-bottom:10px"><h2>Receta por lote <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Lo que usa UNA preparación completa (un lote), en la unidad de cada insumo. «+ Costo extra» sirve para costos que no son insumos, como mano de obra o gas, por lote.">i</button></h2><span class="small muted">Costos según la última compra de cada insumo</span></div>
       <div id="recLines"></div>
       <div class="acts" style="margin:4px 0 14px"><button class="btn sm" id="recAddI">+ Insumo</button><button class="btn sm ghost" id="recAddE">+ Costo extra</button></div>
       <div class="box" id="recRes"></div>
@@ -423,7 +440,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
   <div class="mh"><h2 id="mAjT">Ajustar stock</h2><button class="closeb" data-close aria-label="Cerrar">×</button></div>
   <input type="hidden" id="ajTipo"><input type="hidden" id="ajId">
   <div class="box" style="margin-bottom:14px"><div class="ln"><span id="ajNom" class="bold"></span><span>Sistema: <b id="ajAct"></b></span></div></div>
-  <div class="fld"><label class="f" for="ajConteo">Conteo real en bodega</label><input class="in r" id="ajConteo" inputmode="decimal"></div>
+  <div class="fld"><label class="f" for="ajConteo">Conteo real en bodega <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Lo que contaste físicamente. La app registra la diferencia con lo que dice el sistema como un ajuste, con su motivo, y queda en el historial de movimientos.">i</button></label><input class="in r" id="ajConteo" inputmode="decimal"></div>
   <div class="fld"><label class="f" for="ajNota">Motivo</label><select class="in" id="ajNota"><option>Carga inicial</option><option>Conteo físico</option><option>Merma o pérdida</option><option>Vencido</option><option>Uso interno o muestra</option><option>Otro</option></select></div>
   <p class="note" id="ajDiff"></p>
   <div class="mf"><button class="btn ghost" data-close>Cancelar</button><button class="btn pri" id="ajSave">Guardar ajuste</button></div>
@@ -444,7 +461,7 @@ const LS = { url: 'mv_gs_url', key: 'mv_gs_key', cache: 'mv_cache_v1' };
 let GS = lsGet(LS.url), KEY = lsGet(LS.key);
 let DB = { insumos: [], productos: [], recetas: [], compras: [], produccion: [], movimientos: [], stock: {} };
 let busy = false;
-const UI = { sec: 'inicio', invTab: 'productos', iFiltro: 'todos', prFiltro: 'act', comIva: 'no', receta: [] };
+const UI = { sec: 'inicio', invTab: 'productos', iFiltro: 'todos', prFiltro: 'act', comDocT: 'factura', receta: [] };
 
 function lsGet(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }
 function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
@@ -535,6 +552,19 @@ function toast(msg, tipo, dur) {
   if (tipo !== 'load') tt = setTimeout(() => t.className = 'toast', dur || 2400);
 }
 
+// ───────────── Notas explicativas (ⓘ) ─────────────
+document.addEventListener('click', e => {
+  const t = e.target.closest('.tip'); if (!t) return;
+  e.preventDefault(); e.stopPropagation();
+  const host = t.closest('label, h2') || t.parentElement;
+  let box = host.nextElementSibling;
+  if (!box || !box.classList.contains('tipbox')) { box = document.createElement('div'); box.className = 'tipbox'; box.textContent = t.dataset.tip; host.after(box); }
+  const on = !box.classList.contains('on'); box.classList.toggle('on', on); t.setAttribute('aria-expanded', on);
+});
+/** Costo de referencia por kilo o litro (como se piensa al comprar). */
+const porMil = (i, cu) => i && (i.unidad === 'g' || i.unidad === 'ml') && cu > 0 ? clp(cu * 1000) + (i.unidad === 'g' ? ' / kg' : ' / L') : '';
+const pagadoDe = c => Number(c.total_pagado) || Number(c.total_neto) || 0;
+
 // ───────────── Modales ─────────────
 function openM(id) { $(id).classList.add('on'); document.body.style.overflow = 'hidden'; }
 function closeM(id) { $(id).classList.remove('on'); if (!document.querySelector('.ov.on')) document.body.style.overflow = ''; }
@@ -596,7 +626,7 @@ function renderInicio() {
   const vPrd = prods.reduce((s, p) => s + Math.max(0, stockDe(p.id)) * costoProducto(p).unit, 0);
   const mes = mesActual();
   const uMes = DB.produccion.filter(l => l.estado === 'activa' && String(l.fecha).startsWith(mes)).reduce((s, l) => s + (Number(l.unidades) || 0), 0);
-  const cMes = DB.compras.filter(c => c.estado === 'activa' && String(c.fecha).startsWith(mes)).reduce((s, c) => s + (Number(c.total_neto) || 0), 0);
+  const cMes = DB.compras.filter(c => c.estado === 'activa' && String(c.fecha).startsWith(mes)).reduce((s, c) => s + pagadoDe(c), 0);
   $('kInsumos').textContent = clp(vIns); $('kProductos').textContent = clp(vPrd); $('kProd').textContent = qty(uMes) + ' u'; $('kCompras').textContent = clp(cMes);
 
   const bajos = act.filter(i => Number(i.stock_min) > 0 && stockDe(i.id) < Number(i.stock_min));
@@ -610,7 +640,7 @@ function renderInicio() {
 
   const ev = [];
   DB.produccion.filter(l => l.estado === 'activa').slice(0, 5).forEach(l => ev.push({ k: l.fecha + l.creado, t: 'Producción', d: `${qty(l.unidades)} u de ${producto(l.producto_id)?.nombre || '—'}` }));
-  DB.compras.filter(c => c.estado === 'activa').slice(0, 5).forEach(c => ev.push({ k: c.fecha + c.creado, t: 'Compra', d: `${qty(c.cantidad)} ${insumo(c.insumo_id)?.unidad || ''} de ${insumo(c.insumo_id)?.nombre || '—'} · ${clp(c.total_neto)}` }));
+  DB.compras.filter(c => c.estado === 'activa').slice(0, 5).forEach(c => ev.push({ k: c.fecha + c.creado, t: 'Compra', d: `${qty(c.cantidad)} ${insumo(c.insumo_id)?.unidad || ''} de ${insumo(c.insumo_id)?.nombre || '—'} · ${clp(pagadoDe(c))}` }));
   ev.sort((a, b) => b.k.localeCompare(a.k));
   $('lAct').innerHTML = ev.length ? ev.slice(0, 6).map(e => `<div class="list-row"><div class="small muted">${e.t} · ${fechaCorta(e.k.slice(0, 10))}</div><div style="font-size:14px;margin-top:2px">${esc(e.d)}</div></div>`).join('')
     : `<div class="empty">Aún no hay registros.</div>`;
@@ -741,8 +771,8 @@ function renderInsumos() {
     (f !== 'mp' || i.tipo === 'Materia prima') && (f !== 'env' || i.tipo === 'Envase' || i.tipo === 'Etiqueta') &&
     (!q || i.nombre.toLowerCase().includes(q))).sort((a, b) => a.nombre.localeCompare(b.nombre));
   $('tIns').innerHTML = is.length ? is.map(i => { const s = stockDe(i.id), low = Number(i.stock_min) > 0 && s < Number(i.stock_min);
-    return `<tr class="click" onclick="abrirInsumo('${i.id}')"><td><div class="bold">${esc(i.nombre)}</div><div class="sub">${esc(i.tipo)} · ${esc(i.unidad)}${i.proveedor ? ' · ' + esc(i.proveedor) : ''}</div></td>
-    <td class="r ${s < 0 ? 'bad-t' : low ? 'warn-t' : ''}">${qty(s)} ${esc(i.unidad)}</td><td class="r muted hide-m">${qty(i.stock_min)}</td><td class="r">${clpU(i.costo_unit)} / ${esc(i.unidad)}</td><td class="r muted hide-m">${fechaCorta(i.ultima_compra)}</td></tr>`; }).join('')
+    return `<tr class="click" onclick="abrirInsumo('${i.id}')"><td><div class="bold">${esc(i.nombre)}</div><div class="sub">${esc(i.tipo)} · ${esc(i.unidad)}${i.formato ? ' · ' + esc(i.formato) + ' ' + qty(i.formato_cant) + ' ' + esc(i.unidad) : ''}${i.proveedor ? ' · ' + esc(i.proveedor) : ''}</div></td>
+    <td class="r ${s < 0 ? 'bad-t' : low ? 'warn-t' : ''}">${qty(s)} ${esc(i.unidad)}</td><td class="r muted hide-m">${qty(i.stock_min)}</td><td class="r">${clpU(i.costo_unit)} / ${esc(i.unidad)}${porMil(i, i.costo_unit) ? `<div class="sub">${porMil(i, i.costo_unit)}</div>` : ''}</td><td class="r muted hide-m">${fechaCorta(i.ultima_compra)}</td></tr>`; }).join('')
     : `<tr><td colspan="5"><div class="empty">${f === 'arch' ? 'No hay insumos archivados.' : DB.insumos.length ? 'Sin resultados.' : 'Crea tu primer insumo con «+ Nuevo insumo».'}</div></td></tr>`;
 }
 
@@ -752,6 +782,8 @@ function abrirInsumo(id) {
   $('insId').value = i ? i.id : ''; $('insNom').value = i ? i.nombre : ''; $('insTipo').value = i ? i.tipo : 'Materia prima';
   $('insUni').value = i ? i.unidad : 'g'; $('insMin').value = i && i.stock_min ? qty(i.stock_min) : ''; $('insCosto').value = i && i.costo_unit ? String(i.costo_unit).replace('.', ',') : '';
   $('insProv').value = i ? i.proveedor : '';
+  $('insFmt').value = i ? (i.formato || '') : ''; $('insFmtC').value = i && i.formato_cant ? qty(i.formato_cant) : '';
+  insUniSync();
   const tieneMov = i && DB.movimientos.some(m => m.item_id === i.id);
   $('insUni').disabled = !!tieneMov;
   $('insNota').textContent = i && i.ultima_compra ? `Costo tomado de la última compra (${fechaCorta(i.ultima_compra)}). Si lo cambias aquí, la próxima compra lo vuelve a actualizar.` : 'El costo se actualiza solo con cada compra que registres. Úsalo aquí para el costo inicial.';
@@ -760,9 +792,12 @@ function abrirInsumo(id) {
   openM('mIns'); setTimeout(() => $('insNom').focus(), 50);
 }
 $('iNuevo').addEventListener('click', () => abrirInsumo());
+function insUniSync() { const u = $('insUni').value; $('insFmtU').textContent = u; $('insCostoU').textContent = u; }
+$('insUni').addEventListener('change', insUniSync);
 $('insSave').addEventListener('click', async () => {
-  const d = { id: $('insId').value, nombre: $('insNom').value.trim(), tipo: $('insTipo').value, unidad: $('insUni').value, stock_min: parseNum($('insMin').value), costo_unit: parseNum($('insCosto').value), proveedor: $('insProv').value.trim() };
+  const d = { id: $('insId').value, nombre: $('insNom').value.trim(), tipo: $('insTipo').value, unidad: $('insUni').value, stock_min: parseNum($('insMin').value), costo_unit: parseNum($('insCosto').value), proveedor: $('insProv').value.trim(), formato: $('insFmt').value.trim(), formato_cant: parseNum($('insFmtC').value) };
   if (!d.nombre) return toast('Falta el nombre', 'err');
+  if (d.formato && d.formato_cant <= 0) return toast('Indica cuánto trae el formato', 'err');
   const r = await write('saveInsumo', { insumo: d }, 'Insumo guardado');
   if (r) closeM('mIns');
 });
@@ -783,19 +818,30 @@ function abrirCompra(insId) {
   if (!is.length) { toast('Primero crea un insumo', 'err'); return; }
   $('comIns').innerHTML = is.map(i => `<option value="${i.id}">${esc(i.nombre)} (${esc(i.unidad)})</option>`).join('');
   if (insId) $('comIns').value = insId;
-  $('comCant').value = ''; $('comTot').value = ''; $('comDoc').value = ''; $('comFecha').value = hoy();
+  $('comN').value = '1'; $('comTot').value = ''; $('comDoc').value = ''; $('comFecha').value = hoy();
   $('provList').innerHTML = [...new Set(DB.insumos.map(i => i.proveedor).concat(DB.compras.map(c => c.proveedor)).filter(Boolean))].map(p => `<option value="${esc(p)}">`).join('');
-  setIva('no'); onComIns(); openM('mCom');
+  setDocT('factura'); onComIns(); openM('mCom');
 }
-function onComIns() { const i = insumo($('comIns').value); $('comUni').textContent = i ? '(' + i.unidad + ')' : ''; $('comProv').value = i ? i.proveedor : ''; compraPrev(); }
-function setIva(v) { UI.comIva = v; [...$('comIva').children].forEach(b => b.classList.toggle('on', b.dataset.v === v)); compraPrev(); }
-$('comIva').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setIva(b.dataset.v); });
+function onComIns() {
+  const i = insumo($('comIns').value);
+  $('comUni').textContent = i ? i.unidad : '';
+  $('comProv').value = i ? i.proveedor : '';
+  $('comFmt').value = i && i.formato ? i.formato : '';
+  $('comFmtC').value = i && i.formato_cant ? qty(i.formato_cant) : '';
+  compraPrev();
+}
+function setDocT(v) { UI.comDocT = v; [...$('comDocT').children].forEach(b => b.classList.toggle('on', b.dataset.v === v)); compraPrev(); }
+$('comDocT').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setDocT(b.dataset.v); });
 $('comIns').addEventListener('change', onComIns);
-['comCant', 'comTot'].forEach(id => $(id).addEventListener('input', compraPrev));
+['comN', 'comFmtC', 'comTot'].forEach(id => $(id).addEventListener('input', compraPrev));
+function compraCalc() {
+  const i = insumo($('comIns').value);
+  const n = parseNum($('comN').value), cont = parseNum($('comFmtC').value), pagado = parseNum($('comTot').value);
+  const cant = n * cont, costo = UI.comDocT === 'factura' ? pagado / 1.19 : pagado;
+  return { i, n, cont, cant, pagado, costo, cu: cant > 0 ? costo / cant : 0 };
+}
 function compraPrev() {
-  const i = insumo($('comIns').value); if (!i) return;
-  const cant = parseNum($('comCant').value), tot = parseNum($('comTot').value);
-  const neto = UI.comIva === 'si' ? tot / 1.19 : tot, cu = cant > 0 ? neto / cant : 0;
+  const { i, cant, pagado, costo, cu } = compraCalc(); if (!i) return;
   const ant = Number(i.costo_unit) || 0;
   const afect = DB.productos.filter(p => p.estado === 'activo' && recetaDe(p.id).some(r => r.tipo === 'insumo' && r.ref === i.id));
   let impacto = '';
@@ -803,15 +849,20 @@ function compraPrev() {
     const p = afect[0], r = recetaDe(p.id).find(x => x.ref === i.id), d = (cu - ant) * r.cantidad / (Number(p.rinde_lote) || 1);
     impacto = `<p class="note" style="margin:8px 0 0">Cambia el costo de ${afect.length} receta(s). ${esc(p.nombre)} ${d > 0 ? 'sube' : 'baja'} ${clpU(Math.abs(d))} por unidad.</p>`;
   }
-  $('comPrev').innerHTML = `<div class="ln"><span>Costo nuevo</span><b>${cu > 0 ? clpU(cu) + ' / ' + esc(i.unidad) : '—'}</b></div>
+  $('comPrev').innerHTML = `<div class="ln"><span>Entra a bodega</span><b>${cant > 0 ? qty(cant) + ' ' + esc(i.unidad) : '—'}</b></div>
+    ${pagado > 0 ? `<div class="ln"><span>${UI.comDocT === 'factura' ? 'Costo (sin IVA recuperable)' : 'Costo (todo lo pagado)'}</span><span>${clp(costo)}</span></div>` : ''}
+    ${pagado > 0 && UI.comDocT === 'factura' ? `<div class="ln"><span class="muted">IVA crédito fiscal</span><span class="muted">${clp(pagado - costo)}</span></div>` : ''}
+    <div class="ln tot"><span>Costo nuevo</span><span>${cu > 0 ? clpU(cu) + ' / ' + esc(i.unidad) : '—'}</span></div>
+    ${porMil(i, cu) ? `<div class="ln"><span class="muted">Equivale a</span><span class="muted">${porMil(i, cu)}</span></div>` : ''}
     <div class="ln"><span>Costo anterior</span><span>${ant ? clpU(ant) + ' / ' + esc(i.unidad) : '—'}</span></div>
-    ${UI.comIva === 'si' && tot ? `<div class="ln"><span>Total neto</span><span>${clp(neto)}</span></div>` : ''}
     <div class="ln"><span>Stock después</span><span>${qty(stockDe(i.id) + cant)} ${esc(i.unidad)}</span></div>${impacto}`;
 }
 $('comSave').addEventListener('click', async () => {
-  const b = { insumo_id: $('comIns').value, cantidad: parseNum($('comCant').value), total: parseNum($('comTot').value), iva_incluido: UI.comIva, fecha: $('comFecha').value || hoy(), proveedor: $('comProv').value.trim(), documento: $('comDoc').value.trim() };
-  if (b.cantidad <= 0) return toast('Ingresa la cantidad', 'err');
-  if (b.total <= 0) return toast('Ingresa el total pagado', 'err');
+  const c = compraCalc();
+  if (c.n <= 0) return toast('Indica cuántos compraste', 'err');
+  if (c.cont <= 0) return toast('Indica el contenido de cada formato', 'err');
+  if (c.pagado <= 0) return toast('Ingresa el total pagado', 'err');
+  const b = { insumo_id: c.i.id, formatos: c.n, formato: $('comFmt').value.trim(), formato_cant: c.cont, total_pagado: c.pagado, tipo_doc: UI.comDocT, fecha: $('comFecha').value || hoy(), proveedor: $('comProv').value.trim(), documento: $('comDoc').value.trim() };
   const r = await write('registrarCompra', b, 'Compra registrada');
   if (r) closeM('mCom');
 });
@@ -821,8 +872,8 @@ $('qCompra').addEventListener('click', () => abrirCompra());
 function renderCompras() {
   const cs = DB.compras;
   $('tCompras').innerHTML = cs.length ? cs.slice(0, 50).map(c => { const i = insumo(c.insumo_id) || {};
-    return `<tr style="${c.estado === 'anulada' ? 'opacity:.55' : ''}"><td class="bold nw">${esc(c.id)}</td><td class="nw">${fechaCorta(c.fecha)}</td><td>${esc(i.nombre || '—')}${c.proveedor ? `<div class="sub">${esc(c.proveedor)}${c.documento ? ' · doc ' + esc(c.documento) : ''}</div>` : ''}</td>
-    <td class="r">${qty(c.cantidad)} ${esc(i.unidad || '')}</td><td class="r">${clp(c.total_neto)}</td><td class="r hide-m">${clpU(c.costo_unit)}</td>
+    return `<tr style="${c.estado === 'anulada' ? 'opacity:.55' : ''}"><td class="bold nw">${esc(c.id)}</td><td class="nw">${fechaCorta(c.fecha)}</td><td>${esc(i.nombre || '—')}<div class="sub">${[c.formatos ? qty(c.formatos) + ' × ' + (esc(c.formato) || 'formato') + ' ' + qty(c.formato_cant) + ' ' + esc(i.unidad || '') : '', c.tipo_doc === 'factura' ? 'Factura' : c.tipo_doc ? 'Boleta / sin doc.' : '', c.documento ? 'N° ' + esc(c.documento) : '', esc(c.proveedor)].filter(Boolean).join(' · ')}</div></td>
+    <td class="r">${qty(c.cantidad)} ${esc(i.unidad || '')}</td><td class="r">${clp(pagadoDe(c))}</td><td class="r hide-m">${clpU(c.costo_unit)}</td>
     <td class="r">${c.estado === 'anulada' ? '<span class="tag bad">anulada</span>' : `<button class="lnk danger" onclick="anularCompra('${c.id}')">Anular</button>`}</td></tr>`; }).join('')
     : `<tr><td colspan="7"><div class="empty">Sin compras registradas.</div></td></tr>`;
 }

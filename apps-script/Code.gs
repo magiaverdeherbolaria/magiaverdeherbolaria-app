@@ -14,17 +14,17 @@ const IVA = 0.19;
 const BODEGA = 'BODEGA';
 
 const SCHEMA = {
-  INSUMOS: ['id', 'nombre', 'tipo', 'unidad', 'stock_min', 'costo_unit', 'ultima_compra', 'proveedor', 'estado', 'creado', 'actualizado'],
+  INSUMOS: ['id', 'nombre', 'tipo', 'unidad', 'stock_min', 'costo_unit', 'ultima_compra', 'proveedor', 'estado', 'creado', 'actualizado', 'formato', 'formato_cant'],
   PRODUCTOS: ['id', 'nombre', 'categoria', 'presentacion', 'rinde_lote', 'precio_publico', 'precio_directo', 'precio_consig', 'stock_min', 'estado', 'creado', 'actualizado'],
   RECETAS: ['producto_id', 'tipo', 'ref', 'cantidad', 'costo'],
-  COMPRAS: ['id', 'fecha', 'insumo_id', 'cantidad', 'total_neto', 'costo_unit', 'proveedor', 'documento', 'iva_incluido', 'estado', 'creado'],
+  COMPRAS: ['id', 'fecha', 'insumo_id', 'cantidad', 'total_neto', 'costo_unit', 'proveedor', 'documento', 'iva_incluido', 'estado', 'creado', 'tipo_doc', 'total_pagado', 'formato', 'formatos', 'formato_cant'],
   PRODUCCION: ['id', 'fecha', 'producto_id', 'lotes', 'unidades', 'costo_total', 'costo_unit', 'notas', 'estado', 'creado'],
   MOVIMIENTOS: ['id', 'fecha', 'tipo', 'item_tipo', 'item_id', 'cantidad', 'ubicacion', 'ref', 'nota', 'estado', 'creado']
 };
 
 // Columnas numéricas; todas las demás se guardan como texto plano (evita que Sheets convierta fechas o IDs).
 const NUMERIC = ['stock_min', 'costo_unit', 'rinde_lote', 'precio_publico', 'precio_directo', 'precio_consig',
-  'cantidad', 'costo', 'total_neto', 'lotes', 'unidades', 'costo_total'];
+  'cantidad', 'costo', 'total_neto', 'lotes', 'unidades', 'costo_total', 'formato_cant', 'total_pagado', 'formatos'];
 
 // ─────────────────────────────────────────────────────────────
 // Instalación: ejecutar UNA vez desde el editor (botón ▶ con "setup" seleccionado)
@@ -93,24 +93,46 @@ function json_(obj) {
 // ─────────────────────────────────────────────────────────────
 // Utilidades de planilla
 // ─────────────────────────────────────────────────────────────
+const HEADERS_ = {}; // encabezados reales de cada hoja (se leen una vez por ejecución)
+
+/**
+ * Devuelve la hoja, creándola si no existe. Si a una hoja existente le faltan columnas
+ * nuevas del SCHEMA (por una actualización de la app), las agrega al final sin tocar los datos.
+ */
 function getSheet_(name) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   let sh = ss.getSheetByName(name);
-  const headers = SCHEMA[name];
+  const schema = SCHEMA[name];
   if (!sh) {
     sh = ss.insertSheet(name);
-    sh.getRange(1, 1, 1, headers.length).setValues([headers]).setFontWeight('bold');
+    sh.getRange(1, 1, 1, schema.length).setValues([schema]).setFontWeight('bold');
     sh.setFrozenRows(1);
-    headers.forEach(function (h, i) {
+    schema.forEach(function (h, i) {
       if (NUMERIC.indexOf(h) === -1) sh.getRange(2, i + 1, sh.getMaxRows() - 1, 1).setNumberFormat('@');
     });
+    HEADERS_[name] = schema.slice();
+    return sh;
+  }
+  if (!HEADERS_[name]) {
+    const lastCol = Math.max(sh.getLastColumn ? sh.getLastColumn() : schema.length, 1);
+    const current = sh.getRange(1, 1, 1, lastCol).getValues()[0].map(String).filter(function (h) { return h !== ''; });
+    const missing = schema.filter(function (h) { return current.indexOf(h) === -1; });
+    missing.forEach(function (h) {
+      const col = current.length + 1;
+      sh.getRange(1, col, 1, 1).setValues([[h]]).setFontWeight('bold');
+      if (NUMERIC.indexOf(h) === -1) sh.getRange(2, col, sh.getMaxRows() - 1, 1).setNumberFormat('@');
+      current.push(h);
+    });
+    HEADERS_[name] = current;
   }
   return sh;
 }
 
+function headers_(name) { getSheet_(name); return HEADERS_[name]; }
+
 function readAll_(name) {
   const sh = getSheet_(name);
-  const headers = SCHEMA[name];
+  const headers = headers_(name);
   const last = sh.getLastRow();
   if (last < 2) return [];
   const values = sh.getRange(2, 1, last - 1, headers.length).getValues();
@@ -127,7 +149,7 @@ function readAll_(name) {
 }
 
 function toRow_(name, obj) {
-  return SCHEMA[name].map(function (h) {
+  return headers_(name).map(function (h) {
     const v = obj[h];
     if (NUMERIC.indexOf(h) >= 0) return (v === '' || v === null || v === undefined) ? '' : num_(v);
     return v === undefined || v === null ? '' : String(v);
@@ -143,7 +165,8 @@ function append_(name, objs) {
 
 function update_(name, obj) {
   const sh = getSheet_(name);
-  sh.getRange(obj._row, 1, 1, SCHEMA[name].length).setValues([toRow_(name, obj)]);
+  const row = toRow_(name, obj);
+  sh.getRange(obj._row, 1, 1, row.length).setValues([row]);
 }
 
 function findById_(name, id) {
@@ -272,14 +295,16 @@ function saveInsumo_(b) {
     if (usado && cur.unidad !== d.unidad) throw new Error('No se puede cambiar la unidad de un insumo que ya tiene movimientos.');
     cur.nombre = nombre; cur.tipo = d.tipo || cur.tipo; cur.unidad = d.unidad;
     cur.stock_min = num_(d.stock_min); cur.costo_unit = num_(d.costo_unit);
-    cur.proveedor = d.proveedor || ''; cur.actualizado = now_();
+    cur.proveedor = d.proveedor || ''; cur.formato = d.formato || ''; cur.formato_cant = num_(d.formato_cant);
+    cur.actualizado = now_();
     update_('INSUMOS', cur);
     return { ok: true, insumo: strip_(cur) };
   }
   const nuevo = {
     id: uid_('INS'), nombre: nombre, tipo: d.tipo || 'Materia prima', unidad: d.unidad,
     stock_min: num_(d.stock_min), costo_unit: num_(d.costo_unit), ultima_compra: '',
-    proveedor: d.proveedor || '', estado: 'activo', creado: now_(), actualizado: now_()
+    proveedor: d.proveedor || '', estado: 'activo', creado: now_(), actualizado: now_(),
+    formato: d.formato || '', formato_cant: num_(d.formato_cant)
   };
   append_('INSUMOS', [nuevo]);
   return { ok: true, insumo: nuevo };
@@ -378,23 +403,36 @@ function restoreProducto_(b) {
 // ─────────────────────────────────────────────────────────────
 // Compras de insumos
 // ─────────────────────────────────────────────────────────────
+/**
+ * Compra de insumo. Javi ingresa lo que pagó (total pagado) y el tipo de documento:
+ *  - factura → el IVA se recupera como crédito fiscal, así que el costo es el neto (total / 1,19).
+ *  - boleta o sin documento → el IVA no se recupera: el costo es el total pagado.
+ * La cantidad puede venir como N formatos × contenido (ej. 2 bolsas × 250 g) o directa.
+ */
 function registrarCompra_(b) {
   const ins = findById_('INSUMOS', b.insumo_id);
   if (!ins) throw new Error('Elige un insumo.');
-  const cantidad = num_(b.cantidad), total = num_(b.total);
+  const formatos = num_(b.formatos), contenido = num_(b.formato_cant);
+  const cantidad = formatos > 0 && contenido > 0 ? round_(formatos * contenido) : num_(b.cantidad);
+  const pagado = num_(b.total_pagado !== undefined ? b.total_pagado : b.total);
   if (cantidad <= 0) throw new Error('La cantidad comprada debe ser mayor a 0.');
-  if (total <= 0) throw new Error('Ingresa el total pagado.');
-  const ivaIncl = b.iva_incluido === true || b.iva_incluido === 'si';
-  const totalNeto = ivaIncl ? total / (1 + IVA) : total;
+  if (pagado <= 0) throw new Error('Ingresa el total pagado.');
+  const tipoDoc = b.tipo_doc === 'factura' ? 'factura' : 'boleta';
+  const costo = tipoDoc === 'factura' ? pagado / (1 + IVA) : pagado;
   const fecha = validDate_(b.fecha);
   const compra = {
     id: nextSeq_('COMPRAS', 'C'), fecha: fecha, insumo_id: ins.id, cantidad: cantidad,
-    total_neto: Math.round(totalNeto), costo_unit: round_(totalNeto / cantidad),
-    proveedor: b.proveedor || '', documento: b.documento || '', iva_incluido: ivaIncl ? 'si' : 'no',
-    estado: 'activa', creado: now_()
+    total_neto: Math.round(costo), costo_unit: round_(costo / cantidad),
+    proveedor: b.proveedor || '', documento: b.documento || '', iva_incluido: '',
+    estado: 'activa', creado: now_(), tipo_doc: tipoDoc, total_pagado: Math.round(pagado),
+    formato: b.formato || '', formatos: formatos > 0 && contenido > 0 ? formatos : '', formato_cant: formatos > 0 && contenido > 0 ? contenido : ''
   };
   append_('COMPRAS', [compra]);
   append_('MOVIMIENTOS', [mov_(fecha, 'compra', 'insumo', ins.id, cantidad, compra.id, compra.proveedor)]);
+  // Recordar el formato como habitual si el insumo aún no tiene uno.
+  if (compra.formato && contenido > 0 && !ins.formato) {
+    const cur = findById_('INSUMOS', ins.id); cur.formato = compra.formato; cur.formato_cant = contenido; update_('INSUMOS', cur);
+  }
   recalcularCostoInsumo_(ins.id);
   return { ok: true, compra: compra };
 }
