@@ -42,7 +42,26 @@ h2{font-size:16px;font-weight:700;margin:0}
 .nav-i.on{background:var(--oliva);color:#f7f7ef;font-weight:600}
 .nav-i[disabled]{color:#8d8880;cursor:default;background:none}
 .pronto{font-size:10px;font-weight:600;border:1px solid #bdbcab;border-radius:10px;padding:1px 6px;color:#7c776f}
-.side .sync{margin-top:auto;padding:12px;border-top:1px solid #d2d2c0;font-size:12px;color:var(--gris);display:flex;align-items:center;gap:8px}
+.side .sync{margin-top:auto;padding:12px;border:0;border-top:1px solid #d2d2c0;background:none;font:inherit;font-size:12px;color:var(--gris);display:flex;align-items:center;gap:8px;width:100%;text-align:left;cursor:pointer;border-radius:0 0 8px 8px}
+.side .sync:hover{background:#d8d8c6;color:var(--tinta)}
+.side .sync .ic{margin-left:auto;font-size:15px}
+.fmtrow{display:grid;grid-template-columns:minmax(0,1fr) 130px 92px 36px;gap:8px;align-items:center;margin-bottom:8px}
+.fmtrow label{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--gris-osc);cursor:pointer}
+.fmtrow input[type=radio]{width:18px;height:18px;accent-color:var(--oliva)}
+.check{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;cursor:pointer;padding:10px 0}
+.check input{width:20px;height:20px;accent-color:var(--oliva)}
+.subsec{border-top:1px solid var(--borde);margin-top:14px;padding-top:14px}
+.minw{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:8px}
+.lrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--linea);font-size:14px}
+.lrow:last-child{border-bottom:0}
+.lrow .v{flex:1;min-width:0}
+.hist{font-size:13px}
+.hist .ln{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--linea)}
+.hist .ln:last-child{border-bottom:0}
+.up{color:var(--peligro);font-weight:600} .down{color:var(--oliva-texto);font-weight:600}
+.filters{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.filters label.f{margin-bottom:4px}
+.filters .in{height:40px;font-size:14px}
 .dot{width:8px;height:8px;border-radius:4px;background:var(--oliva);flex-shrink:0}
 .dot.off{background:#b0701a}
 main{flex:1;min-width:0;padding:30px 36px 60px}
@@ -135,6 +154,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
 .ov.on{display:flex}
 .modal{background:var(--tarjeta);border-radius:16px;width:100%;max-width:520px;padding:22px;box-shadow:0 18px 50px rgba(0,0,0,.18)}
 .modal.wide{max-width:960px}
+.modal.mid{max-width:640px}
 .modal .mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
 .modal .mh h2{font-size:18px}
 .modal .mf{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
@@ -170,6 +190,9 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
   .ov{padding:0;align-items:flex-end}
   .modal,.modal.wide{border-radius:18px 18px 0 0;max-width:none;padding:18px 16px calc(18px + env(safe-area-inset-bottom));max-height:94vh;overflow-y:auto}
   .rline{grid-template-columns:minmax(0,1fr) 100px 36px}
+  .fmtrow{grid-template-columns:minmax(0,1fr) 100px 36px}
+  .fmtrow label{grid-column:1/3}
+  .filters{grid-template-columns:repeat(2,minmax(0,1fr))}
   .rline .cost{display:none}
   .card{padding:16px}
   .hide-m{display:none}
@@ -195,7 +218,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
     <button class="nav-i" data-go="insumos">Insumos y compras</button>
     <div class="grp">Sistema</div>
     <button class="nav-i" data-go="config">Configuración</button>
-    <div class="sync"><span class="dot" id="syncDot"></span><span id="syncTxt">Sin conectar</span></div>
+    <button class="sync" id="sideSync" title="Traer los últimos datos de la planilla"><span class="dot" id="syncDot"></span><span id="syncTxt">Sin conectar</span><span class="ic" aria-hidden="true">⟳</span><span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Sincronizar</span></button>
   </nav>
 
   <main>
@@ -204,6 +227,10 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
       <button class="btn ghost sm" id="mobSync" aria-label="Sincronizar">Sincronizar</button>
     </div>
 
+    <div id="verBanner" class="banner hidden" style="margin:18px auto 0;max-width:1120px">
+      <span id="verTxt"></span>
+      <button class="btn sm" data-go="config">Ver versiones</button>
+    </div>
     <div id="cfgBanner" class="banner hidden" style="margin:18px auto 0;max-width:1120px">
       <span>Conecta la app con la planilla para empezar.</span>
       <button class="btn sm" data-go="config">Ir a Configuración</button>
@@ -238,7 +265,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
       <div class="grid g2" style="align-items:start">
         <div class="card">
           <h2 style="margin-bottom:14px">Registrar lote</h2>
-          <div class="fld"><label class="f" for="pProd">Producto</label><select class="in" id="pProd"></select></div>
+          <div class="fld"><label class="f" for="pProd">Qué produjiste <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Un producto terminado (va a bodega para vender) o un insumo elaborado (oleato, tintura, frascos serigrafiados…) que después se usa en otras recetas.">i</button></label><select class="in" id="pProd"></select></div>
           <div class="row3">
             <div class="fld"><label class="f" for="pLotes">Lotes <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Cuántas veces preparaste la receta completa. Puede ser 0,5 si hiciste media receta.">i</button></label><input class="in r" id="pLotes" inputmode="decimal" value="1"></div>
             <div class="fld"><label class="f" for="pUnid">Unidades obtenidas <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Las unidades que realmente salieron. Si lo dejas vacío se usa lotes × rendimiento. Si salió menos (o más), anota lo real: así el costo por unidad queda exacto.">i</button></label><input class="in r" id="pUnid" inputmode="decimal"></div>
@@ -249,12 +276,12 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
         </div>
         <div class="card">
           <h2 style="margin-bottom:6px">Qué se descuenta</h2>
-          <div id="pPrev"><div class="empty">Elige un producto para ver los insumos que usa.</div></div>
+          <div id="pPrev"><div class="empty">Elige qué produjiste para ver los insumos que usa.</div></div>
         </div>
       </div>
       <div class="card">
         <h2 style="margin-bottom:6px">Lotes registrados</h2>
-        <div class="tw"><table><thead><tr><th>Lote</th><th>Fecha</th><th>Producto</th><th class="r">Lotes</th><th class="r">Unidades</th><th class="r hide-m">Costo unit.</th><th></th></tr></thead><tbody id="tLotes"></tbody></table></div>
+        <div class="tw"><table><thead><tr><th>Lote</th><th>Fecha</th><th>Qué</th><th class="r">Lotes</th><th class="r">Unidades</th><th class="r hide-m">Costo unit.</th><th></th></tr></thead><tbody id="tLotes"></tbody></table></div>
       </div>
     </section>
 
@@ -280,14 +307,22 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
         <div class="search" style="margin-bottom:8px">
           <input class="in" id="iQ" type="search" placeholder="Buscar insumo">
           <div class="chips" id="iChips">
-            <button class="chip on" data-f="todos">Todos</button><button class="chip" data-f="mp">Materias primas</button><button class="chip" data-f="env">Envases y etiquetas</button><button class="chip" data-f="arch">Archivados</button>
           </div>
         </div>
         <div class="tw"><table><thead><tr><th>Insumo</th><th class="r">Stock</th><th class="r hide-m">Mínimo</th><th class="r">Costo unit.</th><th class="r hide-m">Última compra</th></tr></thead><tbody id="tIns"></tbody></table></div>
       </div>
       <div class="card">
-        <h2 style="margin-bottom:6px">Compras recientes</h2>
+        <div class="head" style="margin-bottom:12px"><h2>Historial de compras</h2><button class="btn sm ghost" id="hcCsv">Descargar (CSV)</button></div>
+        <div class="filters">
+          <div><label class="f" for="hcDesde">Desde</label><input class="in" id="hcDesde" type="date"></div>
+          <div><label class="f" for="hcHasta">Hasta</label><input class="in" id="hcHasta" type="date"></div>
+          <div><label class="f" for="hcIns">Insumo</label><select class="in" id="hcIns"></select></div>
+          <div><label class="f" for="hcProv">Proveedor</label><select class="in" id="hcProv"></select></div>
+          <div><label class="f" for="hcDoc">Documento</label><select class="in" id="hcDoc"><option value="">Todos</option><option value="factura">Factura</option><option value="boleta">Boleta / sin doc.</option></select></div>
+        </div>
+        <div class="grid g4 kpis" style="margin-bottom:10px" id="hcTot"></div>
         <div class="tw"><table><thead><tr><th>N°</th><th>Fecha</th><th>Insumo</th><th class="r">Cantidad</th><th class="r">Pagado</th><th class="r hide-m">Costo unit.</th><th></th></tr></thead><tbody id="tCompras"></tbody></table></div>
+        <p class="note" id="hcNote" style="margin:10px 0 0"></p>
       </div>
     </section>
 
@@ -329,8 +364,24 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
         <p class="note" style="margin-top:14px">La URL y la clave quedan guardadas solo en este dispositivo. En cada celular o computador nuevo hay que ingresarlas una vez.</p>
       </div>
       <div class="card" style="max-width:620px">
+        <h2 style="margin-bottom:10px">Método de costo <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Cómo se calcula el costo de cada insumo cuando entra una compra (o un lote de un insumo elaborado).&#10;Última entrada: el costo es el de la compra más reciente. Simple, pero salta si alternas proveedores con precios distintos.&#10;Costo promedio: mezcla lo que queda en bodega con lo que entra. Ej: 500 g a $25 + 500 g a $32 → $28,50. Más estable.&#10;Al cambiarlo, se recalculan todos los costos.">i</button></h2>
+        <div class="seg" id="cfgMetodo" style="max-width:420px"><button type="button" data-v="ultima">Última entrada</button><button type="button" data-v="promedio">Costo promedio</button></div>
+      </div>
+      <div class="card" style="max-width:620px">
+        <h2 style="margin-bottom:10px">Listas <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Las opciones que aparecen en los selectores de la app. Renombrar cambia también todos los registros que la usan. Eliminar borra si nadie la usa; si está en uso, la oculta de los selectores sin tocar los registros antiguos.">i</button></h2>
+        <div class="fld"><select class="in" id="lsSel" aria-label="Lista a editar"><option value="tipo_insumo">Tipos de insumo</option><option value="unidad">Unidades</option><option value="categoria">Categorías de producto</option><option value="motivo_ajuste">Motivos de ajuste de stock</option></select></div>
+        <div id="lsItems"></div>
+        <div class="search" style="margin-top:10px"><input class="in" id="lsNuevo" placeholder="Nuevo valor"><button class="btn" id="lsAdd">Agregar</button></div>
+        <p class="note" id="lsNote" style="margin-top:10px"></p>
+      </div>
+      <div class="card" style="max-width:620px">
         <h2 style="margin-bottom:8px">Instalar en el celular</h2>
         <p class="note">Android (Chrome): menú ⋮ → «Instalar app» o «Agregar a pantalla principal». iPhone (Safari): botón Compartir → «Agregar a inicio».</p>
+      </div>
+      <div class="card" style="max-width:620px">
+        <h2 style="margin-bottom:8px">Versión</h2>
+        <div class="box" id="verBox"></div>
+        <p class="note" style="margin-top:10px">Las dos versiones deben coincidir. Si no, falta subir el index.html a GitHub o publicar la «Nueva versión» en Apps Script.</p>
       </div>
     </section>
   </main>
@@ -345,24 +396,33 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
 </nav>
 
 <!-- MODAL INSUMO -->
-<div class="ov" id="mIns"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mInsT">
+<div class="ov" id="mIns"><div class="modal mid" role="dialog" aria-modal="true" aria-labelledby="mInsT">
   <div class="mh"><h2 id="mInsT">Nuevo insumo</h2><button class="closeb" data-close aria-label="Cerrar">×</button></div>
   <input type="hidden" id="insId">
   <div class="fld"><label class="f" for="insNom">Nombre</label><input class="in" id="insNom" placeholder="Ej: Cera de abeja"></div>
   <div class="row2">
-    <div class="fld"><label class="f" for="insTipo">Tipo</label><select class="in" id="insTipo"><option>Materia prima</option><option>Envase</option><option>Etiqueta</option><option>Otro</option></select></div>
-    <div class="fld"><label class="f" for="insUni">Unidad <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="La unidad en que se mide el insumo en recetas y stock. Ej: cera en gramos, aceites en ml, frascos y etiquetas en unidades. Todo el sistema usa esta unidad; no se puede cambiar después de tener movimientos.">i</button></label><select class="in" id="insUni"><option value="g">gramos (g)</option><option value="ml">mililitros (ml)</option><option value="u">unidades (u)</option><option value="gotas">gotas</option><option value="cm">centímetros (cm)</option></select></div>
+    <div class="fld"><label class="f" for="insTipo">Tipo</label><select class="in" id="insTipo"></select></div>
+    <div class="fld"><label class="f" for="insUni">Unidad <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="La unidad en que se mide el insumo en recetas y stock. Ej: cera en gramos, aceites en ml, frascos y etiquetas en unidades. Todo el sistema usa esta unidad; no se puede cambiar después de tener movimientos.">i</button></label><select class="in" id="insUni"></select></div>
   </div>
   <div class="row2">
-    <div class="fld"><label class="f" for="insMin">Stock mínimo <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Cantidad bajo la cual la app avisa que hay que volver a comprar (aparece en Inicio). No bloquea nada. Una guía: lo que usa un lote × los lotes que haces mientras esperas al proveedor. Déjalo en 0 si no quieres aviso.">i</button></label><input class="in r" id="insMin" inputmode="decimal" placeholder="0"></div>
+    <div class="fld"><label class="f" for="insMin">Stock mínimo <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Cantidad bajo la cual la app avisa que hay que volver a comprar (aparece en Inicio). No bloquea nada. Una guía: lo que usa un lote × los lotes que haces mientras esperas al proveedor. Déjalo en 0 si no quieres aviso.">i</button></label><div class="minw"><input class="in r" id="insMin" inputmode="decimal" placeholder="0"><select class="in" id="insMinU" aria-label="Unidad del stock mínimo"></select></div></div>
     <div class="fld"><label class="f" for="insCosto">Costo por <span id="insCostoU">g</span> <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Cuánto cuesta 1 gramo, 1 ml o 1 unidad del insumo. Normalmente NO hace falta llenarlo: se calcula solo al registrar una compra. Úsalo solo para dar un costo inicial si aún no registras compras.">i</button></label><input class="in r" id="insCosto" inputmode="decimal" placeholder="$0"></div>
   </div>
-  <div class="row2">
-    <div class="fld"><label class="f" for="insFmt">Formato de compra <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Cómo lo compras normalmente: bolsa, frasco, caja, bidón… Al registrar una compra se propone solo, así solo anotas cuántos compraste.">i</button></label><input class="in" id="insFmt" placeholder="Ej: Bolsa"></div>
-    <div class="fld"><label class="f" for="insFmtC">Contenido del formato</label><div class="unitw"><input class="in r" id="insFmtC" inputmode="decimal" placeholder="Ej: 250"><span id="insFmtU">g</span></div></div>
-  </div>
+  <div class="small bold muted" style="margin:4px 0 8px">Formatos de compra <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Cómo lo compras: bolsa de 250 g, bolsa de 1 kg, caja de 50 frascos… Puedes tener varios. El marcado como principal se propone al comprar y se usa para mostrar el stock en esas unidades (ej. «quedan 2 frascos»).">i</button></div>
+  <div id="insFmts"></div>
+  <button class="btn sm ghost" id="insFmtAdd" style="margin-bottom:12px">+ Formato</button>
   <div class="fld"><label class="f" for="insProv">Proveedor habitual (opcional)</label><input class="in" id="insProv"></div>
-  <p class="note" id="insNota">El costo se actualiza solo con cada compra que registres. Úsalo aquí para el costo inicial.</p>
+  <p class="note" id="insNota"></p>
+  <div class="subsec">
+    <label class="check"><input type="checkbox" id="insElab"> Lo elaboro yo (tiene receta) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Para insumos que Javi prepara: oleatos, macerados, tinturas, frascos serigrafiados… Se producen desde Producción y su costo sale de su receta. Después se usan en las recetas de los productos como cualquier insumo.">i</button></label>
+    <div id="insElabBox" class="hidden">
+      <div class="fld" style="max-width:260px"><label class="f" for="insRinde">Rinde por lote</label><div class="unitw"><input class="in r" id="insRinde" inputmode="decimal"><span id="insRindeU">g</span></div></div>
+      <div id="insRecLines"></div>
+      <div class="acts" style="margin:4px 0 12px"><button class="btn sm" id="insRecAddI">+ Insumo</button><button class="btn sm ghost" id="insRecAddE">+ Costo extra</button></div>
+      <div class="box" id="insRecRes"></div>
+    </div>
+  </div>
+  <div class="subsec hidden" id="insHistBox"><h2 style="margin-bottom:8px">Historial de precios</h2><div id="insHist"></div></div>
   <div class="mf">
     <button class="btn danger" id="insDel">Eliminar</button>
     <button class="btn" id="insRest">Restaurar</button>
@@ -377,6 +437,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
   <div class="mh"><h2 id="mComT">Registrar compra</h2><button class="closeb" data-close aria-label="Cerrar">×</button></div>
   <div class="fld"><label class="f" for="comIns">Insumo</label><select class="in" id="comIns"></select></div>
   <div class="small bold muted" style="margin:2px 0 8px">Qué compraste</div>
+  <div class="chips" id="comFmts" style="margin-bottom:12px"></div>
   <div class="row3">
     <div class="fld"><label class="f" for="comN">Cantidad</label><input class="in r" id="comN" inputmode="decimal" value="1"></div>
     <div class="fld"><label class="f" for="comFmt">Formato</label><input class="in" id="comFmt" placeholder="Ej: Bolsa"></div>
@@ -419,13 +480,14 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
       <p class="note">Los precios negociados con cada empresa se agregan en Clientes (siguiente fase) y reemplazan a estos.</p>
     </div>
     <div>
-      <div class="head" style="margin-bottom:10px"><h2>Receta por lote <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Lo que usa UNA preparación completa (un lote), en la unidad de cada insumo. «+ Costo extra» sirve para costos que no son insumos, como mano de obra o gas, por lote.">i</button></h2><span class="small muted">Costos según la última compra de cada insumo</span></div>
+      <div class="head" style="margin-bottom:10px"><h2>Receta por lote <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Lo que usa UNA preparación completa (un lote), en la unidad de cada insumo. «+ Costo extra» sirve para costos que no son insumos, como mano de obra o gas, por lote.">i</button></h2><span class="small muted" id="recMet"></span></div>
       <div id="recLines"></div>
       <div class="acts" style="margin:4px 0 14px"><button class="btn sm" id="recAddI">+ Insumo</button><button class="btn sm ghost" id="recAddE">+ Costo extra</button></div>
       <div class="box" id="recRes"></div>
       <div id="recMg" style="margin-top:12px"></div>
     </div>
   </div>
+  <div class="subsec hidden" id="prdHistBox"><h2 style="margin-bottom:8px">Historial de costo <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Cada vez que cambia el costo por unidad (por una compra, un cambio de receta o de método de costo) queda registrado aquí, con el motivo. Abajo, lo que costó realmente cada lote producido.">i</button></h2><div class="grid g2" id="prdHist"></div></div>
   <div class="mf">
     <button class="btn danger" id="prdDel">Eliminar</button>
     <button class="btn" id="prdRest">Restaurar</button>
@@ -441,9 +503,17 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
   <input type="hidden" id="ajTipo"><input type="hidden" id="ajId">
   <div class="box" style="margin-bottom:14px"><div class="ln"><span id="ajNom" class="bold"></span><span>Sistema: <b id="ajAct"></b></span></div></div>
   <div class="fld"><label class="f" for="ajConteo">Conteo real en bodega <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Lo que contaste físicamente. La app registra la diferencia con lo que dice el sistema como un ajuste, con su motivo, y queda en el historial de movimientos.">i</button></label><input class="in r" id="ajConteo" inputmode="decimal"></div>
-  <div class="fld"><label class="f" for="ajNota">Motivo</label><select class="in" id="ajNota"><option>Carga inicial</option><option>Conteo físico</option><option>Merma o pérdida</option><option>Vencido</option><option>Uso interno o muestra</option><option>Otro</option></select></div>
+  <div class="fld"><label class="f" for="ajNota">Motivo</label><select class="in" id="ajNota"></select></div>
   <p class="note" id="ajDiff"></p>
   <div class="mf"><button class="btn ghost" data-close>Cancelar</button><button class="btn pri" id="ajSave">Guardar ajuste</button></div>
+</div></div>
+
+<!-- MODAL PREGUNTA -->
+<div class="ov" id="mPrompt"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="prT" style="max-width:440px">
+  <h2 id="prT" style="margin-bottom:12px"></h2>
+  <input class="in" id="prIn">
+  <p class="note" id="prNote" style="margin-top:8px"></p>
+  <div class="mf"><button class="btn ghost" id="prNo">Cancelar</button><button class="btn pri" id="prSi">Guardar</button></div>
 </div></div>
 
 <!-- MODAL CONFIRMAR -->
@@ -457,11 +527,12 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
 
 <script>
 // ───────────── Estado ─────────────
+const APP_VERSION = '1.2.0';
 const LS = { url: 'mv_gs_url', key: 'mv_gs_key', cache: 'mv_cache_v1' };
 let GS = lsGet(LS.url), KEY = lsGet(LS.key);
-let DB = { insumos: [], productos: [], recetas: [], compras: [], produccion: [], movimientos: [], stock: {} };
-let busy = false;
-const UI = { sec: 'inicio', invTab: 'productos', iFiltro: 'todos', prFiltro: 'act', comDocT: 'factura', receta: [] };
+let DB = { insumos: [], productos: [], recetas: [], compras: [], produccion: [], movimientos: [], stock: {}, formatos: [], listas: [], costos_hist: [], config: {} };
+let busy = false, lastSync = 0;
+const UI = { sec: 'inicio', invTab: 'productos', iFiltro: 'todos', prFiltro: 'act', comDocT: 'factura', insFmts: [] };
 
 function lsGet(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }
 function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
@@ -480,12 +551,55 @@ function parseNum(v) {
   s = s.replace(/\./g, '').replace(',', '.');
   const n = Number(s); return isNaN(n) ? 0 : n;
 }
+const numIn = v => v === '' || v == null ? '' : String(v).replace('.', ',');
 const hoy = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
 const mesActual = () => hoy().slice(0, 7);
 function fechaCorta(f) { if (!f) return '—'; const [y, m, d] = String(f).slice(0, 10).split('-'); const ms = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']; return (d || '') + ' ' + (ms[Number(m) - 1] || '') + (y && y !== hoy().slice(0, 4) ? ' ' + y : ''); }
 const insumo = id => DB.insumos.find(i => i.id === id);
 const producto = id => DB.productos.find(p => p.id === id);
+const nombreItem = id => (producto(id) || insumo(id) || {}).nombre || '—';
 const stockDe = id => (DB.stock[id] && DB.stock[id].BODEGA) || 0;
+const pagadoDe = c => Number(c.total_pagado) || Number(c.total_neto) || 0;
+const esElab = i => i && i.elaborado === 'si';
+/** Costo de referencia por kilo o litro (como se piensa al comprar). */
+const porMil = (i, cu) => i && (i.unidad === 'g' || i.unidad === 'ml') && cu > 0 ? clp(cu * 1000) + (i.unidad === 'g' ? ' / kg' : ' / L') : '';
+
+// ───────────── Listas editables ─────────────
+const LISTA_BASE = { tipo_insumo: ['Materia prima', 'Envase', 'Etiqueta', 'Otro'], unidad: ['g', 'ml', 'u', 'gotas', 'cm'], categoria: [], motivo_ajuste: ['Carga inicial', 'Conteo físico', 'Merma o pérdida', 'Vencido', 'Uso interno o muestra', 'Otro'] };
+function lista(nombre, conOcultos) {
+  const rows = (DB.listas || []).filter(r => r.lista === nombre && (conOcultos || r.estado === 'activo')).sort((a, b) => (Number(a.orden) || 0) - (Number(b.orden) || 0));
+  return rows.length || (DB.listas || []).some(r => r.lista === nombre) ? rows.map(r => r.valor) : LISTA_BASE[nombre];
+}
+const UNI_TXT = { g: 'gramos (g)', ml: 'mililitros (ml)', u: 'unidades (u)', cm: 'centímetros (cm)' };
+function llenarSelect(el, vals, actual, etiqueta) {
+  const v = [...vals]; if (actual && !v.includes(actual)) v.push(actual);
+  el.innerHTML = v.map(x => `<option value="${esc(x)}">${esc(etiqueta ? etiqueta(x) : x)}</option>`).join('');
+  if (actual) el.value = actual;
+}
+
+// ───────────── Formatos de compra ─────────────
+function fmtsDe(insId) {
+  const fs = (DB.formatos || []).filter(f => f.insumo_id === insId && f.estado === 'activo');
+  if (fs.length) return fs.sort((a, b) => (b.principal === 'si') - (a.principal === 'si'));
+  const i = insumo(insId);
+  return i && i.formato && Number(i.formato_cant) > 0 ? [{ nombre: i.formato, cantidad: Number(i.formato_cant), principal: 'si' }] : [];
+}
+const principalDe = insId => fmtsDe(insId).find(f => f.principal === 'si') || fmtsDe(insId)[0];
+function plural(w) {
+  w = String(w || '').toLowerCase();
+  if (/[aeiou]$/.test(w)) return w + 's';
+  if (/ón$/.test(w)) return w.replace(/ón$/, 'ones');
+  if (/s$/.test(w)) return w;
+  return w + 'es';
+}
+/** «3 frascos», «1½ bolsas», «menos de 1 frasco» según el formato principal. */
+function enFormato(insId, cant) {
+  const f = principalDe(insId); if (!f || !(f.cantidad > 0) || cant <= 0) return '';
+  const n = cant / f.cantidad, nom = String(f.nombre).toLowerCase();
+  if (n < 1) return 'menos de 1 ' + nom;
+  const r = Math.round(n * 2) / 2, txt = Number.isInteger(r) ? String(r) : Math.floor(r) + '½';
+  return (Math.abs(r - n) > 0.01 ? '≈ ' : '') + txt + ' ' + (r === 1 ? nom : plural(nom));
+}
 
 // ───────────── Comunicación con Apps Script ─────────────
 async function gsCall(action, body = {}, intento = 1) {
@@ -514,7 +628,8 @@ async function sync(silencioso) {
   if (!silencioso) toast('Sincronizando…', 'load');
   try {
     const d = await gsCall('getAll');
-    DB = d;
+    DB = Object.assign({ formatos: [], listas: [], costos_hist: [], config: {} }, d);
+    lastSync = Date.now();
     lsSet(LS.cache, JSON.stringify(d));
     setSync(true, 'Sincronizado ' + new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }));
     $('cfgBanner').classList.add('hidden');
@@ -541,6 +656,12 @@ async function write(action, body, okMsg) {
 }
 
 function setSync(ok, txt) { $('syncDot').classList.toggle('off', !ok); $('syncTxt').textContent = txt; }
+$('sideSync').addEventListener('click', () => sync());
+$('mobSync').addEventListener('click', () => sync());
+// Al volver a la app (otra pestaña, otra ventana o el celular desde segundo plano), traer lo último.
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && !busy && GS && KEY && Date.now() - lastSync > 30000 && !document.querySelector('.ov.on')) sync(true);
+});
 
 let tt;
 function toast(msg, tipo, dur) {
@@ -556,23 +677,20 @@ function toast(msg, tipo, dur) {
 document.addEventListener('click', e => {
   const t = e.target.closest('.tip'); if (!t) return;
   e.preventDefault(); e.stopPropagation();
-  const host = t.closest('label, h2') || t.parentElement;
+  const host = t.closest('label, h2, .small') || t.parentElement;
   let box = host.nextElementSibling;
   if (!box || !box.classList.contains('tipbox')) { box = document.createElement('div'); box.className = 'tipbox'; box.textContent = t.dataset.tip; host.after(box); }
   const on = !box.classList.contains('on'); box.classList.toggle('on', on); t.setAttribute('aria-expanded', on);
 });
-/** Costo de referencia por kilo o litro (como se piensa al comprar). */
-const porMil = (i, cu) => i && (i.unidad === 'g' || i.unidad === 'ml') && cu > 0 ? clp(cu * 1000) + (i.unidad === 'g' ? ' / kg' : ' / L') : '';
-const pagadoDe = c => Number(c.total_pagado) || Number(c.total_neto) || 0;
 
 // ───────────── Modales ─────────────
 function openM(id) { $(id).classList.add('on'); document.body.style.overflow = 'hidden'; }
 function closeM(id) { $(id).classList.remove('on'); if (!document.querySelector('.ov.on')) document.body.style.overflow = ''; }
 document.querySelectorAll('.ov').forEach(ov => {
-  ov.addEventListener('click', e => { if (e.target === ov && ov.id !== 'mConf') closeM(ov.id); });
+  ov.addEventListener('click', e => { if (e.target === ov && ov.id !== 'mConf' && ov.id !== 'mPrompt') closeM(ov.id); });
   ov.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => closeM(ov.id)));
 });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { const o = [...document.querySelectorAll('.ov.on')].pop(); if (o && o.id !== 'mConf') closeM(o.id); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { const o = [...document.querySelectorAll('.ov.on')].pop(); if (o && o.id !== 'mConf' && o.id !== 'mPrompt') closeM(o.id); } });
 
 function confirmar(titulo, texto, etiqueta, peligro) {
   return new Promise(res => {
@@ -584,54 +702,80 @@ function confirmar(titulo, texto, etiqueta, peligro) {
     openM('mConf');
   });
 }
+function preguntar(titulo, valor, nota) {
+  return new Promise(res => {
+    $('prT').textContent = titulo; $('prIn').value = valor || ''; $('prNote').textContent = nota || '';
+    const fin = v => { closeM('mPrompt'); $('prSi').onclick = null; $('prNo').onclick = null; $('prIn').onkeydown = null; res(v); };
+    $('prSi').onclick = () => fin($('prIn').value.trim()); $('prNo').onclick = () => fin(null);
+    $('prIn').onkeydown = e => { if (e.key === 'Enter') fin($('prIn').value.trim()); };
+    openM('mPrompt'); setTimeout(() => $('prIn').focus(), 50);
+  });
+}
 
 // ───────────── Navegación ─────────────
 function go(sec) {
   UI.sec = sec;
   document.querySelectorAll('.sec').forEach(s => s.classList.toggle('on', s.id === 'sec-' + sec));
-  document.querySelectorAll('[data-go]').forEach(b => b.classList.toggle('on', b.dataset.go === sec || (sec === 'insumos' || sec === 'config') && b.dataset.go === 'mas' && b.closest('.bottom')));
+  document.querySelectorAll('.bottom [data-go]').forEach(b => b.classList.toggle('on', b.dataset.go === sec || ((sec === 'insumos' || sec === 'config') && b.dataset.go === 'mas')));
   document.querySelectorAll('.side [data-go]').forEach(b => b.classList.toggle('on', b.dataset.go === sec));
   window.scrollTo(0, 0);
-  if (sec === 'config') { $('cUrl').value = GS; $('cKey').value = KEY; }
+  if (sec === 'config') { $('cUrl').value = GS; $('cKey').value = KEY; renderConfig(); }
 }
 document.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b && !b.disabled) go(b.dataset.go); });
 
 // ───────────── Costeo ─────────────
-function costoReceta(lineas, rinde) {
+const recetaDe = pid => DB.recetas.filter(r => r.producto_id === pid);
+/** Costo de 1 unidad de insumo. Un elaborado sin producción aún se estima desde su receta. */
+function costoIns(i, prof = 0) {
+  if (!i) return 0;
+  if (Number(i.costo_unit) > 0 || !esElab(i) || prof > 3) return Number(i.costo_unit) || 0;
+  return costoReceta(recetaDe(i.id), Number(i.rinde_lote) || 0, prof + 1).unit;
+}
+function costoReceta(lineas, rinde, prof = 0) {
   let lote = 0;
   lineas.forEach(l => {
-    if (l.tipo === 'insumo') { const i = insumo(l.ref); lote += (Number(l.cantidad) || 0) * (i ? Number(i.costo_unit) || 0 : 0); }
+    if (l.tipo === 'insumo') lote += (Number(l.cantidad) || 0) * costoIns(insumo(l.ref), prof);
     else lote += Number(l.costo) || 0;
   });
   return { lote, unit: rinde > 0 ? lote / rinde : 0 };
 }
-const recetaDe = pid => DB.recetas.filter(r => r.producto_id === pid);
 function costoProducto(p) { return costoReceta(recetaDe(p.id), Number(p.rinde_lote) || 0); }
 function margenes(p, unit) {
   const pub = (Number(p.precio_publico) || 0) / 1.19;
   const m = v => v > 0 ? (v - unit) / v : NaN;
   return [['Público', m(pub), pub], ['Venta directa', m(Number(p.precio_directo) || 0), p.precio_directo], ['Consignación', m(Number(p.precio_consig) || 0), p.precio_consig]];
 }
+const metodoTxt = () => (DB.config && DB.config.metodo_costo) === 'promedio' ? 'Costos según costo promedio de cada insumo' : 'Costos según la última compra de cada insumo';
 
 // ───────────── Render general ─────────────
 function renderAll() {
-  renderInicio(); renderProdSelect(); renderPrev(); renderLotes(); renderInv(); renderInsumos(); renderCompras(); renderProductos();
+  renderVersion(); renderInicio(); renderProdSelect(); renderPrev(); renderLotes(); renderInv(); renderInsumos(); renderHcFiltros(); renderCompras(); renderProductos();
+  if (UI.sec === 'config') renderConfig();
+}
+
+function renderVersion() {
+  const be = DB.version || '1.1 o anterior';
+  const dif = lastSync > 0 && be !== APP_VERSION;
+  $('verBanner').classList.toggle('hidden', !dif);
+  $('verTxt').textContent = dif ? `La app está en ${APP_VERSION} y Apps Script en ${be}. Falta actualizar una de las dos partes.` : '';
+  $('verBox').innerHTML = `<div class="ln"><span>App (index.html)</span><b>${APP_VERSION}</b></div><div class="ln"><span>Apps Script (Code.gs)</span><b class="${dif ? 'bad-t' : ''}">${DB.serverTime ? esc(be) : '—'}</b></div>`;
 }
 
 function renderInicio() {
   $('hoyTxt').textContent = new Date().toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^./, c => c.toUpperCase());
   const act = DB.insumos.filter(i => i.estado === 'activo');
   const prods = DB.productos.filter(p => p.estado === 'activo');
-  const vIns = act.reduce((s, i) => s + Math.max(0, stockDe(i.id)) * (Number(i.costo_unit) || 0), 0);
+  const vIns = act.reduce((s, i) => s + Math.max(0, stockDe(i.id)) * costoIns(i), 0);
   const vPrd = prods.reduce((s, p) => s + Math.max(0, stockDe(p.id)) * costoProducto(p).unit, 0);
   const mes = mesActual();
-  const uMes = DB.produccion.filter(l => l.estado === 'activa' && String(l.fecha).startsWith(mes)).reduce((s, l) => s + (Number(l.unidades) || 0), 0);
+  const uMes = DB.produccion.filter(l => l.estado === 'activa' && l.item_tipo !== 'insumo' && String(l.fecha).startsWith(mes)).reduce((s, l) => s + (Number(l.unidades) || 0), 0);
   const cMes = DB.compras.filter(c => c.estado === 'activa' && String(c.fecha).startsWith(mes)).reduce((s, c) => s + pagadoDe(c), 0);
   $('kInsumos').textContent = clp(vIns); $('kProductos').textContent = clp(vPrd); $('kProd').textContent = qty(uMes) + ' u'; $('kCompras').textContent = clp(cMes);
 
   const bajos = act.filter(i => Number(i.stock_min) > 0 && stockDe(i.id) < Number(i.stock_min));
   $('cBajo').textContent = bajos.length;
-  $('lBajo').innerHTML = bajos.length ? bajos.map(i => `<div class="list-row"><div class="lr-top"><span>${esc(i.nombre)}</span><span class="warn-t">${qty(stockDe(i.id))} ${esc(i.unidad)}</span></div><div class="sub">Mínimo ${qty(i.stock_min)} ${esc(i.unidad)}</div></div>`).join('')
+  $('lBajo').innerHTML = bajos.length ? bajos.map(i => { const s = stockDe(i.id), ef = enFormato(i.id, s);
+    return `<div class="list-row"><div class="lr-top"><span>${esc(i.nombre)}</span><span class="warn-t">${ef ? 'queda ' + esc(ef) : qty(s) + ' ' + esc(i.unidad)}</span></div><div class="sub">${ef ? qty(s) + ' ' + esc(i.unidad) + ' · ' : ''}Mínimo ${qty(i.stock_min)} ${esc(i.unidad)}${enFormato(i.id, i.stock_min) ? ' (' + esc(enFormato(i.id, i.stock_min)) + ')' : ''}</div></div>`; }).join('')
     : `<div class="empty">Todo sobre el mínimo.</div>`;
   const rep = prods.filter(p => Number(p.stock_min) > 0 && stockDe(p.id) < Number(p.stock_min));
   $('cRep').textContent = rep.length;
@@ -639,74 +783,82 @@ function renderInicio() {
     : `<div class="empty">Sin productos por reponer.</div>`;
 
   const ev = [];
-  DB.produccion.filter(l => l.estado === 'activa').slice(0, 5).forEach(l => ev.push({ k: l.fecha + l.creado, t: 'Producción', d: `${qty(l.unidades)} u de ${producto(l.producto_id)?.nombre || '—'}` }));
+  DB.produccion.filter(l => l.estado === 'activa').slice(0, 5).forEach(l => ev.push({ k: l.fecha + l.creado, t: 'Producción', d: `${qty(l.unidades)} ${l.item_tipo === 'insumo' ? esc(insumo(l.producto_id)?.unidad || '') : 'u'} de ${nombreItem(l.producto_id)}` }));
   DB.compras.filter(c => c.estado === 'activa').slice(0, 5).forEach(c => ev.push({ k: c.fecha + c.creado, t: 'Compra', d: `${qty(c.cantidad)} ${insumo(c.insumo_id)?.unidad || ''} de ${insumo(c.insumo_id)?.nombre || '—'} · ${clp(pagadoDe(c))}` }));
   ev.sort((a, b) => b.k.localeCompare(a.k));
   $('lAct').innerHTML = ev.length ? ev.slice(0, 6).map(e => `<div class="list-row"><div class="small muted">${e.t} · ${fechaCorta(e.k.slice(0, 10))}</div><div style="font-size:14px;margin-top:2px">${esc(e.d)}</div></div>`).join('')
     : `<div class="empty">Aún no hay registros.</div>`;
 }
 
-// ───────────── Producción ─────────────
+// ───────────── Producción (productos e insumos elaborados) ─────────────
 function renderProdSelect() {
   const sel = $('pProd'), cur = sel.value;
   const ps = DB.productos.filter(p => p.estado === 'activo').sort((a, b) => a.nombre.localeCompare(b.nombre));
-  sel.innerHTML = '<option value="">Elegir producto…</option>' + ps.map(p => `<option value="${p.id}">${esc(p.nombre)}${p.presentacion ? ' · ' + esc(p.presentacion) : ''}${recetaDe(p.id).length ? '' : ' (sin receta)'}</option>`).join('');
-  if (ps.some(p => p.id === cur)) sel.value = cur;
+  const is = DB.insumos.filter(i => i.estado === 'activo' && esElab(i)).sort((a, b) => a.nombre.localeCompare(b.nombre));
+  const op = (v, x, extra) => `<option value="${v}">${esc(x.nombre)}${extra}${recetaDe(x.id).length ? '' : ' (sin receta)'}</option>`;
+  sel.innerHTML = '<option value="">Elegir…</option>' +
+    (ps.length ? `<optgroup label="Productos">${ps.map(p => op('p:' + p.id, p, p.presentacion ? ' · ' + esc(p.presentacion) : '')).join('')}</optgroup>` : '') +
+    (is.length ? `<optgroup label="Insumos elaborados">${is.map(i => op('i:' + i.id, i, '')).join('')}</optgroup>` : '');
+  if ([...sel.options].some(o => o.value === cur)) sel.value = cur;
 }
-
+function itemProd() {
+  const v = $('pProd').value; if (!v) return null;
+  const [t, id] = v.split(':');
+  const it = t === 'i' ? insumo(id) : producto(id);
+  return it ? { it, tipo: t === 'i' ? 'insumo' : 'producto', u: t === 'i' ? it.unidad : 'u' } : null;
+}
 function prodCalc() {
-  const p = producto($('pProd').value);
-  if (!p) return null;
+  const x = itemProd(); if (!x) return null;
   const lotes = parseNum($('pLotes').value);
-  const unidades = parseNum($('pUnid').value) || lotes * (Number(p.rinde_lote) || 0);
-  const lineas = recetaDe(p.id).map(r => {
+  const unidades = parseNum($('pUnid').value) || lotes * (Number(x.it.rinde_lote) || 0);
+  const lineas = recetaDe(x.it.id).map(r => {
     if (r.tipo === 'extra') return { extra: true, nombre: r.ref, costo: (Number(r.costo) || 0) * lotes };
     const i = insumo(r.ref) || { nombre: '(insumo eliminado)', unidad: '', costo_unit: 0 };
     const nec = (Number(r.cantidad) || 0) * lotes, hay = stockDe(r.ref);
-    return { nombre: i.nombre, unidad: i.unidad, nec, hay, queda: hay - nec, costo: nec * (Number(i.costo_unit) || 0), falta: nec > hay };
+    return { nombre: i.nombre, unidad: i.unidad, nec, hay, queda: hay - nec, costo: nec * costoIns(i), falta: nec > hay };
   });
   const costo = lineas.reduce((s, l) => s + l.costo, 0);
-  return { p, lotes, unidades, lineas, costo, unit: unidades > 0 ? costo / unidades : 0, faltan: lineas.filter(l => l.falta) };
+  return { ...x, lotes, unidades, lineas, costo, unit: unidades > 0 ? costo / unidades : 0, faltan: lineas.filter(l => l.falta) };
 }
-
 function renderPrev() {
-  const c = prodCalc();
-  const p = producto($('pProd').value);
-  $('pUnid').placeholder = p ? qty(parseNum($('pLotes').value) * (Number(p.rinde_lote) || 0)) : '';
-  if (!c) { $('pPrev').innerHTML = '<div class="empty">Elige un producto para ver los insumos que usa.</div>'; return; }
-  if (!c.lineas.length) { $('pPrev').innerHTML = `<div class="empty">Este producto no tiene receta. <button class="lnk" onclick="abrirProducto('${c.p.id}')">Agregar receta</button></div>`; return; }
+  const c = prodCalc(), x = itemProd();
+  $('pUnid').placeholder = x ? qty(parseNum($('pLotes').value) * (Number(x.it.rinde_lote) || 0)) : '';
+  if (!c) { $('pPrev').innerHTML = '<div class="empty">Elige qué produjiste para ver los insumos que usa.</div>'; return; }
+  const abrir = c.tipo === 'insumo' ? `abrirInsumo('${c.it.id}')` : `abrirProducto('${c.it.id}')`;
+  if (!c.lineas.length) { $('pPrev').innerHTML = `<div class="empty">No tiene receta. <button class="lnk" onclick="${abrir}">Agregar receta</button></div>`; return; }
   $('pPrev').innerHTML = `<div class="tw"><table><thead><tr><th>Insumo</th><th class="r">Usa</th><th class="r">En bodega</th><th class="r">Queda</th></tr></thead><tbody>` +
     c.lineas.map(l => l.extra ? `<tr><td>${esc(l.nombre)} <span class="tag">costo extra</span></td><td class="r" colspan="3">${clp(l.costo)}</td></tr>`
       : `<tr><td>${esc(l.nombre)}</td><td class="r">${qty(l.nec)} ${esc(l.unidad)}</td><td class="r muted">${qty(l.hay)}</td><td class="r ${l.falta ? 'bad-t' : ''}">${qty(l.queda)}</td></tr>`).join('') +
     `</tbody></table></div>
     ${c.faltan.length ? `<p class="note bad-t" style="margin:10px 0 0">Falta stock de ${c.faltan.map(f => esc(f.nombre)).join(', ')}. Si ya lo tienes, registra la compra o ajusta el stock primero.</p>` : ''}
-    <div class="box" style="margin-top:12px"><div class="ln"><span>Producto terminado</span><b class="ok-t">+${qty(c.unidades)} u</b></div><div class="ln"><span>Costo del lote</span><span>${clp(c.costo)}</span></div><div class="ln"><span>Costo por unidad</span><b>${clpU(c.unit)}</b></div></div>`;
+    <div class="box" style="margin-top:12px"><div class="ln"><span>${c.tipo === 'insumo' ? 'Insumo elaborado' : 'Producto terminado'}</span><b class="ok-t">+${qty(c.unidades)} ${esc(c.u)}</b></div><div class="ln"><span>Costo del lote</span><span>${clp(c.costo)}</span></div><div class="ln"><span>Costo por ${c.tipo === 'insumo' ? esc(c.u) : 'unidad'}</span><b>${clpU(c.unit)}</b></div></div>`;
 }
 ['pProd', 'pLotes', 'pUnid'].forEach(id => $(id).addEventListener('input', renderPrev));
 
 $('pGo').addEventListener('click', async () => {
   const c = prodCalc();
-  if (!c) return toast('Elige un producto', 'err');
-  if (!c.lineas.length) return toast('El producto no tiene receta', 'err');
+  if (!c) return toast('Elige qué produjiste', 'err');
+  if (!c.lineas.length) return toast('No tiene receta', 'err');
   if (c.lotes <= 0) return toast('Indica cuántos lotes', 'err');
-  let msg = `${qty(c.lotes)} lote(s) de ${c.p.nombre} → ${qty(c.unidades)} unidades.\nSe descontarán los insumos de la receta.`;
+  let msg = `${qty(c.lotes)} lote(s) de ${c.it.nombre} → ${qty(c.unidades)} ${c.u}.\nSe descontarán los insumos de la receta.`;
   if (c.faltan.length) msg += `\n\nOjo: falta stock de ${c.faltan.map(f => f.nombre).join(', ')}. Quedará en negativo hasta que registres la compra o ajustes.`;
   if (!await confirmar('Registrar producción', msg, 'Registrar')) return;
-  const r = await write('registrarProduccion', { producto_id: c.p.id, lotes: c.lotes, unidades: c.unidades, fecha: $('pFecha').value || hoy(), notas: $('pNotas').value.trim() }, 'Producción registrada');
+  const r = await write('registrarProduccion', { item_tipo: c.tipo, item_id: c.it.id, producto_id: c.it.id, lotes: c.lotes, unidades: c.unidades, fecha: $('pFecha').value || hoy(), notas: $('pNotas').value.trim() }, 'Producción registrada');
   if (r) { $('pLotes').value = '1'; $('pUnid').value = ''; $('pNotas').value = ''; renderPrev(); }
 });
 
 function renderLotes() {
   const ls = DB.produccion;
-  $('tLotes').innerHTML = ls.length ? ls.slice(0, 60).map(l => `<tr style="${l.estado === 'anulada' ? 'opacity:.55' : ''}">
-    <td class="bold nw">${esc(l.id)}</td><td class="nw">${fechaCorta(l.fecha)}</td><td>${esc(producto(l.producto_id)?.nombre || '—')}${l.notas ? `<div class="sub">${esc(l.notas)}</div>` : ''}</td>
-    <td class="r">${qty(l.lotes)}</td><td class="r">${qty(l.unidades)}</td><td class="r hide-m">${clpU(l.costo_unit)}</td>
-    <td class="r">${l.estado === 'anulada' ? '<span class="tag bad">anulado</span>' : `<button class="lnk danger" onclick="anularLote('${l.id}')">Anular</button>`}</td></tr>`).join('')
+  $('tLotes').innerHTML = ls.length ? ls.slice(0, 60).map(l => { const u = l.item_tipo === 'insumo' ? (insumo(l.producto_id)?.unidad || '') : '';
+    return `<tr style="${l.estado === 'anulada' ? 'opacity:.55' : ''}">
+    <td class="bold nw">${esc(l.id)}</td><td class="nw">${fechaCorta(l.fecha)}</td><td>${esc(nombreItem(l.producto_id))}${l.item_tipo === 'insumo' ? ' <span class="tag">insumo</span>' : ''}${l.notas ? `<div class="sub">${esc(l.notas)}</div>` : ''}</td>
+    <td class="r">${qty(l.lotes)}</td><td class="r">${qty(l.unidades)}${u ? ' ' + esc(u) : ''}</td><td class="r hide-m">${clpU(l.costo_unit)}${u ? ' / ' + esc(u) : ''}</td>
+    <td class="r">${l.estado === 'anulada' ? '<span class="tag bad">anulado</span>' : `<button class="lnk danger" onclick="anularLote('${l.id}')">Anular</button>`}</td></tr>`; }).join('')
     : `<tr><td colspan="7"><div class="empty">Todavía no hay lotes registrados.</div></td></tr>`;
 }
 async function anularLote(id) {
   const l = DB.produccion.find(x => x.id === id);
-  if (!await confirmar('Anular lote ' + id, `Se devolverán los insumos a bodega y se quitarán ${qty(l.unidades)} u de ${producto(l.producto_id)?.nombre || 'producto'}.\nEl lote queda en el historial como anulado.`, 'Anular lote', true)) return;
+  if (!await confirmar('Anular lote ' + id, `Se devolverán los insumos a bodega y se quitarán ${qty(l.unidades)} de ${nombreItem(l.producto_id)}.\nEl lote queda en el historial como anulado.`, 'Anular lote', true)) return;
   write('anularProduccion', { id }, 'Lote anulado');
 }
 
@@ -730,17 +882,16 @@ function renderInv() {
     const is = DB.insumos.filter(i => i.estado === 'activo' && m(i.nombre)).sort((a, b) => a.nombre.localeCompare(b.nombre));
     let tot = 0;
     t.innerHTML = `<thead><tr><th>Insumo</th><th class="r">Stock</th><th class="r hide-m">Mínimo</th><th class="r hide-m">Costo unit.</th><th class="r">Valor</th><th></th></tr></thead><tbody>` +
-      (is.length ? is.map(i => { const s = stockDe(i.id), v = Math.max(0, s) * (Number(i.costo_unit) || 0); tot += v; const low = Number(i.stock_min) > 0 && s < Number(i.stock_min);
-        return `<tr><td class="bold">${esc(i.nombre)}<div class="sub">${esc(i.tipo)}</div></td><td class="r ${s < 0 ? 'bad-t' : low ? 'warn-t' : 'bold'}">${qty(s)} ${esc(i.unidad)}</td><td class="r muted hide-m">${qty(i.stock_min)}</td><td class="r hide-m">${clpU(i.costo_unit)} / ${esc(i.unidad)}</td><td class="r">${clp(v)}</td><td class="r"><button class="lnk" onclick="abrirAjuste('insumo','${i.id}')">Ajustar</button></td></tr>`; }).join('')
+      (is.length ? is.map(i => { const s = stockDe(i.id), cu = costoIns(i), v = Math.max(0, s) * cu; tot += v; const low = Number(i.stock_min) > 0 && s < Number(i.stock_min), ef = enFormato(i.id, s);
+        return `<tr><td class="bold">${esc(i.nombre)}<div class="sub">${esc(i.tipo)}${esElab(i) ? ' · elaborado' : ''}</div></td><td class="r ${s < 0 ? 'bad-t' : low ? 'warn-t' : 'bold'}">${qty(s)} ${esc(i.unidad)}${ef ? `<div class="sub">${esc(ef)}</div>` : ''}</td><td class="r muted hide-m">${qty(i.stock_min)}</td><td class="r hide-m">${clpU(cu)} / ${esc(i.unidad)}</td><td class="r">${clp(v)}</td><td class="r"><button class="lnk" onclick="abrirAjuste('insumo','${i.id}')">Ajustar</button></td></tr>`; }).join('')
         : `<tr><td colspan="6"><div class="empty">No hay insumos.</div></td></tr>`) + '</tbody>';
-    $('invNote').textContent = `Valor total a costo: ${clp(tot)}. Los insumos entran con cada compra y salen con cada producción.`;
+    $('invNote').textContent = `Valor total a costo: ${clp(tot)}. Los insumos entran con cada compra (o producción, si son elaborados) y salen con cada producción.`;
   } else {
-    const nom = mv => mv.item_tipo === 'producto' ? producto(mv.item_id)?.nombre : insumo(mv.item_id)?.nombre;
     const uni = mv => mv.item_tipo === 'producto' ? 'u' : (insumo(mv.item_id)?.unidad || '');
     const tipos = { compra: 'Compra', produccion: 'Producción', ajuste: 'Ajuste' };
-    const ms = DB.movimientos.filter(mv => m(nom(mv) || '') || m(mv.ref));
+    const ms = DB.movimientos.filter(mv => m(nombreItem(mv.item_id)) || m(mv.ref));
     t.innerHTML = `<thead><tr><th>Fecha</th><th>Tipo</th><th>Ítem</th><th class="r">Cantidad</th><th class="hide-m">Referencia</th></tr></thead><tbody>` +
-      (ms.length ? ms.slice(0, 200).map(mv => `<tr style="${mv.estado !== 'activo' ? 'opacity:.5;text-decoration:line-through' : ''}"><td>${fechaCorta(mv.fecha)}</td><td>${tipos[mv.tipo] || esc(mv.tipo)}</td><td>${esc(nom(mv) || '—')}${mv.nota ? `<div class="sub">${esc(mv.nota)}</div>` : ''}</td><td class="r ${mv.cantidad < 0 ? 'bad-t' : 'ok-t'}">${mv.cantidad > 0 ? '+' : ''}${qty(mv.cantidad)} ${esc(uni(mv))}</td><td class="hide-m muted">${esc(mv.ref)}</td></tr>`).join('')
+      (ms.length ? ms.slice(0, 200).map(mv => `<tr style="${mv.estado !== 'activo' ? 'opacity:.5;text-decoration:line-through' : ''}"><td>${fechaCorta(mv.fecha)}</td><td>${tipos[mv.tipo] || esc(mv.tipo)}</td><td>${esc(nombreItem(mv.item_id))}${mv.nota ? `<div class="sub">${esc(mv.nota)}</div>` : ''}</td><td class="r ${mv.cantidad < 0 ? 'bad-t' : 'ok-t'}">${mv.cantidad > 0 ? '+' : ''}${qty(mv.cantidad)} ${esc(uni(mv))}</td><td class="hide-m muted">${esc(mv.ref)}</td></tr>`).join('')
         : `<tr><td colspan="5"><div class="empty">Sin movimientos.</div></td></tr>`) + '</tbody>';
     $('invNote').textContent = 'Últimos movimientos. Los tachados corresponden a registros anulados.';
   }
@@ -751,7 +902,9 @@ function abrirAjuste(tipo, id) {
   const u = tipo === 'producto' ? 'u' : it.unidad;
   $('ajTipo').value = tipo; $('ajId').value = id; $('ajNom').textContent = it.nombre;
   $('ajAct').textContent = qty(stockDe(id)) + ' ' + u; $('ajConteo').value = ''; $('ajDiff').textContent = '';
-  $('ajNota').value = DB.movimientos.some(m => m.item_id === id) ? 'Conteo físico' : 'Carga inicial';
+  const motivos = lista('motivo_ajuste');
+  const def = DB.movimientos.some(m => m.item_id === id) ? 'Conteo físico' : 'Carga inicial';
+  llenarSelect($('ajNota'), motivos, motivos.includes(def) ? def : motivos[0]);
   $('ajConteo').oninput = () => { const d = parseNum($('ajConteo').value) - stockDe(id); $('ajDiff').textContent = $('ajConteo').value === '' ? '' : d === 0 ? 'Sin diferencia.' : `Se registrará un ajuste de ${d > 0 ? '+' : ''}${qty(d)} ${u}.`; };
   openM('mAj'); setTimeout(() => $('ajConteo').focus(), 50);
 }
@@ -762,48 +915,112 @@ $('ajSave').addEventListener('click', async () => {
 });
 
 // ───────────── Insumos ─────────────
-$('iChips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; UI.iFiltro = b.dataset.f; [...$('iChips').children].forEach(x => x.classList.toggle('on', x === b)); renderInsumos(); });
+$('iChips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; UI.iFiltro = b.dataset.f; renderInsumos(); });
 $('iQ').addEventListener('input', renderInsumos);
 
 function renderInsumos() {
+  const tipos = lista('tipo_insumo').filter(t => DB.insumos.some(i => i.estado === 'activo' && i.tipo === t));
+  const chips = [['todos', 'Todos'], ...tipos.map(t => ['t:' + t, t]), ...(DB.insumos.some(esElab) ? [['elab', 'Elaborados']] : []), ['arch', 'Archivados']];
+  if (!chips.some(c => c[0] === UI.iFiltro)) UI.iFiltro = 'todos';
+  $('iChips').innerHTML = chips.map(([v, t]) => `<button class="chip ${UI.iFiltro === v ? 'on' : ''}" data-f="${esc(v)}">${esc(t)}</button>`).join('');
   const q = $('iQ').value.toLowerCase().trim(), f = UI.iFiltro;
   const is = DB.insumos.filter(i => (f === 'arch' ? i.estado === 'archivado' : i.estado === 'activo') &&
-    (f !== 'mp' || i.tipo === 'Materia prima') && (f !== 'env' || i.tipo === 'Envase' || i.tipo === 'Etiqueta') &&
+    (!f.startsWith('t:') || i.tipo === f.slice(2)) && (f !== 'elab' || esElab(i)) &&
     (!q || i.nombre.toLowerCase().includes(q))).sort((a, b) => a.nombre.localeCompare(b.nombre));
-  $('tIns').innerHTML = is.length ? is.map(i => { const s = stockDe(i.id), low = Number(i.stock_min) > 0 && s < Number(i.stock_min);
-    return `<tr class="click" onclick="abrirInsumo('${i.id}')"><td><div class="bold">${esc(i.nombre)}</div><div class="sub">${esc(i.tipo)} · ${esc(i.unidad)}${i.formato ? ' · ' + esc(i.formato) + ' ' + qty(i.formato_cant) + ' ' + esc(i.unidad) : ''}${i.proveedor ? ' · ' + esc(i.proveedor) : ''}</div></td>
-    <td class="r ${s < 0 ? 'bad-t' : low ? 'warn-t' : ''}">${qty(s)} ${esc(i.unidad)}</td><td class="r muted hide-m">${qty(i.stock_min)}</td><td class="r">${clpU(i.costo_unit)} / ${esc(i.unidad)}${porMil(i, i.costo_unit) ? `<div class="sub">${porMil(i, i.costo_unit)}</div>` : ''}</td><td class="r muted hide-m">${fechaCorta(i.ultima_compra)}</td></tr>`; }).join('')
+  $('tIns').innerHTML = is.length ? is.map(i => { const s = stockDe(i.id), low = Number(i.stock_min) > 0 && s < Number(i.stock_min), cu = costoIns(i), ef = enFormato(i.id, s), pf = principalDe(i.id);
+    return `<tr class="click" onclick="abrirInsumo('${i.id}')"><td><div class="bold">${esc(i.nombre)}${esElab(i) ? ' <span class="tag ok">elaborado</span>' : ''}</div><div class="sub">${esc(i.tipo)} · ${esc(i.unidad)}${pf ? ' · ' + esc(pf.nombre) + ' ' + qty(pf.cantidad) + ' ' + esc(i.unidad) : ''}${fmtsDe(i.id).length > 1 ? ' (+' + (fmtsDe(i.id).length - 1) + ')' : ''}${i.proveedor ? ' · ' + esc(i.proveedor) : ''}</div></td>
+    <td class="r ${s < 0 ? 'bad-t' : low ? 'warn-t' : ''}">${qty(s)} ${esc(i.unidad)}${ef ? `<div class="sub">${esc(ef)}</div>` : ''}</td><td class="r muted hide-m">${qty(i.stock_min)}</td><td class="r">${clpU(cu)} / ${esc(i.unidad)}${porMil(i, cu) ? `<div class="sub">${porMil(i, cu)}</div>` : ''}</td><td class="r muted hide-m">${fechaCorta(i.ultima_compra)}</td></tr>`; }).join('')
     : `<tr><td colspan="5"><div class="empty">${f === 'arch' ? 'No hay insumos archivados.' : DB.insumos.length ? 'Sin resultados.' : 'Crea tu primer insumo con «+ Nuevo insumo».'}</div></td></tr>`;
 }
 
+// Modal de insumo
 function abrirInsumo(id) {
   const i = id ? insumo(id) : null;
   $('mInsT').textContent = i ? 'Editar insumo' : 'Nuevo insumo';
-  $('insId').value = i ? i.id : ''; $('insNom').value = i ? i.nombre : ''; $('insTipo').value = i ? i.tipo : 'Materia prima';
-  $('insUni').value = i ? i.unidad : 'g'; $('insMin').value = i && i.stock_min ? qty(i.stock_min) : ''; $('insCosto').value = i && i.costo_unit ? String(i.costo_unit).replace('.', ',') : '';
+  $('insId').value = i ? i.id : ''; $('insNom').value = i ? i.nombre : '';
+  llenarSelect($('insTipo'), lista('tipo_insumo'), i ? i.tipo : lista('tipo_insumo')[0]);
+  llenarSelect($('insUni'), lista('unidad'), i ? i.unidad : 'g', u => UNI_TXT[u] || u);
+  $('insCosto').value = i && i.costo_unit ? numIn(i.costo_unit) : '';
   $('insProv').value = i ? i.proveedor : '';
-  $('insFmt').value = i ? (i.formato || '') : ''; $('insFmtC').value = i && i.formato_cant ? qty(i.formato_cant) : '';
-  insUniSync();
+  UI.insFmts = i ? fmtsDe(i.id).map(f => ({ nombre: f.nombre, cantidad: f.cantidad, principal: f.principal === 'si' })) : [];
   const tieneMov = i && DB.movimientos.some(m => m.item_id === i.id);
   $('insUni').disabled = !!tieneMov;
-  $('insNota').textContent = i && i.ultima_compra ? `Costo tomado de la última compra (${fechaCorta(i.ultima_compra)}). Si lo cambias aquí, la próxima compra lo vuelve a actualizar.` : 'El costo se actualiza solo con cada compra que registres. Úsalo aquí para el costo inicial.';
+  const conEntradas = i && i.ultima_compra;
+  $('insCosto').disabled = !!conEntradas;
+  $('insNota').textContent = conEntradas ? `Costo calculado por el sistema (${(DB.config.metodo_costo === 'promedio') ? 'costo promedio' : 'última entrada'}, ${fechaCorta(i.ultima_compra)}). Cambia solo con compras o producción.` : 'El costo se calcula solo al registrar la primera compra. Llénalo aquí solo si quieres dar un costo inicial.';
+  $('insElab').checked = esElab(i);
+  $('insRinde').value = i && i.rinde_lote ? numIn(i.rinde_lote) : '';
+  RE.ins.lines = i ? recetaDe(i.id).map(r => ({ ...r })) : [];
+  RE.ins.self = i ? i.id : null;
+  if (!RE.ins.lines.length) RE.ins.lines.push({ tipo: 'insumo', ref: '', cantidad: '' });
   $('insDel').classList.toggle('hidden', !i || i.estado === 'archivado');
   $('insRest').classList.toggle('hidden', !i || i.estado !== 'archivado');
+  insUniSync(); renderInsFmts(); insElabSync();
+  $('insMin').value = i && i.stock_min ? qty(i.stock_min) : ''; $('insMinU').value = '1';
+  renderInsHist(i);
   openM('mIns'); setTimeout(() => $('insNom').focus(), 50);
 }
 $('iNuevo').addEventListener('click', () => abrirInsumo());
-function insUniSync() { const u = $('insUni').value; $('insFmtU').textContent = u; $('insCostoU').textContent = u; }
+function insUniSync() {
+  const u = $('insUni').value;
+  $('insCostoU').textContent = u; $('insRindeU').textContent = u;
+  document.querySelectorAll('#insFmts .unitw span').forEach(s => s.textContent = u);
+  const pf = UI.insFmts.find(f => f.principal) || UI.insFmts[0];
+  const cur = $('insMinU').value;
+  $('insMinU').innerHTML = `<option value="1">${esc(u)}</option>` + (pf && pf.cantidad > 0 && pf.nombre ? `<option value="${pf.cantidad}">${esc(plural(pf.nombre))}</option>` : '');
+  if ([...$('insMinU').options].some(o => o.value === cur)) $('insMinU').value = cur;
+  recCalc('ins');
+}
 $('insUni').addEventListener('change', insUniSync);
+function renderInsFmts() {
+  const u = $('insUni').value;
+  $('insFmts').innerHTML = UI.insFmts.map((f, k) => `<div class="fmtrow">
+    <input class="in" aria-label="Nombre del formato" placeholder="Ej: Bolsa" value="${esc(f.nombre)}" oninput="fmtSet(${k},'nombre',this.value)">
+    <div class="unitw"><input class="in r" aria-label="Contenido" inputmode="decimal" placeholder="250" value="${numIn(f.cantidad)}" oninput="fmtSet(${k},'cantidad',this.value)"><span>${esc(u)}</span></div>
+    <label><input type="radio" name="fmtPr" ${f.principal ? 'checked' : ''} onchange="fmtPr(${k})"> principal</label>
+    <button class="xbtn" aria-label="Quitar formato" onclick="fmtDel(${k})">×</button></div>`).join('') || '<p class="note" style="margin:0 0 8px">Sin formatos. Se agregan solos al registrar compras, o aquí con «+ Formato».</p>';
+}
+function fmtSet(k, campo, v) { UI.insFmts[k][campo] = campo === 'cantidad' ? parseNum(v) : v; insUniSync(); }
+function fmtPr(k) { UI.insFmts.forEach((f, j) => f.principal = j === k); insUniSync(); }
+function fmtDel(k) { const era = UI.insFmts[k].principal; UI.insFmts.splice(k, 1); if (era && UI.insFmts[0]) UI.insFmts[0].principal = true; renderInsFmts(); insUniSync(); }
+$('insFmtAdd').addEventListener('click', () => { UI.insFmts.push({ nombre: '', cantidad: '', principal: !UI.insFmts.length }); renderInsFmts(); insUniSync(); });
+function insElabSync() { $('insElabBox').classList.toggle('hidden', !$('insElab').checked); if ($('insElab').checked) renderReceta('ins'); }
+$('insElab').addEventListener('change', insElabSync);
+$('insRinde').addEventListener('input', () => recCalc('ins'));
+
+function renderInsHist(i) {
+  const cs = i ? DB.compras.filter(c => c.insumo_id === i.id && c.estado === 'activa').slice().sort((a, b) => (a.fecha + a.creado).localeCompare(b.fecha + b.creado)) : [];
+  const ls = i ? DB.produccion.filter(l => l.item_tipo === 'insumo' && l.producto_id === i.id && l.estado === 'activa') : [];
+  $('insHistBox').classList.toggle('hidden', !cs.length && !ls.length);
+  if (!cs.length && !ls.length) return;
+  const provs = {};
+  cs.forEach(c => { if (c.proveedor) provs[c.proveedor] = c; });
+  const ref = cu => porMil(i, cu) || clpU(cu) + ' / ' + esc(i.unidad);
+  let prev = null;
+  const filas = cs.map(c => { const d = prev ? (c.costo_unit - prev) / prev : 0; prev = c.costo_unit;
+    return `<div class="ln"><span>${fechaCorta(c.fecha)} · ${esc(c.proveedor || 'sin proveedor')}${c.tipo_doc ? ' · ' + (c.tipo_doc === 'factura' ? 'factura' : 'boleta') : ''}</span><span>${ref(c.costo_unit)}${d ? ` <span class="${d > 0 ? 'up' : 'down'}">${d > 0 ? '▲' : '▼'} ${Math.abs(Math.round(d * 100))}%</span>` : ''}</span></div>`; }).reverse();
+  $('insHist').innerHTML = (Object.keys(provs).length > 1 ? `<div class="small bold muted" style="margin-bottom:4px">Último precio por proveedor</div><div class="hist" style="margin-bottom:12px">${Object.values(provs).sort((a, b) => a.costo_unit - b.costo_unit).map((c, k) => `<div class="ln"><span>${esc(c.proveedor)} · ${fechaCorta(c.fecha)}</span><span class="${k === 0 ? 'ok-t' : ''}">${ref(c.costo_unit)}</span></div>`).join('')}</div>` : '') +
+    (filas.length ? `<div class="small bold muted" style="margin-bottom:4px">Compras</div><div class="hist">${filas.slice(0, 12).join('')}</div>` : '') +
+    (ls.length ? `<div class="small bold muted" style="margin:10px 0 4px">Lotes producidos</div><div class="hist">${ls.slice(0, 8).map(l => `<div class="ln"><span>${esc(l.id)} · ${fechaCorta(l.fecha)} · ${qty(l.unidades)} ${esc(i.unidad)}</span><span>${ref(l.costo_unit)}</span></div>`).join('')}</div>` : '');
+}
+
 $('insSave').addEventListener('click', async () => {
-  const d = { id: $('insId').value, nombre: $('insNom').value.trim(), tipo: $('insTipo').value, unidad: $('insUni').value, stock_min: parseNum($('insMin').value), costo_unit: parseNum($('insCosto').value), proveedor: $('insProv').value.trim(), formato: $('insFmt').value.trim(), formato_cant: parseNum($('insFmtC').value) };
+  const elab = $('insElab').checked;
+  const d = { id: $('insId').value, nombre: $('insNom').value.trim(), tipo: $('insTipo').value, unidad: $('insUni').value, stock_min: parseNum($('insMin').value) * (Number($('insMinU').value) || 1), costo_unit: parseNum($('insCosto').value), proveedor: $('insProv').value.trim(), elaborado: elab ? 'si' : '', rinde_lote: elab ? parseNum($('insRinde').value) : '' };
   if (!d.nombre) return toast('Falta el nombre', 'err');
-  if (d.formato && d.formato_cant <= 0) return toast('Indica cuánto trae el formato', 'err');
-  const r = await write('saveInsumo', { insumo: d }, 'Insumo guardado');
+  const fmts = UI.insFmts.filter(f => String(f.nombre).trim() || f.cantidad);
+  if (fmts.some(f => !String(f.nombre).trim() || !(f.cantidad > 0))) return toast('Cada formato necesita nombre y contenido', 'err');
+  let receta = [];
+  if (elab) {
+    if (!(d.rinde_lote > 0)) return toast('Indica cuánto rinde un lote', 'err');
+    receta = recetaValida('ins'); if (!receta) return;
+  }
+  const r = await write('saveInsumo', { insumo: d, formatos: fmts, receta }, 'Insumo guardado');
   if (r) closeM('mIns');
 });
 $('insDel').addEventListener('click', async () => {
   const i = insumo($('insId').value);
-  const enRec = DB.recetas.filter(r => r.tipo === 'insumo' && r.ref === i.id).map(r => producto(r.producto_id)?.nombre).filter(Boolean);
+  const enRec = DB.recetas.filter(r => r.tipo === 'insumo' && r.ref === i.id).map(r => nombreItem(r.producto_id)).filter(Boolean);
   const conHist = enRec.length || DB.movimientos.some(m => m.item_id === i.id);
   const txt = conHist ? `«${i.nombre}» tiene historial${enRec.length ? ' y se usa en: ' + [...new Set(enRec)].join(', ') : ''}.\nSe archivará: deja de aparecer en las listas, pero el historial y los costos pasados quedan intactos.` : `«${i.nombre}» no tiene historial y se eliminará definitivamente.`;
   if (!await confirmar(conHist ? 'Archivar insumo' : 'Eliminar insumo', txt, conHist ? 'Archivar' : 'Eliminar', true)) return;
@@ -826,10 +1043,18 @@ function onComIns() {
   const i = insumo($('comIns').value);
   $('comUni').textContent = i ? i.unidad : '';
   $('comProv').value = i ? i.proveedor : '';
-  $('comFmt').value = i && i.formato ? i.formato : '';
-  $('comFmtC').value = i && i.formato_cant ? qty(i.formato_cant) : '';
+  const fs = i ? fmtsDe(i.id) : [];
+  $('comFmts').innerHTML = fs.length ? fs.map((f, k) => `<button type="button" class="chip" data-k="${k}">${esc(f.nombre)} ${qty(f.cantidad)} ${esc(i.unidad)}</button>`).join('') + '<button type="button" class="chip" data-k="otro">Otro</button>' : '';
+  elegirFmt(fs.length ? 0 : 'otro');
+}
+function elegirFmt(k) {
+  const i = insumo($('comIns').value), fs = i ? fmtsDe(i.id) : [], f = fs[k];
+  [...$('comFmts').children].forEach(b => b.classList.toggle('on', b.dataset.k === String(k)));
+  $('comFmt').value = f ? f.nombre : ''; $('comFmtC').value = f ? qty(f.cantidad) : '';
+  if (k === 'otro' && fs.length) setTimeout(() => $('comFmt').focus(), 30);
   compraPrev();
 }
+$('comFmts').addEventListener('click', e => { const b = e.target.closest('.chip'); if (b) elegirFmt(b.dataset.k === 'otro' ? 'otro' : Number(b.dataset.k)); });
 function setDocT(v) { UI.comDocT = v; [...$('comDocT').children].forEach(b => b.classList.toggle('on', b.dataset.v === v)); compraPrev(); }
 $('comDocT').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setDocT(b.dataset.v); });
 $('comIns').addEventListener('change', onComIns);
@@ -842,18 +1067,21 @@ function compraCalc() {
 }
 function compraPrev() {
   const { i, cant, pagado, costo, cu } = compraCalc(); if (!i) return;
-  const ant = Number(i.costo_unit) || 0;
+  const ant = Number(i.costo_unit) || 0, s0 = Math.max(0, stockDe(i.id));
+  const prom = DB.config.metodo_costo === 'promedio';
+  const nuevo = prom && s0 > 0 && ant > 0 && cant > 0 ? (s0 * ant + cant * cu) / (s0 + cant) : cu;
   const afect = DB.productos.filter(p => p.estado === 'activo' && recetaDe(p.id).some(r => r.tipo === 'insumo' && r.ref === i.id));
   let impacto = '';
-  if (cu > 0 && afect.length && Math.abs(cu - ant) > 0.001) {
-    const p = afect[0], r = recetaDe(p.id).find(x => x.ref === i.id), d = (cu - ant) * r.cantidad / (Number(p.rinde_lote) || 1);
+  if (nuevo > 0 && afect.length && Math.abs(nuevo - ant) > 0.001) {
+    const p = afect[0], r = recetaDe(p.id).find(x => x.ref === i.id), d = (nuevo - ant) * r.cantidad / (Number(p.rinde_lote) || 1);
     impacto = `<p class="note" style="margin:8px 0 0">Cambia el costo de ${afect.length} receta(s). ${esc(p.nombre)} ${d > 0 ? 'sube' : 'baja'} ${clpU(Math.abs(d))} por unidad.</p>`;
   }
   $('comPrev').innerHTML = `<div class="ln"><span>Entra a bodega</span><b>${cant > 0 ? qty(cant) + ' ' + esc(i.unidad) : '—'}</b></div>
     ${pagado > 0 ? `<div class="ln"><span>${UI.comDocT === 'factura' ? 'Costo (sin IVA recuperable)' : 'Costo (todo lo pagado)'}</span><span>${clp(costo)}</span></div>` : ''}
     ${pagado > 0 && UI.comDocT === 'factura' ? `<div class="ln"><span class="muted">IVA crédito fiscal</span><span class="muted">${clp(pagado - costo)}</span></div>` : ''}
-    <div class="ln tot"><span>Costo nuevo</span><span>${cu > 0 ? clpU(cu) + ' / ' + esc(i.unidad) : '—'}</span></div>
+    <div class="ln tot"><span>Costo de esta compra</span><span>${cu > 0 ? clpU(cu) + ' / ' + esc(i.unidad) : '—'}</span></div>
     ${porMil(i, cu) ? `<div class="ln"><span class="muted">Equivale a</span><span class="muted">${porMil(i, cu)}</span></div>` : ''}
+    ${prom && cu > 0 ? `<div class="ln"><span>Costo promedio nuevo</span><b>${clpU(nuevo)} / ${esc(i.unidad)}</b></div>` : ''}
     <div class="ln"><span>Costo anterior</span><span>${ant ? clpU(ant) + ' / ' + esc(i.unidad) : '—'}</span></div>
     <div class="ln"><span>Stock después</span><span>${qty(stockDe(i.id) + cant)} ${esc(i.unidad)}</span></div>${impacto}`;
 }
@@ -869,21 +1097,110 @@ $('comSave').addEventListener('click', async () => {
 $('iCompra').addEventListener('click', () => abrirCompra());
 $('qCompra').addEventListener('click', () => abrirCompra());
 
-function renderCompras() {
-  const cs = DB.compras;
-  $('tCompras').innerHTML = cs.length ? cs.slice(0, 50).map(c => { const i = insumo(c.insumo_id) || {};
-    return `<tr style="${c.estado === 'anulada' ? 'opacity:.55' : ''}"><td class="bold nw">${esc(c.id)}</td><td class="nw">${fechaCorta(c.fecha)}</td><td>${esc(i.nombre || '—')}<div class="sub">${[c.formatos ? qty(c.formatos) + ' × ' + (esc(c.formato) || 'formato') + ' ' + qty(c.formato_cant) + ' ' + esc(i.unidad || '') : '', c.tipo_doc === 'factura' ? 'Factura' : c.tipo_doc ? 'Boleta / sin doc.' : '', c.documento ? 'N° ' + esc(c.documento) : '', esc(c.proveedor)].filter(Boolean).join(' · ')}</div></td>
-    <td class="r">${qty(c.cantidad)} ${esc(i.unidad || '')}</td><td class="r">${clp(pagadoDe(c))}</td><td class="r hide-m">${clpU(c.costo_unit)}</td>
-    <td class="r">${c.estado === 'anulada' ? '<span class="tag bad">anulada</span>' : `<button class="lnk danger" onclick="anularCompra('${c.id}')">Anular</button>`}</td></tr>`; }).join('')
-    : `<tr><td colspan="7"><div class="empty">Sin compras registradas.</div></td></tr>`;
+// Historial de compras
+function renderHcFiltros() {
+  if (!$('hcDesde').value && !$('hcHasta').dataset.init) { $('hcDesde').value = mesActual() + '-01'; $('hcHasta').dataset.init = '1'; }
+  const ins = $('hcIns').value, prov = $('hcProv').value;
+  $('hcIns').innerHTML = '<option value="">Todos</option>' + [...new Set(DB.compras.map(c => c.insumo_id))].map(id => [id, insumo(id)?.nombre || id]).sort((a, b) => a[1].localeCompare(b[1])).map(([id, n]) => `<option value="${id}">${esc(n)}</option>`).join('');
+  $('hcProv').innerHTML = '<option value="">Todos</option>' + [...new Set(DB.compras.map(c => c.proveedor).filter(Boolean))].sort().map(p => `<option value="${esc(p)}">${esc(p)}</option>`).join('');
+  $('hcIns').value = ins; $('hcProv').value = prov;
 }
+['hcDesde', 'hcHasta', 'hcIns', 'hcProv', 'hcDoc'].forEach(id => $(id).addEventListener('input', renderCompras));
+function comprasFiltradas() {
+  const de = $('hcDesde').value, ha = $('hcHasta').value, ins = $('hcIns').value, prov = $('hcProv').value, doc = $('hcDoc').value;
+  return DB.compras.filter(c => (!de || c.fecha >= de) && (!ha || c.fecha <= ha) && (!ins || c.insumo_id === ins) && (!prov || c.proveedor === prov) && (!doc || (c.tipo_doc || 'boleta') === doc));
+}
+function renderCompras() {
+  const cs = comprasFiltradas(), act = cs.filter(c => c.estado === 'activa');
+  const pag = act.reduce((s, c) => s + pagadoDe(c), 0), cost = act.reduce((s, c) => s + (Number(c.total_neto) || 0), 0);
+  const ivaCf = act.filter(c => c.tipo_doc === 'factura').reduce((s, c) => s + pagadoDe(c) - (Number(c.total_neto) || 0), 0);
+  $('hcTot').innerHTML = `<div class="card kpi" style="padding:14px"><div class="lbl">Compras</div><div class="val" style="font-size:20px">${act.length}</div></div>
+    <div class="card kpi" style="padding:14px"><div class="lbl">Total pagado</div><div class="val" style="font-size:20px">${clp(pag)}</div></div>
+    <div class="card kpi" style="padding:14px"><div class="lbl">Costo para productos</div><div class="val" style="font-size:20px">${clp(cost)}</div></div>
+    <div class="card kpi" style="padding:14px"><div class="lbl">IVA crédito fiscal</div><div class="val" style="font-size:20px">${clp(ivaCf)}</div></div>`;
+  $('tCompras').innerHTML = cs.length ? cs.slice(0, 200).map(c => { const i = insumo(c.insumo_id) || {};
+    return `<tr style="${c.estado === 'anulada' ? 'opacity:.55' : ''}"><td class="bold nw">${esc(c.id)}</td><td class="nw">${fechaCorta(c.fecha)}</td><td>${esc(i.nombre || '—')}<div class="sub">${[c.formatos ? qty(c.formatos) + ' × ' + (esc(c.formato) || 'formato') + ' ' + qty(c.formato_cant) + ' ' + esc(i.unidad || '') : '', c.tipo_doc === 'factura' ? 'Factura' : c.tipo_doc ? 'Boleta / sin doc.' : '', c.documento ? 'N° ' + esc(c.documento) : '', esc(c.proveedor)].filter(Boolean).join(' · ')}</div></td>
+    <td class="r">${qty(c.cantidad)} ${esc(i.unidad || '')}</td><td class="r">${clp(pagadoDe(c))}</td><td class="r hide-m">${clpU(c.costo_unit)}${porMil(i, c.costo_unit) ? `<div class="sub">${porMil(i, c.costo_unit)}</div>` : ''}</td>
+    <td class="r">${c.estado === 'anulada' ? '<span class="tag bad">anulada</span>' : `<button class="lnk danger" onclick="anularCompra('${c.id}')">Anular</button>`}</td></tr>`; }).join('')
+    : `<tr><td colspan="7"><div class="empty">Sin compras en este filtro.</div></td></tr>`;
+  $('hcNote').textContent = cs.length > 200 ? `Mostrando 200 de ${cs.length}. Usa los filtros o descarga el CSV para ver todas.` : 'Las anuladas se muestran atenuadas y no suman en los totales.';
+}
+$('hcCsv').addEventListener('click', () => {
+  const cs = comprasFiltradas();
+  const cols = ['N°', 'Fecha', 'Insumo', 'Cantidad', 'Unidad', 'Formato', 'Documento', 'N° documento', 'Proveedor', 'Total pagado', 'Costo', 'IVA crédito fiscal', 'Costo unitario', 'Estado'];
+  const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+  const filas = cs.map(c => { const i = insumo(c.insumo_id) || {}, iva = c.tipo_doc === 'factura' ? pagadoDe(c) - (Number(c.total_neto) || 0) : 0;
+    return [c.id, c.fecha, i.nombre, String(c.cantidad).replace('.', ','), i.unidad, c.formatos ? c.formatos + ' × ' + c.formato + ' ' + c.formato_cant : '', c.tipo_doc === 'factura' ? 'Factura' : 'Boleta / sin doc.', c.documento, c.proveedor, pagadoDe(c), c.total_neto, iva, String(c.costo_unit).replace('.', ','), c.estado].map(q).join(';'); });
+  const blob = new Blob(['﻿' + cols.map(q).join(';') + '\n' + filas.join('\n')], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `compras_${$('hcDesde').value || 'inicio'}_${$('hcHasta').value || hoy()}.csv`; document.body.appendChild(a); a.click(); a.remove();
+});
 async function anularCompra(id) {
   const c = DB.compras.find(x => x.id === id), i = insumo(c.insumo_id) || {};
-  if (!await confirmar('Anular compra ' + id, `Se restarán ${qty(c.cantidad)} ${i.unidad || ''} de ${i.nombre || 'insumo'} del stock y el costo volverá al de la compra anterior.`, 'Anular compra', true)) return;
+  if (!await confirmar('Anular compra ' + id, `Se restarán ${qty(c.cantidad)} ${i.unidad || ''} de ${i.nombre || 'insumo'} del stock y el costo se recalculará sin esta compra.`, 'Anular compra', true)) return;
   write('anularCompra', { id }, 'Compra anulada');
 }
 
-// ───────────── Productos y recetas ─────────────
+// ───────────── Editor de recetas (productos e insumos elaborados) ─────────────
+const RE = {
+  prd: { lines: [], el: 'recLines', res: 'recRes', rinde: 'prdRinde', mg: true, self: null },
+  ins: { lines: [], el: 'insRecLines', res: 'insRecRes', rinde: 'insRinde', mg: false, self: null }
+};
+function renderReceta(key) {
+  const R = RE[key];
+  const opts = DB.insumos.filter(i => i.estado === 'activo' && i.id !== R.self).sort((a, b) => a.nombre.localeCompare(b.nombre));
+  $(R.el).innerHTML = R.lines.map((l, k) => {
+    if (l.tipo === 'extra') return `<div class="rline"><input class="in" aria-label="Descripción del costo extra" placeholder="Ej: mano de obra, serigrafía, gas" value="${esc(l.ref)}" oninput="recSet('${key}',${k},'ref',this.value)">
+      <input class="in r" aria-label="Costo por lote" inputmode="numeric" placeholder="$ por lote" value="${l.costo ? Math.round(l.costo).toLocaleString('es-CL') : ''}" oninput="recSet('${key}',${k},'costo',this.value)">
+      <div class="cost" id="rc${key}${k}"></div><button class="xbtn" aria-label="Quitar" onclick="recDel('${key}',${k})">×</button></div>`;
+    const i = insumo(l.ref), arch = i && i.estado === 'archivado';
+    return `<div class="rline"><select class="in" aria-label="Insumo" onchange="recSet('${key}',${k},'ref',this.value)"><option value="">Elegir insumo…</option>${opts.map(o => `<option value="${o.id}" ${o.id === l.ref ? 'selected' : ''}>${esc(o.nombre)}${esElab(o) ? ' (elaborado)' : ''}</option>`).join('')}${arch ? `<option value="${i.id}" selected>${esc(i.nombre)} (archivado)</option>` : ''}</select>
+      <div class="unit"><input class="in r" aria-label="Cantidad por lote" inputmode="decimal" value="${l.cantidad !== '' && l.cantidad != null ? numIn(l.cantidad) : ''}" oninput="recSet('${key}',${k},'cantidad',this.value)"><span>${esc(i ? i.unidad : '')}</span></div>
+      <div class="cost" id="rc${key}${k}"></div><button class="xbtn" aria-label="Quitar" onclick="recDel('${key}',${k})">×</button></div>`;
+  }).join('') || '<div class="empty">Sin insumos. Agrega el primero.</div>';
+  recCalc(key);
+}
+function recSet(key, k, campo, v) {
+  const l = RE[key].lines[k];
+  l[campo] = campo === 'ref' ? v : parseNum(v);
+  if (campo === 'ref' && l.tipo === 'insumo') renderReceta(key); else recCalc(key);
+}
+function recDel(key, k) { RE[key].lines.splice(k, 1); renderReceta(key); }
+$('recAddI').addEventListener('click', () => { RE.prd.lines.push({ tipo: 'insumo', ref: '', cantidad: '' }); renderReceta('prd'); });
+$('recAddE').addEventListener('click', () => { RE.prd.lines.push({ tipo: 'extra', ref: '', costo: '' }); renderReceta('prd'); });
+$('insRecAddI').addEventListener('click', () => { RE.ins.lines.push({ tipo: 'insumo', ref: '', cantidad: '' }); renderReceta('ins'); });
+$('insRecAddE').addEventListener('click', () => { RE.ins.lines.push({ tipo: 'extra', ref: '', costo: '' }); renderReceta('ins'); });
+['prdRinde', 'prdPP', 'prdPD', 'prdPC'].forEach(id => $(id).addEventListener('input', () => recCalc('prd')));
+
+function recCalc(key) {
+  const R = RE[key];
+  if (!$(R.res)) return;
+  const rinde = parseNum($(R.rinde).value);
+  R.lines.forEach((l, k) => {
+    const el = $('rc' + key + k); if (!el) return;
+    if (l.tipo === 'extra') el.textContent = clp(l.costo);
+    else { const i = insumo(l.ref); el.textContent = i ? clp((Number(l.cantidad) || 0) * costoIns(i)) : ''; }
+  });
+  const c = costoReceta(R.lines, rinde);
+  const u = key === 'ins' ? $('insUni').value : 'unidad';
+  const sinCosto = R.lines.filter(l => l.tipo === 'insumo' && l.ref && !(costoIns(insumo(l.ref)) > 0)).map(l => insumo(l.ref)?.nombre);
+  $(R.res).innerHTML = `<div class="ln"><span>Costo del lote</span><span>${clp(c.lote)}</span></div><div class="ln tot"><span>Costo por ${esc(u)}</span><span>${rinde > 0 ? clpU(c.unit) : 'Indica el rendimiento'}</span></div>
+    ${sinCosto.length ? `<p class="note warn-t" style="margin:8px 0 0">Sin costo: ${sinCosto.map(esc).join(', ')}. Registra una compra o ingresa su costo en Insumos.</p>` : ''}`;
+  if (R.mg) {
+    const p = { precio_publico: parseNum($('prdPP').value), precio_directo: parseNum($('prdPD').value), precio_consig: parseNum($('prdPC').value) };
+    $('recMg').innerHTML = rinde > 0 ? '<div class="small bold muted" style="margin-bottom:4px">Margen por canal (sobre precio neto)</div>' + margenes(p, c.unit).map(([n, m]) =>
+      `<div class="mg"><span>${n}</span><div class="bar"><i style="width:${isFinite(m) ? Math.max(0, Math.min(100, m * 100)) : 0}%"></i></div><span class="right ${isFinite(m) && m < 0 ? 'bad-t' : 'bold'}">${pct(m)}</span></div>`).join('') : '';
+  }
+}
+/** Devuelve las líneas válidas, o null si hay un problema (y avisa). */
+function recetaValida(key) {
+  const L = RE[key].lines;
+  const ok = L.filter(l => (l.tipo === 'insumo' && l.ref && Number(l.cantidad) > 0) || (l.tipo === 'extra' && String(l.ref).trim() && Number(l.costo) > 0));
+  const refs = ok.filter(l => l.tipo === 'insumo').map(l => l.ref);
+  if (new Set(refs).size !== refs.length) { toast('Hay un insumo repetido en la receta', 'err'); return null; }
+  return ok;
+}
+
+// ───────────── Productos ─────────────
 $('prChips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; UI.prFiltro = b.dataset.f; [...$('prChips').children].forEach(x => x.classList.toggle('on', x === b)); renderProductos(); });
 $('prQ').addEventListener('input', renderProductos);
 
@@ -909,63 +1226,35 @@ function abrirProducto(id) {
   $('prdRinde').value = p ? qty(p.rinde_lote) : ''; $('prdMin').value = p && p.stock_min ? qty(p.stock_min) : '';
   const fm = v => v ? Math.round(v).toLocaleString('es-CL') : '';
   $('prdPP').value = p ? fm(p.precio_publico) : ''; $('prdPD').value = p ? fm(p.precio_directo) : ''; $('prdPC').value = p ? fm(p.precio_consig) : '';
-  $('catList').innerHTML = [...new Set(DB.productos.map(x => x.categoria).filter(Boolean))].map(c => `<option value="${esc(c)}">`).join('');
-  UI.receta = p ? recetaDe(p.id).map(r => ({ ...r })) : [];
-  if (!UI.receta.length) UI.receta.push({ tipo: 'insumo', ref: '', cantidad: '' });
+  $('catList').innerHTML = lista('categoria').map(c => `<option value="${esc(c)}">`).join('');
+  $('recMet').textContent = metodoTxt();
+  RE.prd.lines = p ? recetaDe(p.id).map(r => ({ ...r })) : [];
+  if (!RE.prd.lines.length) RE.prd.lines.push({ tipo: 'insumo', ref: '', cantidad: '' });
   $('prdDel').classList.toggle('hidden', !p || p.estado === 'archivado');
   $('prdRest').classList.toggle('hidden', !p || p.estado !== 'archivado');
-  renderReceta(); openM('mPrd');
+  renderPrdHist(p);
+  renderReceta('prd'); openM('mPrd');
 }
 $('prNuevo').addEventListener('click', () => abrirProducto());
 
-function renderReceta() {
-  const opts = DB.insumos.filter(i => i.estado === 'activo').sort((a, b) => a.nombre.localeCompare(b.nombre));
-  $('recLines').innerHTML = UI.receta.map((l, k) => {
-    if (l.tipo === 'extra') return `<div class="rline"><input class="in" aria-label="Descripción del costo extra" placeholder="Ej: mano de obra, energía" value="${esc(l.ref)}" oninput="recSet(${k},'ref',this.value)">
-      <input class="in r" aria-label="Costo por lote" inputmode="numeric" placeholder="$ por lote" value="${l.costo ? Math.round(l.costo).toLocaleString('es-CL') : ''}" oninput="recSet(${k},'costo',this.value)">
-      <div class="cost" id="rc${k}"></div><button class="xbtn" aria-label="Quitar" onclick="recDel(${k})">×</button></div>`;
-    const i = insumo(l.ref), arch = i && i.estado === 'archivado';
-    return `<div class="rline"><select class="in" aria-label="Insumo" onchange="recSet(${k},'ref',this.value)"><option value="">Elegir insumo…</option>${opts.map(o => `<option value="${o.id}" ${o.id === l.ref ? 'selected' : ''}>${esc(o.nombre)}</option>`).join('')}${arch ? `<option value="${i.id}" selected>${esc(i.nombre)} (archivado)</option>` : ''}</select>
-      <div class="unit"><input class="in r" aria-label="Cantidad por lote" inputmode="decimal" value="${l.cantidad !== '' && l.cantidad != null ? String(l.cantidad).replace('.', ',') : ''}" oninput="recSet(${k},'cantidad',this.value)"><span>${esc(i ? i.unidad : '')}</span></div>
-      <div class="cost" id="rc${k}"></div><button class="xbtn" aria-label="Quitar" onclick="recDel(${k})">×</button></div>`;
-  }).join('') || '<div class="empty">Sin insumos. Agrega el primero.</div>';
-  recCalc();
-}
-function recSet(k, campo, v) {
-  const l = UI.receta[k];
-  l[campo] = campo === 'ref' ? v : parseNum(v);
-  if (campo === 'ref' && l.tipo === 'insumo') renderReceta(); else recCalc();
-}
-function recDel(k) { UI.receta.splice(k, 1); renderReceta(); }
-$('recAddI').addEventListener('click', () => { UI.receta.push({ tipo: 'insumo', ref: '', cantidad: '' }); renderReceta(); });
-$('recAddE').addEventListener('click', () => { UI.receta.push({ tipo: 'extra', ref: '', costo: '' }); renderReceta(); });
-['prdRinde', 'prdPP', 'prdPD', 'prdPC'].forEach(id => $(id).addEventListener('input', recCalc));
-
-function recCalc() {
-  const rinde = parseNum($('prdRinde').value);
-  UI.receta.forEach((l, k) => {
-    const el = $('rc' + k); if (!el) return;
-    if (l.tipo === 'extra') el.textContent = clp(l.costo);
-    else { const i = insumo(l.ref); el.textContent = i ? clp((Number(l.cantidad) || 0) * (Number(i.costo_unit) || 0)) : ''; }
-  });
-  const c = costoReceta(UI.receta, rinde);
-  const sinCosto = UI.receta.filter(l => l.tipo === 'insumo' && l.ref && !(Number(insumo(l.ref)?.costo_unit) > 0)).map(l => insumo(l.ref)?.nombre);
-  $('recRes').innerHTML = `<div class="ln"><span>Costo del lote</span><span>${clp(c.lote)}</span></div><div class="ln tot"><span>Costo por unidad</span><span>${rinde > 0 ? clpU(c.unit) : 'Indica el rendimiento'}</span></div>
-    ${sinCosto.length ? `<p class="note warn-t" style="margin:8px 0 0">Sin costo: ${sinCosto.map(esc).join(', ')}. Registra una compra o ingresa su costo en Insumos.</p>` : ''}`;
-  const p = { precio_publico: parseNum($('prdPP').value), precio_directo: parseNum($('prdPD').value), precio_consig: parseNum($('prdPC').value) };
-  $('recMg').innerHTML = rinde > 0 ? '<div class="small bold muted" style="margin-bottom:4px">Margen por canal (sobre precio neto)</div>' + margenes(p, c.unit).map(([n, m]) =>
-    `<div class="mg"><span>${n}</span><div class="bar"><i style="width:${isFinite(m) ? Math.max(0, Math.min(100, m * 100)) : 0}%"></i></div><span class="right ${isFinite(m) && m < 0 ? 'bad-t' : 'bold'}">${pct(m)}</span></div>`).join('') : '';
+function renderPrdHist(p) {
+  const hs = p ? (DB.costos_hist || []).filter(h => h.item_id === p.id).slice().sort((a, b) => (a.fecha + a.creado).localeCompare(b.fecha + b.creado)) : [];
+  const ls = p ? DB.produccion.filter(l => l.producto_id === p.id && l.estado === 'activa' && l.item_tipo !== 'insumo') : [];
+  $('prdHistBox').classList.toggle('hidden', !hs.length && !ls.length);
+  let prev = null;
+  const filas = hs.map(h => { const d = prev ? (h.costo_unit - prev) / prev : 0; prev = h.costo_unit;
+    return `<div class="ln"><span>${fechaCorta(h.fecha)} · ${esc(h.motivo)}</span><span class="nw">${clpU(h.costo_unit)}${d ? ` <span class="${d > 0 ? 'up' : 'down'}">${d > 0 ? '▲' : '▼'} ${Math.abs(Math.round(d * 100))}%</span>` : ''}</span></div>`; }).reverse();
+  $('prdHist').innerHTML = `<div><div class="small bold muted" style="margin-bottom:4px">Costo por unidad</div><div class="hist">${filas.slice(0, 12).join('') || '<div class="ln"><span class="muted">Sin cambios registrados aún.</span></div>'}</div></div>
+    <div><div class="small bold muted" style="margin-bottom:4px">Lotes producidos</div><div class="hist">${ls.slice(0, 12).map(l => `<div class="ln"><span>${esc(l.id)} · ${fechaCorta(l.fecha)} · ${qty(l.unidades)} u</span><span>${clpU(l.costo_unit)}</span></div>`).join('') || '<div class="ln"><span class="muted">Sin lotes.</span></div>'}</div></div>`;
 }
 
 $('prdSave').addEventListener('click', async () => {
   const d = { id: $('prdId').value, nombre: $('prdNom').value.trim(), categoria: $('prdCat').value.trim(), presentacion: $('prdPres').value.trim(), rinde_lote: parseNum($('prdRinde').value), stock_min: parseNum($('prdMin').value), precio_publico: parseNum($('prdPP').value), precio_directo: parseNum($('prdPD').value), precio_consig: parseNum($('prdPC').value) };
   if (!d.nombre) return toast('Falta el nombre', 'err');
   if (d.rinde_lote <= 0) return toast('Indica cuántas unidades rinde un lote', 'err');
-  const receta = UI.receta.filter(l => (l.tipo === 'insumo' && l.ref && Number(l.cantidad) > 0) || (l.tipo === 'extra' && String(l.ref).trim() && Number(l.costo) > 0));
-  const incompletas = UI.receta.length - receta.length - UI.receta.filter(l => l.tipo === 'insumo' && !l.ref && !Number(l.cantidad)).length;
+  const receta = recetaValida('prd'); if (!receta) return;
+  const incompletas = RE.prd.lines.length - receta.length - RE.prd.lines.filter(l => l.tipo === 'insumo' && !l.ref && !Number(l.cantidad)).length;
   if (incompletas > 0 && !await confirmar('Receta incompleta', `Hay ${incompletas} línea(s) sin insumo, cantidad o costo. Se guardará sin ellas.`, 'Guardar igual')) return;
-  const refs = receta.filter(l => l.tipo === 'insumo').map(l => l.ref);
-  if (new Set(refs).size !== refs.length) return toast('Hay un insumo repetido en la receta', 'err');
   const r = await write('saveProducto', { producto: d, receta }, 'Producto guardado');
   if (r) closeM('mPrd');
 });
@@ -988,12 +1277,65 @@ $('cSave').addEventListener('click', async () => {
   await sync();
   if (DB.serverTime) go('inicio');
 });
-$('mobSync').addEventListener('click', () => sync());
+
+function renderConfig() {
+  renderVersion();
+  const met = (DB.config && DB.config.metodo_costo) || 'ultima';
+  [...$('cfgMetodo').children].forEach(b => b.classList.toggle('on', b.dataset.v === met));
+  renderListas();
+}
+$('cfgMetodo').addEventListener('click', async e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const v = b.dataset.v, act = (DB.config && DB.config.metodo_costo) || 'ultima';
+  if (v === act) return;
+  const txt = v === 'promedio' ? 'El costo de cada insumo pasará a ser el promedio entre lo que hay en bodega y lo que entra. Se recalculan todos los costos ahora.' : 'El costo de cada insumo pasará a ser el de su última compra (o lote). Se recalculan todos los costos ahora.';
+  if (!await confirmar('Cambiar método de costo', txt, 'Cambiar')) return;
+  await write('setConfig', { clave: 'metodo_costo', valor: v }, 'Método de costo actualizado');
+  renderConfig();
+});
+
+const USO_LISTA = {
+  tipo_insumo: v => DB.insumos.filter(i => i.tipo === v).length,
+  unidad: v => DB.insumos.filter(i => i.unidad === v).length,
+  categoria: v => DB.productos.filter(p => p.categoria === v).length,
+  motivo_ajuste: v => DB.movimientos.filter(m => m.tipo === 'ajuste' && m.nota === v).length
+};
+const USO_TXT = { tipo_insumo: 'insumo(s)', unidad: 'insumo(s)', categoria: 'producto(s)', motivo_ajuste: 'ajuste(s)' };
+function renderListas() {
+  const L = $('lsSel').value;
+  const rows = (DB.listas || []).filter(r => r.lista === L).sort((a, b) => (Number(a.orden) || 0) - (Number(b.orden) || 0));
+  $('lsItems').innerHTML = rows.length ? rows.map(r => { const n = USO_LISTA[L](r.valor), oc = r.estado !== 'activo';
+    return `<div class="lrow" style="${oc ? 'opacity:.6' : ''}"><div class="v"><b>${esc(r.valor)}</b>${oc ? ' <span class="tag">oculto</span>' : ''}<div class="sub">${n ? 'Usado en ' + n + ' ' + USO_TXT[L] : 'Sin uso'}</div></div>
+      ${oc ? `<button class="lnk" data-ls="rest" data-v="${esc(r.valor)}">Restaurar</button>` : `<button class="lnk" data-ls="ren" data-v="${esc(r.valor)}">Renombrar</button><button class="lnk danger" data-ls="del" data-v="${esc(r.valor)}">${n ? 'Ocultar' : 'Eliminar'}</button>`}</div>`; }).join('')
+    : '<div class="empty">Lista vacía.</div>';
+  $('lsNote').textContent = L === 'unidad' ? 'La app no convierte entre unidades: si un insumo está en gramos, su receta y sus compras también van en gramos.' : L === 'categoria' ? 'También puedes escribir una categoría nueva al crear un producto: se agrega sola a esta lista.' : '';
+}
+$('lsSel').addEventListener('change', renderListas);
+$('lsAdd').addEventListener('click', async () => {
+  const v = $('lsNuevo').value.trim(); if (!v) return toast('Escribe un valor', 'err');
+  const r = await write('listaAdd', { lista: $('lsSel').value, valor: v }, 'Agregado'); if (r) { $('lsNuevo').value = ''; renderListas(); }
+});
+$('lsItems').addEventListener('click', async e => {
+  const b = e.target.closest('[data-ls]'); if (!b) return;
+  const L = $('lsSel').value, v = b.dataset.v, n = USO_LISTA[L](v);
+  if (b.dataset.ls === 'ren') {
+    const nuevo = await preguntar('Renombrar «' + v + '»', v, n ? `Se actualizará también en ${n} ${USO_TXT[L]}.` : '');
+    if (!nuevo || nuevo === v) return;
+    await write('listaRename', { lista: L, valor: v, nuevo }, 'Renombrado');
+  } else if (b.dataset.ls === 'del') {
+    const txt = n ? `«${v}» se usa en ${n} ${USO_TXT[L]}. Se ocultará de los selectores; esos registros la conservan.` : `«${v}» no se usa y se eliminará.`;
+    if (!await confirmar(n ? 'Ocultar valor' : 'Eliminar valor', txt, n ? 'Ocultar' : 'Eliminar', true)) return;
+    await write('listaDelete', { lista: L, valor: v }, n ? 'Ocultado' : 'Eliminado');
+  } else {
+    await write('listaRestore', { lista: L, valor: v }, 'Restaurado');
+  }
+  renderListas();
+});
 
 // ───────────── Inicio ─────────────
 (function init() {
   $('pFecha').value = hoy();
-  try { const c = JSON.parse(lsGet(LS.cache) || 'null'); if (c && c.insumos) { DB = c; setSync(false, 'Datos guardados'); } } catch (e) {}
+  try { const c = JSON.parse(lsGet(LS.cache) || 'null'); if (c && c.insumos) { DB = Object.assign({ formatos: [], listas: [], costos_hist: [], config: {} }, c); setSync(false, 'Datos guardados'); } } catch (e) {}
   go('inicio');
   renderAll();
   sync(true);

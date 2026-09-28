@@ -1,7 +1,8 @@
-# Magia Verde · App de gestión — Fase 1
+# Magia Verde · App de gestión — versión 1.2
 
-Incluye: insumos y compras (con costo por última compra), productos y recetas (costeo y márgenes en vivo),
-producción (descuenta insumos y suma producto), inventario con ajustes y movimientos.
+Incluye: insumos (con varios formatos de compra e insumos elaborados), compras con historial y totales,
+productos y recetas (costeo, márgenes e historial de costo), producción, inventario con ajustes,
+listas editables y método de costo configurable.
 El menú ya muestra las secciones de la fase 2 (ventas, órdenes, consignaciones, clientes, talleres) como «pronto».
 
 ```
@@ -57,18 +58,28 @@ Nunca subas al repositorio la URL /exec ni la clave: van solo en Configuración 
 
 - Cambios en `Code.gs`: **Implementar → Administrar implementaciones → editar (lápiz) → Versión: Nueva versión → Implementar**.
   Así la URL no cambia. (Si creas una implementación nueva, cambia la URL y hay que pegarla otra vez en Configuración.)
-- Cambios en `index.html`: sube el archivo y cambia `VERSION` en `sw.js` (ej. `mv-v2`) para que los celulares tomen la versión nueva.
+- Cambios en `index.html`: sube el archivo y cambia `VERSION` en `sw.js` (ej. `mv-v3`) para que los celulares tomen la versión nueva.
+- Para comprobar: **Configuración → Versión** muestra la versión de la app y la de Apps Script. Deben coincidir;
+  si no, la app muestra un aviso arriba.
+- Las actualizaciones crean solas las hojas y columnas nuevas. No hace falta volver a ejecutar `setup`.
 
 ## Reglas del sistema
 
 - Nada con historia se borra: insumos y productos usados se **archivan**; compras y lotes se **anulan** (y devuelven el stock).
 - El stock siempre es la suma de movimientos; los ajustes quedan registrados con su motivo.
-- El costo de cada insumo es el de su **última compra** activa; si anulas esa compra, vuelve al de la anterior.
+- El costo de cada insumo sale de sus entradas (compras, o lotes si es elaborado) según el **método de costo** de Configuración:
+  **última entrada** (por defecto) o **costo promedio**. Si anulas una compra, el costo se recalcula sin ella.
+- Listas (tipos, unidades, categorías, motivos): renombrar actualiza los registros; eliminar un valor en uso solo lo oculta.
 - Compras: se ingresa siempre el **total pagado**. Con **factura** el costo se calcula sin IVA (se recupera como crédito fiscal);
   con **boleta o sin documento** el costo es todo lo pagado.
 
 ## Versiones
 
+- **1.2** — Botón de sincronizar en el computador y sincronización automática al volver a la app; versión visible en
+  Configuración con aviso si no coinciden; listas editables; varios formatos de compra por insumo (botones al comprar);
+  stock y mínimo expresados en formatos («quedan 2 frascos»); insumos elaborados con receta propia (oleatos, tinturas,
+  serigrafía) que se producen desde Producción; historial de compras con filtros, totales, IVA crédito fiscal y CSV;
+  historial de precios por insumo y proveedor; historial de costo por producto; método de costo (última entrada o promedio).
 - **1.1** — Compra por formato (ej. 2 bolsas × 250 g), selector Factura / Boleta con el costo correcto en cada caso,
   costo de referencia por kg o litro, notas explicativas (botón ⓘ) en los campos clave.
   Al actualizar, la planilla agrega sola las columnas nuevas; los datos existentes no se tocan.
