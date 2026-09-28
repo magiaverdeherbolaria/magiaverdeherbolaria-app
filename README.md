@@ -1,4 +1,4 @@
-# Magia Verde · App de gestión — versión 2.0
+# Magia Verde · App de gestión — versión 2.0.1
 
 Incluye:
 - **Ventas**: clientes (empresas por RUT con sus locales y precios negociados), venta rápida para ferias,
@@ -66,7 +66,7 @@ Nunca subas al repositorio la URL /exec ni la clave: van solo en Configuración 
 
 - Cambios en `Code.gs`: **Implementar → Administrar implementaciones → editar (lápiz) → Versión: Nueva versión → Implementar**.
   Así la URL no cambia. (Si creas una implementación nueva, cambia la URL y hay que pegarla otra vez en Configuración.)
-- Cambios en `index.html`: sube el archivo y cambia `VERSION` en `sw.js` (ej. `mv-v5`) para que los celulares tomen la versión nueva.
+- Cambios en `index.html`: sube el archivo y cambia `VERSION` en `sw.js` (ej. `mv-v6`) para que los celulares tomen la versión nueva.
 - Para comprobar: **Configuración → Versión** muestra la versión de la app y la de Apps Script. Deben coincidir;
   si no, la app muestra un aviso arriba.
 - Las actualizaciones crean solas las hojas y columnas nuevas. No hace falta volver a ejecutar `setup`.
@@ -78,8 +78,10 @@ Nunca subas al repositorio la URL /exec ni la clave: van solo en Configuración 
 - El costo de cada insumo sale de sus entradas (compras, o lotes si es elaborado) según el **método de costo** de Configuración:
   **última entrada** (por defecto) o **costo promedio**. Si anulas una compra, el costo se recalcula sin ella.
 - Listas (tipos, unidades, categorías, motivos): renombrar actualiza los registros; eliminar un valor en uso solo lo oculta.
-- Ventas: la venta rápida usa el precio público (con IVA) y queda pagada al momento. Las órdenes a negocios usan
-  precios netos + IVA: el precio negociado de la empresa si existe, si no el general del producto.
+- Precios: cada producto tiene dos precios, **B2C** (público, con IVA) y **B2B** (negocios, neto), más un
+  **precio especial** opcional por empresa (en su ficha de Clientes) que vale para venta directa y consignación.
+- Ventas: la venta rápida usa el precio B2C y queda pagada al momento. Las órdenes a negocios usan precios netos + IVA:
+  el precio especial de la empresa si existe, si no el B2B del producto.
 - Una orden en **borrador** no mueve stock; al **confirmar la entrega** sale de bodega. La factura se emite en el SII
   y aquí solo se anota el **folio**. Los pagos pueden ser parciales.
 - **Consignación**: el producto pasa de bodega al local del cliente (sigue siendo de Magia Verde). Al **liquidar** se
@@ -92,6 +94,8 @@ Nunca subas al repositorio la URL /exec ni la clave: van solo en Configuración 
 
 ## Versiones
 
+- **2.0.1** — Un solo precio B2B por producto (antes había dos: directa y consignación) más el precio especial por
+  empresa. Los precios ya cargados se conservan. Círculo oliva en el ícono de la sección activa (celular y computador).
 - **2.0** — Fase de ventas: clientes con locales y precios negociados, venta rápida, órdenes de venta (PDF, WhatsApp,
   folio, pagos), consignaciones y liquidaciones, ventas y cobranza (historial con margen, por cobrar, por facturar,
   factura múltiple, CSV), datos de la empresa, inicio con ventas del mes, por cobrar y pendientes.

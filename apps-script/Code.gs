@@ -15,13 +15,13 @@
  *  - Al actualizar la app, las hojas y columnas nuevas se crean solas; los datos no se tocan.
  */
 
-const VERSION_BACKEND = '2.0.0';
+const VERSION_BACKEND = '2.0.1';
 const IVA = 0.19;
 const BODEGA = 'BODEGA';
 
 const SCHEMA = {
   INSUMOS: ['id', 'nombre', 'tipo', 'unidad', 'stock_min', 'costo_unit', 'ultima_compra', 'proveedor', 'estado', 'creado', 'actualizado', 'formato', 'formato_cant', 'elaborado', 'rinde_lote'],
-  PRODUCTOS: ['id', 'nombre', 'categoria', 'presentacion', 'rinde_lote', 'precio_publico', 'precio_directo', 'precio_consig', 'stock_min', 'estado', 'creado', 'actualizado'],
+  PRODUCTOS: ['id', 'nombre', 'categoria', 'presentacion', 'rinde_lote', 'precio_publico', 'precio_directo', 'precio_consig', 'stock_min', 'estado', 'creado', 'actualizado', 'precio_b2b'],
   RECETAS: ['producto_id', 'tipo', 'ref', 'cantidad', 'costo'],
   COMPRAS: ['id', 'fecha', 'insumo_id', 'cantidad', 'total_neto', 'costo_unit', 'proveedor', 'documento', 'iva_incluido', 'estado', 'creado', 'tipo_doc', 'total_pagado', 'formato', 'formatos', 'formato_cant'],
   PRODUCCION: ['id', 'fecha', 'producto_id', 'lotes', 'unidades', 'costo_total', 'costo_unit', 'notas', 'estado', 'creado', 'item_tipo'],
@@ -32,7 +32,7 @@ const SCHEMA = {
   CONFIG: ['clave', 'valor'],
   EMPRESAS: ['rut', 'razon_social', 'giro', 'direccion', 'comuna', 'email', 'telefono', 'contacto', 'cond_pago_dias', 'modalidades', 'modalidad_habitual', 'notas', 'estado', 'creado', 'actualizado'],
   LOCALES: ['id', 'rut', 'nombre', 'direccion', 'comuna', 'contacto', 'telefono', 'email', 'estado', 'creado'],
-  PRECIOS_CLIENTE: ['rut', 'producto_id', 'precio_directo', 'precio_consig'],
+  PRECIOS_CLIENTE: ['rut', 'producto_id', 'precio_directo', 'precio_consig', 'precio'],
   VENTAS: ['id', 'fecha', 'canal', 'rut', 'local_id', 'estado', 'neto', 'iva', 'total', 'folio', 'fecha_folio', 'medio_pago', 'lugar', 'origen', 'notas', 'creado', 'actualizado'],
   VENTAS_DET: ['venta_id', 'producto_id', 'cantidad', 'precio', 'subtotal', 'costo_unit'],
   PAGOS: ['id', 'venta_id', 'fecha', 'monto', 'medio', 'estado', 'creado'],
@@ -43,7 +43,7 @@ const SCHEMA = {
 };
 
 // Columnas numéricas; todas las demás se guardan como texto plano (evita que Sheets convierta fechas o IDs).
-const NUMERIC = ['stock_min', 'costo_unit', 'rinde_lote', 'precio_publico', 'precio_directo', 'precio_consig',
+const NUMERIC = ['stock_min', 'costo_unit', 'rinde_lote', 'precio_publico', 'precio_directo', 'precio_consig', 'precio_b2b',
   'cantidad', 'costo', 'total_neto', 'lotes', 'unidades', 'costo_total', 'formato_cant', 'total_pagado', 'formatos', 'orden',
   'cond_pago_dias', 'neto', 'iva', 'total', 'precio', 'subtotal', 'monto', 'en_local', 'contado', 'vendido', 'devuelto'];
 
@@ -642,7 +642,8 @@ function saveProducto_(b) {
   const lineas = limpiarReceta_(b.receta, prod.id);
   prod.nombre = nombre; prod.categoria = String(d.categoria || '').trim(); prod.presentacion = d.presentacion || '';
   prod.rinde_lote = num_(d.rinde_lote); prod.precio_publico = num_(d.precio_publico);
-  prod.precio_directo = num_(d.precio_directo); prod.precio_consig = num_(d.precio_consig);
+  // Desde 2.0.1 hay un solo precio para negocios (B2B, neto). Las columnas antiguas quedan vacías.
+  prod.precio_b2b = num_(d.precio_b2b); prod.precio_directo = ''; prod.precio_consig = '';
   prod.stock_min = num_(d.stock_min); prod.actualizado = now_();
   if (prod._row) update_('PRODUCTOS', prod); else append_('PRODUCTOS', [prod]);
   guardarReceta_(prod.id, lineas);
@@ -893,8 +894,8 @@ function saveCliente_(b) {
 
   // Precios negociados por empresa (reemplazo completo).
   deleteRows_('PRECIOS_CLIENTE', readAll_('PRECIOS_CLIENTE').filter(function (pc) { return pc.rut === rut; }));
-  append_('PRECIOS_CLIENTE', (b.precios || []).filter(function (pc) { return pc.producto_id && (num_(pc.precio_directo) > 0 || num_(pc.precio_consig) > 0); })
-    .map(function (pc) { return { rut: rut, producto_id: pc.producto_id, precio_directo: num_(pc.precio_directo) || '', precio_consig: num_(pc.precio_consig) || '' }; }));
+  append_('PRECIOS_CLIENTE', (b.precios || []).filter(function (pc) { return pc.producto_id && num_(pc.precio) > 0; })
+    .map(function (pc) { return { rut: rut, producto_id: pc.producto_id, precio: num_(pc.precio) }; }));
   return { ok: true, rut: rut };
 }
 

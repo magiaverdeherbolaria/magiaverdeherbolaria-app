@@ -37,10 +37,14 @@ h2{font-size:16px;font-weight:700;margin:0}
 .side{width:236px;flex-shrink:0;background:var(--lateral);border-right:1px solid #d2d2c0;padding:26px 14px 16px;display:flex;flex-direction:column;gap:2px;position:sticky;top:0;height:100vh;overflow-y:auto}
 .side img{width:190px;margin:0 8px 24px}
 .side .grp{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--gris);padding:14px 12px 6px}
-.nav-i{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;padding:10px 12px;border-radius:8px;border:0;background:none;color:var(--tinta);font-size:14px;cursor:pointer}
+.nav-i{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:5px 10px;min-height:42px;border-radius:10px;border:0;background:none;color:var(--tinta);font-size:14px;cursor:pointer}
+.nav-i .ic{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--gris-osc);transition:background .15s,color .15s}
+.nav-i .pronto{margin-left:auto}
 .nav-i:hover{background:#d8d8c6}
-.nav-i.on{background:var(--oliva);color:#f7f7ef;font-weight:600}
+.nav-i.on{color:var(--oliva);font-weight:700}
+.nav-i.on .ic{background:var(--oliva);color:#f7f7ef}
 .nav-i[disabled]{color:#8d8880;cursor:default;background:none}
+.nav-i[disabled] .ic{color:#a9a59c}
 .pronto{font-size:10px;font-weight:600;border:1px solid #bdbcab;border-radius:10px;padding:1px 6px;color:#7c776f}
 .side .sync{margin-top:auto;padding:12px;border:0;border-top:1px solid #d2d2c0;background:none;font:inherit;font-size:12px;color:var(--gris);display:flex;align-items:center;gap:8px;width:100%;text-align:left;cursor:pointer;border-radius:0 0 8px 8px}
 .side .sync:hover{background:#d8d8c6;color:var(--tinta)}
@@ -208,9 +212,11 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
   .mob-top{display:flex;align-items:center;justify-content:space-between;padding:16px 0 10px;position:sticky;top:0;background:var(--crema);z-index:20}
   .mob-top img{height:20px}
   .bottom{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;left:0;right:0;bottom:0;background:var(--tarjeta);border-top:1px solid var(--borde);padding:6px 4px calc(8px + env(safe-area-inset-bottom));z-index:30}
-  .bottom button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;font-size:11px;font-weight:600;color:var(--gris);cursor:pointer}
+  .bottom button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:1px;padding:2px 0 4px;font-size:11px;font-weight:600;color:var(--gris);cursor:pointer}
   .bottom button.on{color:var(--oliva)}
-  .bottom svg{width:24px;height:24px}
+  .bottom .ic{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s}
+  .bottom button.on .ic{background:var(--oliva);color:#f7f7ef}
+  .bottom svg{width:22px;height:22px}
   h1{font-size:22px}
   .g2,.g3,.g4{grid-template-columns:minmax(0,1fr)}
   .g4.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -241,20 +247,20 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
   <nav class="side" aria-label="Secciones">
     <img src="logo.png" alt="Magia Verde Herbolaria">
     <div class="grp">Operación</div>
-    <button class="nav-i" data-go="inicio">Inicio</button>
-    <button class="nav-i" data-go="vrapida">Venta rápida</button>
-    <button class="nav-i" data-go="ordenes">Órdenes de venta</button>
-    <button class="nav-i" data-go="consig">Consignaciones</button>
-    <button class="nav-i" data-go="ventas">Ventas y cobranza</button>
-    <button class="nav-i" data-go="produccion">Producción</button>
-    <button class="nav-i" data-go="inventario">Inventario</button>
-    <button class="nav-i" disabled>Talleres <span class="pronto">pronto</span></button>
+    <button class="nav-i" data-go="inicio"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg></span><span class="tx">Inicio</span></button>
+    <button class="nav-i" data-go="vrapida"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7h14l-1.5 12h-11z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg></span><span class="tx">Venta rápida</span></button>
+    <button class="nav-i" data-go="ordenes"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h8l4 4v14H7z"/><path d="M10 12h6M10 16h6"/></svg></span><span class="tx">Órdenes de venta</span></button>
+    <button class="nav-i" data-go="consig"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l2-6h14l2 6"/><path d="M4 10h16v10H4z"/><path d="M10 20v-5h4v5"/></svg></span><span class="tx">Consignaciones</span></button>
+    <button class="nav-i" data-go="ventas"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><span class="tx">Ventas y cobranza</span></button>
+    <button class="nav-i" data-go="produccion"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6"/><path d="M10 3v5l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/><path d="M7.5 14h9"/></svg></span><span class="tx">Producción</span></button>
+    <button class="nav-i" data-go="inventario"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8l8-4 8 4-8 4z"/><path d="M4 8v8l8 4 8-4V8"/><path d="M12 12v8"/></svg></span><span class="tx">Inventario</span></button>
+    <button class="nav-i" disabled><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h7a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4z"/><path d="M20 5h-7a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="tx">Talleres</span><span class="pronto">pronto</span></button>
     <div class="grp">Maestros</div>
-    <button class="nav-i" data-go="clientes">Clientes</button>
-    <button class="nav-i" data-go="productos">Productos y recetas</button>
-    <button class="nav-i" data-go="insumos">Insumos y compras</button>
+    <button class="nav-i" data-go="clientes"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></svg></span><span class="tx">Clientes</span></button>
+    <button class="nav-i" data-go="productos"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8v4H8z"/><path d="M6 7h12v14H6z"/><path d="M9 12h6"/></svg></span><span class="tx">Productos y recetas</span></button>
+    <button class="nav-i" data-go="insumos"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-14 15-15-1 10-7 15-15 15z"/><path d="M5 19l7-7"/></svg></span><span class="tx">Insumos y compras</span></button>
     <div class="grp">Sistema</div>
-    <button class="nav-i" data-go="config">Configuración</button>
+    <button class="nav-i" data-go="config"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></span><span class="tx">Configuración</span></button>
     <button class="sync" id="sideSync" title="Traer los últimos datos de la planilla"><span class="dot" id="syncDot"></span><span id="syncTxt">Sin conectar</span><span class="ic" aria-hidden="true">⟳</span><span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Sincronizar</span></button>
   </nav>
 
@@ -518,11 +524,11 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
 </div>
 
 <nav class="bottom" aria-label="Secciones">
-  <button data-go="inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg>Inicio</button>
-  <button data-go="vrapida"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7h14l-1.5 12h-11z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>Vender</button>
-  <button data-go="inventario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8l8-4 8 4-8 4z"/><path d="M4 8v8l8 4 8-4V8"/><path d="M12 12v8"/></svg>Stock</button>
-  <button data-go="ordenes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h8l4 4v14H7z"/><path d="M10 12h6M10 16h6"/></svg>Órdenes</button>
-  <button data-go="mas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/></svg>Más</button>
+  <button data-go="inicio"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg></span>Inicio</button>
+  <button data-go="vrapida"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7h14l-1.5 12h-11z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg></span>Vender</button>
+  <button data-go="inventario"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8l8-4 8 4-8 4z"/><path d="M4 8v8l8 4 8-4V8"/><path d="M12 12v8"/></svg></span>Stock</button>
+  <button data-go="ordenes"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h8l4 4v14H7z"/><path d="M10 12h6M10 16h6"/></svg></span>Órdenes</button>
+  <button data-go="mas"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/></svg></span>Más</button>
 </nav>
 
 <!-- MODAL INSUMO -->
@@ -602,12 +608,9 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
         <div class="fld"><label class="f" for="prdMin">Stock mínimo (u) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Bajo esta cantidad en bodega, la app avisa en Inicio que conviene volver a producir. 0 = sin aviso.">i</button></label><input class="in r" id="prdMin" inputmode="decimal" placeholder="0"></div>
       </div>
       <div class="small bold muted" style="margin:6px 0 8px">Precios generales</div>
-      <div class="fld"><label class="f" for="prdPP">Público (con IVA) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="El precio que paga el cliente final en ferias o venta directa al público, con IVA incluido. Para calcular el margen la app le quita el IVA.">i</button></label><input class="in r" id="prdPP" inputmode="numeric" placeholder="$0"></div>
-      <div class="row2">
-        <div class="fld"><label class="f" for="prdPD">Venta directa (neto) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Precio general sin IVA para negocios que compran el producto (se les factura al entregar). Si con una empresa negocias otro precio, ese se guarda en su ficha de cliente (próxima fase).">i</button></label><input class="in r" id="prdPD" inputmode="numeric" placeholder="$0"></div>
-        <div class="fld"><label class="f" for="prdPC">Consignación (neto) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Precio general sin IVA para negocios que reciben en consignación: pagan solo lo que venden.">i</button></label><input class="in r" id="prdPC" inputmode="numeric" placeholder="$0"></div>
-      </div>
-      <p class="note">Los precios negociados con cada empresa se agregan en Clientes (siguiente fase) y reemplazan a estos.</p>
+      <div class="fld"><label class="f" for="prdPP">B2C · público (con IVA) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="El precio que paga el cliente final en ferias o venta directa al público, con IVA incluido. Para calcular el margen la app le quita el IVA.">i</button></label><input class="in r" id="prdPP" inputmode="numeric" placeholder="$0"></div>
+      <div class="fld"><label class="f" for="prdPB">B2B · negocios (neto) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Precio general sin IVA para negocios, en venta directa o en consignación. Si con una empresa acordaste otro precio, se anota como precio especial en su ficha de Clientes y reemplaza a este.">i</button></label><input class="in r" id="prdPB" inputmode="numeric" placeholder="$0"></div>
+      <p class="note">Los precios especiales negociados con cada empresa se anotan en su ficha de Clientes y reemplazan al B2B.</p>
     </div>
     <div>
       <div class="head" style="margin-bottom:10px"><h2>Receta por lote <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Lo que usa UNA preparación completa (un lote), en la unidad de cada insumo. «+ Costo extra» sirve para costos que no son insumos, como mano de obra o gas, por lote.">i</button></h2><span class="small muted" id="recMet"></span></div>
@@ -718,8 +721,8 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
       <h2 style="margin-bottom:8px">Locales <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="El nombre con que conoces cada local (ej. «Emporio Nativo Centro»). Es lo que buscas al hacer una orden. Si la empresa tiene un solo local, igual se crea uno con su nombre.">i</button></h2>
       <div id="cliLocs"></div>
       <button class="btn sm ghost" id="cliLocAdd" style="margin-bottom:16px">+ Local</button>
-      <h2 style="margin-bottom:4px">Precios negociados (neto) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Solo llena los productos con precio especial para esta empresa. Vale para todos sus locales. Si lo dejas vacío, se usa el precio general del producto.">i</button></h2>
-      <div class="prrow small bold muted" style="border:0"><span>Producto</span><span class="r">Directa</span><span class="r">Consignación</span></div>
+      <h2 style="margin-bottom:4px">Precios especiales (neto) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Solo llena los productos con un precio acordado con esta empresa. Vale para todos sus locales y para venta directa y consignación. Si lo dejas vacío, se usa el precio B2B general.">i</button></h2>
+      <div class="prrow small bold muted" style="border:0"><span>Producto</span><span class="r">B2B general</span><span class="r">Precio especial</span></div>
       <div id="cliPrecios" style="max-height:340px;overflow-y:auto"></div>
     </div>
   </div>
@@ -764,7 +767,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
 
 <script>
 // ───────────── Estado ─────────────
-const APP_VERSION = '2.0.0';
+const APP_VERSION = '2.0.1';
 const LS = { url: 'mv_gs_url', key: 'mv_gs_key', cache: 'mv_cache_v1' };
 let GS = lsGet(LS.url), KEY = lsGet(LS.key);
 const DB0 = () => ({ insumos: [], productos: [], recetas: [], compras: [], produccion: [], movimientos: [], stock: {}, formatos: [], listas: [], costos_hist: [], config: {}, empresas: [], locales: [], precios_cliente: [], ventas: [], ventas_det: [], pagos: [], consignaciones: [], consig_det: [], liquidaciones: [], liq_det: [] });
@@ -980,10 +983,12 @@ function costoReceta(lineas, rinde, prof = 0) {
   return { lote, unit: rinde > 0 ? lote / rinde : 0 };
 }
 function costoProducto(p) { return costoReceta(recetaDe(p.id), Number(p.rinde_lote) || 0); }
+/** Precio B2B general (neto). Acepta datos de 2.0.0, que tenía dos precios para negocios. */
+const precioB2B = p => p ? Number(p.precio_b2b) || Number(p.precio_directo) || Number(p.precio_consig) || 0 : 0;
 function margenes(p, unit) {
   const pub = (Number(p.precio_publico) || 0) / 1.19;
   const m = v => v > 0 ? (v - unit) / v : NaN;
-  return [['Público', m(pub), pub], ['Venta directa', m(Number(p.precio_directo) || 0), p.precio_directo], ['Consignación', m(Number(p.precio_consig) || 0), p.precio_consig]];
+  return [['B2C · público', m(pub), pub], ['B2B · negocios', m(precioB2B(p)), precioB2B(p)]];
 }
 const metodoTxt = () => (DB.config && DB.config.metodo_costo) === 'promedio' ? 'Costos según costo promedio de cada insumo' : 'Costos según la última compra de cada insumo';
 
@@ -1435,7 +1440,7 @@ $('recAddI').addEventListener('click', () => { RE.prd.lines.push({ tipo: 'insumo
 $('recAddE').addEventListener('click', () => { RE.prd.lines.push({ tipo: 'extra', ref: '', costo: '' }); renderReceta('prd'); });
 $('insRecAddI').addEventListener('click', () => { RE.ins.lines.push({ tipo: 'insumo', ref: '', cantidad: '' }); renderReceta('ins'); });
 $('insRecAddE').addEventListener('click', () => { RE.ins.lines.push({ tipo: 'extra', ref: '', costo: '' }); renderReceta('ins'); });
-['prdRinde', 'prdPP', 'prdPD', 'prdPC'].forEach(id => $(id).addEventListener('input', () => recCalc('prd')));
+['prdRinde', 'prdPP', 'prdPB'].forEach(id => $(id).addEventListener('input', () => recCalc('prd')));
 
 function recCalc(key) {
   const R = RE[key];
@@ -1452,7 +1457,7 @@ function recCalc(key) {
   $(R.res).innerHTML = `<div class="ln"><span>Costo del lote</span><span>${clp(c.lote)}</span></div><div class="ln tot"><span>Costo por ${esc(u)}</span><span>${rinde > 0 ? clpU(c.unit) : 'Indica el rendimiento'}</span></div>
     ${sinCosto.length ? `<p class="note warn-t" style="margin:8px 0 0">Sin costo: ${sinCosto.map(esc).join(', ')}. Registra una compra o ingresa su costo en Insumos.</p>` : ''}`;
   if (R.mg) {
-    const p = { precio_publico: parseNum($('prdPP').value), precio_directo: parseNum($('prdPD').value), precio_consig: parseNum($('prdPC').value) };
+    const p = { precio_publico: parseNum($('prdPP').value), precio_b2b: parseNum($('prdPB').value) };
     $('recMg').innerHTML = rinde > 0 ? '<div class="small bold muted" style="margin-bottom:4px">Margen por canal (sobre precio neto)</div>' + margenes(p, c.unit).map(([n, m]) =>
       `<div class="mg"><span>${n}</span><div class="bar"><i style="width:${isFinite(m) ? Math.max(0, Math.min(100, m * 100)) : 0}%"></i></div><span class="right ${isFinite(m) && m < 0 ? 'bad-t' : 'bold'}">${pct(m)}</span></div>`).join('') : '';
   }
@@ -1491,7 +1496,7 @@ function abrirProducto(id) {
   $('prdNom').value = p ? p.nombre : ''; $('prdCat').value = p ? p.categoria : ''; $('prdPres').value = p ? p.presentacion : '';
   $('prdRinde').value = p ? qty(p.rinde_lote) : ''; $('prdMin').value = p && p.stock_min ? qty(p.stock_min) : '';
   const fm = v => v ? Math.round(v).toLocaleString('es-CL') : '';
-  $('prdPP').value = p ? fm(p.precio_publico) : ''; $('prdPD').value = p ? fm(p.precio_directo) : ''; $('prdPC').value = p ? fm(p.precio_consig) : '';
+  $('prdPP').value = p ? fm(p.precio_publico) : ''; $('prdPB').value = p ? fm(precioB2B(p)) : '';
   $('catList').innerHTML = lista('categoria').map(c => `<option value="${esc(c)}">`).join('');
   $('recMet').textContent = metodoTxt();
   RE.prd.lines = p ? recetaDe(p.id).map(r => ({ ...r })) : [];
@@ -1515,7 +1520,7 @@ function renderPrdHist(p) {
 }
 
 $('prdSave').addEventListener('click', async () => {
-  const d = { id: $('prdId').value, nombre: $('prdNom').value.trim(), categoria: $('prdCat').value.trim(), presentacion: $('prdPres').value.trim(), rinde_lote: parseNum($('prdRinde').value), stock_min: parseNum($('prdMin').value), precio_publico: parseNum($('prdPP').value), precio_directo: parseNum($('prdPD').value), precio_consig: parseNum($('prdPC').value) };
+  const d = { id: $('prdId').value, nombre: $('prdNom').value.trim(), categoria: $('prdCat').value.trim(), presentacion: $('prdPres').value.trim(), rinde_lote: parseNum($('prdRinde').value), stock_min: parseNum($('prdMin').value), precio_publico: parseNum($('prdPP').value), precio_b2b: parseNum($('prdPB').value) };
   if (!d.nombre) return toast('Falta el nombre', 'err');
   if (d.rinde_lote <= 0) return toast('Indica cuántas unidades rinde un lote', 'err');
   const receta = recetaValida('prd'); if (!receta) return;
@@ -1626,13 +1631,12 @@ function venceDe(v) {
 }
 const vencida = v => saldoDe(v) > 0 && venceDe(v) < hoy();
 const diasEntre = (a, b) => Math.round((new Date(b + 'T12:00:00') - new Date(a + 'T12:00:00')) / 864e5);
-/** Precio neto para un cliente: negociado por la empresa o, si no hay, el general del producto. */
-function precioPara(rut, pid, mod) {
+/** Precio neto para un negocio: el especial acordado con la empresa o, si no hay, el B2B general del producto. */
+function precioPara(rut, pid) {
   const pc = DB.precios_cliente.find(x => x.rut === rut && x.producto_id === pid);
-  const campo = mod === 'consignacion' ? 'precio_consig' : 'precio_directo';
-  if (pc && Number(pc[campo]) > 0) return { precio: Number(pc[campo]), negociado: true };
-  const p = producto(pid);
-  return { precio: p ? Number(p[campo]) || 0 : 0, negociado: false };
+  const esp = pc ? Number(pc.precio) || Number(pc.precio_directo) || Number(pc.precio_consig) || 0 : 0;
+  if (esp > 0) return { precio: esp, negociado: true };
+  return { precio: precioB2B(producto(pid)), negociado: false };
 }
 function estadoVenta(v) {
   if (v.estado === 'anulada') return ['Anulada', 'bad'];
@@ -1655,7 +1659,7 @@ function consigPorLocal() {
     const items = stockDeLocal(l.id);
     if (!items.length) return null;
     const e = empresaDe(l.rut);
-    const valor = items.reduce((s, x) => s + x.q * precioPara(l.rut, x.pid, 'consignacion').precio, 0);
+    const valor = items.reduce((s, x) => s + x.q * precioPara(l.rut, x.pid).precio, 0);
     const lqs = DB.liquidaciones.filter(q => q.local_id === l.id && q.estado === 'activa');
     const ocs = DB.consignaciones.filter(c => c.local_id === l.id && c.estado === 'entregada');
     const desde = lqs.length ? lqs[0].fecha : (ocs.length ? ocs[ocs.length - 1].fecha : hoy());
@@ -1746,23 +1750,23 @@ function setMod(m, keep) {
 }
 $('ovMod').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setMod(b.dataset.v); });
 function repreciar(keep) {
-  OV.lines.forEach(l => { if (l.pid && (!l.manual || !keep)) { l.precio = precioPara(OV.rut, l.pid, OV.mod).precio; l.manual = false; } });
+  OV.lines.forEach(l => { if (l.pid && (!l.manual || !keep)) { l.precio = precioPara(OV.rut, l.pid).precio; l.manual = false; } });
   renderOVLines();
 }
 function renderOVLines() {
   const ps = DB.productos.filter(p => p.estado === 'activo').sort((a, b) => a.nombre.localeCompare(b.nombre));
-  $('ovLines').innerHTML = OV.lines.map((l, k) => { const pr = l.pid ? precioPara(OV.rut, l.pid, OV.mod) : null, st = l.pid ? stockDe(l.pid) : null;
+  $('ovLines').innerHTML = OV.lines.map((l, k) => { const pr = l.pid ? precioPara(OV.rut, l.pid) : null, st = l.pid ? stockDe(l.pid) : null;
     return `<div class="oline"><select class="in" aria-label="Producto" onchange="ovSet(${k},'pid',this.value)"><option value="">Elegir producto…</option>${ps.map(p => `<option value="${p.id}" ${p.id === l.pid ? 'selected' : ''}>${esc(p.nombre)}${p.presentacion ? ' · ' + esc(p.presentacion) : ''}</option>`).join('')}</select>
       <span class="st ${st !== null && st < (Number(l.q) || 0) ? 'bad-t' : ''}">${st === null ? '' : qty(st)}</span>
       <input class="in r" aria-label="Cantidad" inputmode="decimal" value="${l.q === '' ? '' : numIn(l.q)}" oninput="ovSet(${k},'q',this.value)">
-      <div class="sub-t" style="position:relative"><input class="in r" aria-label="Precio neto" inputmode="numeric" value="${l.precio ? Math.round(l.precio).toLocaleString('es-CL') : ''}" oninput="ovSet(${k},'precio',this.value)" style="${pr && pr.negociado && !l.manual ? 'background:var(--oliva-tinte)' : ''}" title="${pr && pr.negociado ? 'Precio negociado con este cliente' : 'Precio general'}"></div>
+      <div class="sub-t" style="position:relative"><input class="in r" aria-label="Precio neto" inputmode="numeric" value="${l.precio ? Math.round(l.precio).toLocaleString('es-CL') : ''}" oninput="ovSet(${k},'precio',this.value)" style="${pr && pr.negociado && !l.manual ? 'background:var(--oliva-tinte)' : ''}" title="${pr && pr.negociado ? 'Precio especial de este cliente' : 'Precio B2B general'}"></div>
       <span class="st sub-t" id="ovSub${k}"></span>
       <button class="xbtn" aria-label="Quitar" onclick="ovDel(${k})">×</button></div>`; }).join('');
   ovCalc();
 }
 function ovSet(k, campo, v) {
   const l = OV.lines[k];
-  if (campo === 'pid') { l.pid = v; l.precio = v ? precioPara(OV.rut, v, OV.mod).precio : ''; l.manual = false; renderOVLines(); return; }
+  if (campo === 'pid') { l.pid = v; l.precio = v ? precioPara(OV.rut, v).precio : ''; l.manual = false; renderOVLines(); return; }
   l[campo] = parseNum(v); if (campo === 'precio') l.manual = true;
   ovCalc();
 }
@@ -2008,7 +2012,7 @@ function abrirLiq(lid) {
   $('lqLocal').value = lid; $('lqFecha').value = hoy(); $('lqNotas').value = '';
   $('mLiqT').textContent = 'Liquidar · ' + l.nombre;
   $('lqInfo').innerHTML = `${esc(e ? e.razon_social : '')} · RUT ${esc(fmtRut(l.rut))}<br>${ult ? 'Última liquidación: ' + fechaCorta(ult.fecha) + ' (' + ult.id + ')' : 'Primera liquidación de este local'}`;
-  LQ.rows = items.map(x => ({ pid: x.pid, en: x.q, contado: '', devuelto: 0, precio: precioPara(l.rut, x.pid, 'consignacion').precio }));
+  LQ.rows = items.map(x => ({ pid: x.pid, en: x.q, contado: '', devuelto: 0, precio: precioPara(l.rut, x.pid).precio }));
   renderLiq(); openM('mLiq');
 }
 function renderLiq() {
@@ -2136,7 +2140,7 @@ function abrirCliente(rut) {
   const ps = DB.productos.filter(p => p.estado === 'activo').sort((a, b) => a.nombre.localeCompare(b.nombre));
   const fm = v => v ? Math.round(v).toLocaleString('es-CL') : '';
   $('cliPrecios').innerHTML = ps.length ? ps.map(p => { const pc = e ? DB.precios_cliente.find(x => x.rut === e.rut && x.producto_id === p.id) : null;
-    return `<div class="prrow" data-p="${p.id}"><span>${esc(p.nombre)}${p.presentacion ? ' <span class="muted small">' + esc(p.presentacion) + '</span>' : ''}</span><input class="in r" style="height:38px" aria-label="Precio directa ${esc(p.nombre)}" inputmode="numeric" placeholder="${fm(p.precio_directo) || '—'}" value="${pc ? fm(pc.precio_directo) : ''}"><input class="in r" style="height:38px" aria-label="Precio consignación ${esc(p.nombre)}" inputmode="numeric" placeholder="${fm(p.precio_consig) || '—'}" value="${pc ? fm(pc.precio_consig) : ''}"></div>`; }).join('') : '<p class="note">Aún no hay productos.</p>';
+    return `<div class="prrow" data-p="${p.id}"><span>${esc(p.nombre)}${p.presentacion ? ' <span class="muted small">' + esc(p.presentacion) + '</span>' : ''}</span><span class="r muted">${fm(precioB2B(p)) ? '$' + fm(precioB2B(p)) : '—'}</span><input class="in r" style="height:38px" aria-label="Precio especial ${esc(p.nombre)}" inputmode="numeric" placeholder="—" value="${pc ? fm(Number(pc.precio) || Number(pc.precio_directo) || Number(pc.precio_consig)) : ''}">`; }).join('') : '<p class="note">Aún no hay productos.</p>';
   if (e) {
     const vs = DB.ventas.filter(v => v.rut === e.rut && v.estado === 'entregada'), saldo = vs.reduce((s, v) => s + saldoDe(v), 0), anio = hoy().slice(0, 4);
     $('cliResumen').innerHTML = `<div class="grid g4 kpis" style="margin-bottom:14px">${[['Ventas este año (neto)', clp(vs.filter(v => v.fecha.startsWith(anio)).reduce((s, v) => s + v.neto, 0))], ['Por cobrar', clp(saldo)], ['Órdenes', vs.length], ['En consignación', qty(DB.locales.filter(l => l.rut === e.rut).reduce((s, l) => s + stockDeLocal(l.id).reduce((a, x) => a + x.q, 0), 0)) + ' u']].map(([a, b]) => `<div class="card kpi" style="padding:12px"><div class="lbl">${a}</div><div class="val" style="font-size:18px">${b}</div></div>`).join('')}</div>`;
@@ -2167,7 +2171,7 @@ $('cliSave').addEventListener('click', async () => {
   if (!empresa.razon_social) return toast('Falta la razón social', 'err');
   const locales = CL.locs.filter(l => String(l.nombre || '').trim());
   if (!locales.length) return toast('Agrega al menos un local', 'err');
-  const precios = [...document.querySelectorAll('#cliPrecios .prrow')].map(r => { const [a, b] = r.querySelectorAll('input'); return { producto_id: r.dataset.p, precio_directo: parseNum(a.value), precio_consig: parseNum(b.value) }; }).filter(x => x.precio_directo || x.precio_consig);
+  const precios = [...document.querySelectorAll('#cliPrecios .prrow')].map(r => ({ producto_id: r.dataset.p, precio: parseNum(r.querySelector('input').value) })).filter(x => x.precio > 0);
   const r = await write('saveCliente', { empresa, rut_original: orig, locales, precios }, 'Cliente guardado');
   if (r) closeM('mCli');
 });
