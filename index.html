@@ -56,6 +56,11 @@ h2{font-size:16px;font-weight:700;margin:0}
 .check input{width:20px;height:20px;accent-color:var(--oliva)}
 .subsec{border-top:1px solid var(--borde);margin-top:14px;padding-top:14px}
 .minw{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:8px}
+.calcbox{background:var(--suave);border:1px solid var(--linea);border-radius:var(--r);padding:12px 12px 10px;margin:0 0 14px}
+.calcbox .fld{margin-bottom:8px}
+.calcrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:10px}
+.calcrow2{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.calcrow2 .seg{flex:0 0 auto;min-width:240px}
+#icRes{color:var(--oliva-texto)}
 .lrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--linea);font-size:14px}
 .lrow:last-child{border-bottom:0}
 .lrow .v{flex:1;min-width:0}
@@ -251,6 +256,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
   .prrow{grid-template-columns:minmax(0,1fr) 90px 90px}
   .fmat{grid-template-columns:minmax(0,1fr) 96px 36px}
   .fcos,.ohead.fcos-h{grid-template-columns:minmax(0,1fr) 60px 90px 36px}
+  .calcrow{grid-template-columns:1fr}.calcrow2 .seg{min-width:0;width:100%}
   .fmat .cost,.fcos .cost,.fcos-h .cost{display:none}
   .rline .cost{display:none}
   .card{padding:16px}
@@ -574,6 +580,14 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
     <div class="fld"><label class="f" for="insMin">Stock mínimo <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Cantidad bajo la cual la app avisa que hay que volver a comprar (aparece en Inicio). No bloquea nada. Una guía: lo que usa un lote × los lotes que haces mientras esperas al proveedor. Déjalo en 0 si no quieres aviso.">i</button></label><div class="minw"><input class="in r" id="insMin" inputmode="decimal" placeholder="0"><select class="in" id="insMinU" aria-label="Unidad del stock mínimo"></select></div></div>
     <div class="fld"><label class="f" for="insCosto">Costo por <span id="insCostoU">g</span> <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Cuánto cuesta 1 gramo, 1 ml o 1 unidad del insumo. Normalmente NO hace falta llenarlo: se calcula solo al registrar una compra. Úsalo solo para dar un costo inicial si aún no registras compras.">i</button></label><input class="in r" id="insCosto" inputmode="decimal" placeholder="$0"></div>
   </div>
+  <div class="calcbox" id="insCalc">
+    <div class="small bold" style="margin-bottom:8px">Calcular el costo desde un precio <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Para crear el insumo con su costo sin registrar una compra (ej. para armar recetas). Escribe cuánto cuesta un envase y cuánto trae; la app calcula el costo por unidad y lo pone arriba.&#10;«Quitar IVA»: úsalo si el precio que tienes incluye IVA y lo vas a comprar con factura (ese IVA se recupera, así que no es costo). Si no, deja «Precio tal cual».&#10;No suma stock ni aparece en el historial de compras.">i</button></div>
+    <div class="calcrow">
+      <div class="fld"><label class="f" for="icPrecio">Precio del envase</label><input class="in r" id="icPrecio" inputmode="numeric" placeholder="$0"></div>
+      <div class="fld"><label class="f" for="icCant">Trae</label><div class="minw"><input class="in r" id="icCant" inputmode="decimal" placeholder="250"><select class="in" id="icU" aria-label="Unidad"></select></div></div>
+    </div>
+    <div class="calcrow2"><div class="seg" id="icDoc"><button type="button" data-v="boleta" class="on">Precio tal cual</button><button type="button" data-v="factura">Quitar IVA (19%)</button></div><div class="small" id="icRes"></div></div>
+  </div>
   <div class="small bold muted" style="margin:4px 0 8px">Formatos de compra <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Cómo lo compras: bolsa de 250 g, bolsa de 1 kg, caja de 50 frascos… Puedes tener varios. El marcado como principal se propone al comprar y se usa para mostrar el stock en esas unidades (ej. «quedan 2 frascos»).">i</button></div>
   <div id="insFmts"></div>
   <button class="btn sm ghost" id="insFmtAdd" style="margin-bottom:12px">+ Formato</button>
@@ -855,7 +869,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
 
 <script>
 // ───────────── Estado ─────────────
-const APP_VERSION = '2.1.1';
+const APP_VERSION = '2.1.3';
 const LS = { url: 'mv_gs_url', key: 'mv_gs_key', cache: 'mv_cache_v1' };
 let GS = lsGet(LS.url), KEY = lsGet(LS.key);
 const DB0 = () => ({ insumos: [], productos: [], recetas: [], compras: [], produccion: [], movimientos: [], stock: {}, formatos: [], listas: [], costos_hist: [], config: {}, empresas: [], locales: [], precios_cliente: [], ventas: [], ventas_det: [], pagos: [], consignaciones: [], consig_det: [], liquidaciones: [], liq_det: [], proyectos: [], proy_mat: [], proy_costos: [] });
@@ -1308,6 +1322,8 @@ function abrirInsumo(id) {
   $('insUni').disabled = !!tieneMov;
   const conEntradas = i && i.ultima_compra;
   $('insCosto').disabled = !!conEntradas;
+  $('insCalc').classList.toggle('hidden', !!conEntradas);
+  $('icPrecio').value = ''; $('icCant').value = ''; icDocSet('boleta', false); $('icRes').textContent = '';
   $('insNota').textContent = conEntradas ? `Costo calculado por el sistema (${(DB.config.metodo_costo === 'promedio') ? 'costo promedio' : 'última entrada'}, ${fechaCorta(i.ultima_compra)}). Cambia solo con compras o producción.` : 'El costo se calcula solo al registrar la primera compra. Llénalo aquí solo si quieres dar un costo inicial.';
   $('insElab').checked = esElab(i);
   $('insRinde').value = i && i.rinde_lote ? numIn(i.rinde_lote) : '';
@@ -1330,9 +1346,30 @@ function insUniSync() {
   const cur = $('insMinU').value;
   $('insMinU').innerHTML = `<option value="1">${esc(u)}</option>` + (pf && pf.cantidad > 0 && pf.nombre ? `<option value="${pf.cantidad}">${esc(plural(pf.nombre))}</option>` : '');
   if ([...$('insMinU').options].some(o => o.value === cur)) $('insMinU').value = cur;
-  recCalc('ins');
+  icUnits(); recCalc('ins');
 }
 $('insUni').addEventListener('change', insUniSync);
+// Calculadora de costo: precio de un envase → costo por unidad base (sin registrar compra)
+function icUnits() {
+  const u = $('insUni').value, cur = $('icU').value;
+  const ops = [[1, u]];
+  if (u === 'g') ops.push([1000, 'kg']); if (u === 'ml') ops.push([1000, 'litro']);
+  UI.insFmts.filter(f => f.nombre && f.cantidad > 0).forEach(f => ops.push([f.cantidad, `${f.nombre} (${qty(f.cantidad)} ${u})`]));
+  $('icU').innerHTML = ops.map(([v, t]) => `<option value="${v}">${esc(t)}</option>`).join('');
+  if ([...$('icU').options].some(o => o.value === cur)) $('icU').value = cur;
+  icCalc(false);
+}
+function icDocSet(v, calc = true) { UI.icDoc = v; [...$('icDoc').children].forEach(b => b.classList.toggle('on', b.dataset.v === v)); if (calc) icCalc(); }
+function icCalc(escribir = true) {
+  const precio = parseNum($('icPrecio').value), cant = parseNum($('icCant').value) * (Number($('icU').value) || 1), u = $('insUni').value;
+  if (!(precio > 0) || !(cant > 0)) { $('icRes').textContent = ''; return; }
+  const neto = UI.icDoc === 'factura' ? precio / 1.19 : precio, cu = neto / cant;
+  $('icRes').innerHTML = `= <b>${clpU(cu)} por ${esc(u)}</b>${u === 'g' || u === 'ml' ? ` · ${clp(cu * 1000)} por ${u === 'g' ? 'kg' : 'litro'}` : ''}${UI.icDoc === 'factura' ? ' (sin IVA)' : ''}`;
+  if (escribir) $('insCosto').value = numIn(Math.round(cu * 10000) / 10000);
+}
+['icPrecio', 'icCant'].forEach(id => $(id).addEventListener('input', () => icCalc()));
+$('icU').addEventListener('change', () => icCalc());
+$('icDoc').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; icDocSet(b.dataset.v); });
 function renderInsFmts() {
   const u = $('insUni').value;
   $('insFmts').innerHTML = UI.insFmts.map((f, k) => `<div class="fmtrow">
