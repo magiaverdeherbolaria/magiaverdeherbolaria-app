@@ -66,7 +66,7 @@ Nunca subas al repositorio la URL /exec ni la clave: van solo en Configuración 
 
 - Cambios en `Code.gs`: **Implementar → Administrar implementaciones → editar (lápiz) → Versión: Nueva versión → Implementar**.
   Así la URL no cambia. (Si creas una implementación nueva, cambia la URL y hay que pegarla otra vez en Configuración.)
-- Cambios en `index.html`: sube el archivo y cambia `VERSION` en `sw.js` (ej. `mv-v8`) para que los celulares tomen la versión nueva.
+- Cambios en `index.html`: sube el archivo y cambia `VERSION` en `sw.js` (ej. `mv-v9`) para que los celulares tomen la versión nueva.
 - Para comprobar: **Configuración → Versión** muestra la versión de la app y la de Apps Script. Los dos primeros
   números deben coincidir (ej. 2.0.x); si no, la app muestra un aviso arriba. El último número puede diferir cuando
   un arreglo toca solo una de las partes.
@@ -101,6 +101,7 @@ Nunca subas al repositorio la URL /exec ni la clave: van solo en Configuración 
 
 ## Versiones
 
+- **2.1.1** (solo app) — Ícono nuevo: circular, con degradado de oliva a rosado. Apps Script sigue en 2.1.0.
 - **2.1** — Nueva sección **Formación** (talleres y cursos: costeo con materiales por alumno y otros costos, precio
   sugerido según margen, control del presupuesto máximo con IVA, estados, ejecución que descuenta stock, venta y
   resultado final). Productos de tipo **servicio o curso** (sin stock ni receta) y campo **comprador** en venta rápida.
