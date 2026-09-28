@@ -1,7 +1,9 @@
 /**
  * Magia Verde Herbolaria — Backend (Google Apps Script)
- * Versión 1.2: insumos (con formatos y elaborados), compras, productos y recetas, producción,
- * inventario, listas editables, método de costo e historial de costos.
+ * Versión 2.0: insumos (con formatos y elaborados), compras, productos y recetas, producción,
+ * inventario, listas editables, método de costo, historial de costos y VENTAS: clientes (empresas
+ * con locales y precios negociados), venta rápida, órdenes de venta con folio y pagos,
+ * consignaciones y liquidaciones.
  *
  * La planilla es solo el "disco duro": todo se crea, edita, archiva y anula desde la app.
  * Reglas:
@@ -13,7 +15,7 @@
  *  - Al actualizar la app, las hojas y columnas nuevas se crean solas; los datos no se tocan.
  */
 
-const VERSION_BACKEND = '1.2.0';
+const VERSION_BACKEND = '2.0.0';
 const IVA = 0.19;
 const BODEGA = 'BODEGA';
 
@@ -27,12 +29,23 @@ const SCHEMA = {
   FORMATOS: ['id', 'insumo_id', 'nombre', 'cantidad', 'principal', 'estado'],
   LISTAS: ['lista', 'valor', 'estado', 'orden'],
   COSTOS_HIST: ['fecha', 'item_tipo', 'item_id', 'costo_unit', 'motivo', 'creado'],
-  CONFIG: ['clave', 'valor']
+  CONFIG: ['clave', 'valor'],
+  EMPRESAS: ['rut', 'razon_social', 'giro', 'direccion', 'comuna', 'email', 'telefono', 'contacto', 'cond_pago_dias', 'modalidades', 'modalidad_habitual', 'notas', 'estado', 'creado', 'actualizado'],
+  LOCALES: ['id', 'rut', 'nombre', 'direccion', 'comuna', 'contacto', 'telefono', 'email', 'estado', 'creado'],
+  PRECIOS_CLIENTE: ['rut', 'producto_id', 'precio_directo', 'precio_consig'],
+  VENTAS: ['id', 'fecha', 'canal', 'rut', 'local_id', 'estado', 'neto', 'iva', 'total', 'folio', 'fecha_folio', 'medio_pago', 'lugar', 'origen', 'notas', 'creado', 'actualizado'],
+  VENTAS_DET: ['venta_id', 'producto_id', 'cantidad', 'precio', 'subtotal', 'costo_unit'],
+  PAGOS: ['id', 'venta_id', 'fecha', 'monto', 'medio', 'estado', 'creado'],
+  CONSIGNACIONES: ['id', 'fecha', 'rut', 'local_id', 'guia', 'notas', 'estado', 'creado'],
+  CONSIG_DET: ['oc_id', 'producto_id', 'cantidad', 'precio'],
+  LIQUIDACIONES: ['id', 'fecha', 'rut', 'local_id', 'venta_id', 'notas', 'estado', 'creado'],
+  LIQ_DET: ['lq_id', 'producto_id', 'en_local', 'contado', 'vendido', 'devuelto', 'precio']
 };
 
 // Columnas numéricas; todas las demás se guardan como texto plano (evita que Sheets convierta fechas o IDs).
 const NUMERIC = ['stock_min', 'costo_unit', 'rinde_lote', 'precio_publico', 'precio_directo', 'precio_consig',
-  'cantidad', 'costo', 'total_neto', 'lotes', 'unidades', 'costo_total', 'formato_cant', 'total_pagado', 'formatos', 'orden'];
+  'cantidad', 'costo', 'total_neto', 'lotes', 'unidades', 'costo_total', 'formato_cant', 'total_pagado', 'formatos', 'orden',
+  'cond_pago_dias', 'neto', 'iva', 'total', 'precio', 'subtotal', 'monto', 'en_local', 'contado', 'vendido', 'devuelto'];
 
 const LISTAS_BASE = {
   tipo_insumo: ['Materia prima', 'Envase', 'Etiqueta', 'Otro'],
@@ -87,7 +100,12 @@ function doPost(e) {
       registrarProduccion: registrarProduccion_, anularProduccion: anularProduccion_,
       ajustarStock: ajustarStock_,
       listaAdd: listaAdd_, listaRename: listaRename_, listaDelete: listaDelete_, listaRestore: listaRestore_,
-      setConfig: setConfig_
+      setConfig: setConfig_, setEmpresaDatos: setEmpresaDatos_,
+      saveCliente: saveCliente_, deleteCliente: deleteCliente_, restoreCliente: restoreCliente_,
+      ventaRapida: ventaRapida_, saveOrden: saveOrden_, entregarOrden: entregarOrden_,
+      asignarFolio: asignarFolio_, registrarPago: registrarPago_, anularPago: anularPago_, anularVenta: anularVenta_,
+      entregarConsignacion: entregarConsignacion_, anularConsignacion: anularConsignacion_,
+      liquidar: liquidar_, anularLiquidacion: anularLiquidacion_
     };
     if (action === 'getAll') {
       if (!readAll_('LISTAS').length) conLock_(sembrarListas_); // primera vez tras actualizar
@@ -479,7 +497,7 @@ function getAll_() {
   const cfg = config_();
   return {
     version: VERSION_BACKEND,
-    config: { metodo_costo: cfg.metodo_costo },
+    config: cfg,
     insumos: readAll_('INSUMOS').map(strip_),
     productos: readAll_('PRODUCTOS').map(strip_),
     recetas: readAll_('RECETAS').map(strip_),
@@ -490,6 +508,16 @@ function getAll_() {
     movimientos: desc(movs, 500),
     costos_hist: desc(readAll_('COSTOS_HIST'), 3000),
     stock: stockMap_(movs),
+    empresas: readAll_('EMPRESAS').map(strip_),
+    locales: readAll_('LOCALES').map(strip_),
+    precios_cliente: readAll_('PRECIOS_CLIENTE').map(strip_),
+    ventas: desc(readAll_('VENTAS'), 5000),
+    ventas_det: readAll_('VENTAS_DET').map(strip_),
+    pagos: readAll_('PAGOS').map(strip_),
+    consignaciones: desc(readAll_('CONSIGNACIONES'), 2000),
+    consig_det: readAll_('CONSIG_DET').map(strip_),
+    liquidaciones: desc(readAll_('LIQUIDACIONES'), 2000),
+    liq_det: readAll_('LIQ_DET').map(strip_),
     serverTime: now_()
   };
 }
@@ -772,4 +800,365 @@ function ajustarStock_(b) {
   if (diff === 0) return { ok: true, diff: 0 };
   append_('MOVIMIENTOS', [mov_(validDate_(b.fecha), 'ajuste', itemTipo, item.id, diff, uid_('AJ'), b.nota || 'Conteo físico')]);
   return { ok: true, diff: diff };
+}
+
+
+// ─────────────────────────────────────────────────────────────
+// Datos de la empresa (encabezado de las órdenes)
+// ─────────────────────────────────────────────────────────────
+const CLAVES_EMPRESA = ['emp_razon', 'emp_rut', 'emp_giro', 'emp_direccion', 'emp_telefono', 'emp_email'];
+function setEmpresaDatos_(b) {
+  const cfg = readAll_('CONFIG');
+  CLAVES_EMPRESA.forEach(function (k) {
+    const v = String((b.datos || {})[k] || '').trim().slice(0, 200);
+    const row = cfg.filter(function (r) { return r.clave === k; })[0];
+    if (row) { row.valor = v; update_('CONFIG', row); } else append_('CONFIG', [{ clave: k, valor: v }]);
+  });
+  return { ok: true };
+}
+
+// ─────────────────────────────────────────────────────────────
+// Clientes: empresas (por RUT) con sus locales y precios negociados
+// ─────────────────────────────────────────────────────────────
+function normRut_(r) {
+  const s = String(r || '').toUpperCase().replace(/[^0-9K]/g, '');
+  if (s.length < 2) return '';
+  return s.slice(0, -1).replace(/^0+/, '') + '-' + s.slice(-1);
+}
+function rutValido_(r) {
+  const m = String(r).match(/^(\d{1,9})-([\dK])$/);
+  if (!m) return false;
+  let suma = 0, mul = 2;
+  for (let i = m[1].length - 1; i >= 0; i--) { suma += Number(m[1][i]) * mul; mul = mul === 7 ? 2 : mul + 1; }
+  const dv = 11 - (suma % 11);
+  return m[2] === (dv === 11 ? '0' : dv === 10 ? 'K' : String(dv));
+}
+function empresa_(rut) { return readAll_('EMPRESAS').filter(function (e) { return e.rut === rut; })[0] || null; }
+function clienteUsado_(rut) {
+  return readAll_('VENTAS').some(function (v) { return v.rut === rut; }) || readAll_('CONSIGNACIONES').some(function (c) { return c.rut === rut; });
+}
+function localUsado_(id) {
+  return readAll_('VENTAS').some(function (v) { return v.local_id === id; }) || readAll_('CONSIGNACIONES').some(function (c) { return c.local_id === id; });
+}
+
+function saveCliente_(b) {
+  const e = b.empresa || {};
+  const nuevo = !b.rut_original;
+  const rut = normRut_(nuevo ? e.rut : b.rut_original);
+  if (!rutValido_(rut)) throw new Error('El RUT ' + (e.rut || '') + ' no es válido. Revisa el dígito verificador.');
+  const razon = String(e.razon_social || '').trim();
+  if (!razon) throw new Error('Falta la razón social.');
+  let emp = empresa_(rut);
+  if (nuevo && emp) throw new Error('Ya existe un cliente con el RUT ' + rut + ' (' + emp.razon_social + ').');
+  if (!nuevo && !emp) throw new Error('No encontré ese cliente.');
+  if (!emp) emp = { rut: rut, estado: 'activo', creado: now_() };
+  const mods = (e.modalidades || []).filter(function (m) { return m === 'directa' || m === 'consignacion'; });
+  if (!mods.length) throw new Error('Marca al menos una modalidad (venta directa o consignación).');
+  ['giro', 'direccion', 'comuna', 'email', 'telefono', 'contacto', 'notas'].forEach(function (k) { emp[k] = String(e[k] || '').trim(); });
+  emp.razon_social = razon; emp.cond_pago_dias = num_(e.cond_pago_dias);
+  emp.modalidades = mods.join(','); emp.modalidad_habitual = mods.indexOf(e.modalidad_habitual) >= 0 ? e.modalidad_habitual : mods[0];
+  emp.actualizado = now_();
+
+  // Locales: al menos uno; el nombre del local identifica al cliente en la app, así que no se repite.
+  const locs = (b.locales || []).filter(function (l) { return String(l.nombre || '').trim(); });
+  if (!locs.length) throw new Error('Agrega al menos un local (el nombre con que lo conoces).');
+  const todos = readAll_('LOCALES');
+  const nombres = {};
+  locs.forEach(function (l) {
+    const n = norm_(l.nombre);
+    if (nombres[n]) throw new Error('El local «' + l.nombre + '» está repetido.');
+    nombres[n] = 1;
+    const otro = todos.filter(function (x) { return x.estado === 'activo' && norm_(x.nombre) === n && x.id !== l.id && x.rut !== rut; })[0];
+    if (otro) throw new Error('Ya existe un local llamado «' + otro.nombre + '» de otro cliente. Usa un nombre distinto (ej. agrega la comuna).');
+  });
+
+  if (emp._row) update_('EMPRESAS', emp); else append_('EMPRESAS', [emp]);
+  const suyos = todos.filter(function (x) { return x.rut === rut; });
+  const enviados = {};
+  locs.forEach(function (l) {
+    const cur = l.id ? suyos.filter(function (x) { return x.id === l.id; })[0] : null;
+    const obj = cur || { id: uid_('LOC'), rut: rut, creado: now_() };
+    ['nombre', 'direccion', 'comuna', 'contacto', 'telefono', 'email'].forEach(function (k) { obj[k] = String(l[k] || '').trim(); });
+    obj.estado = 'activo';
+    if (cur) update_('LOCALES', cur); else append_('LOCALES', [obj]);
+    enviados[obj.id] = 1;
+  });
+  // Locales quitados: se archivan si tienen historia o stock en consignación; si no, se borran.
+  const borrar = [];
+  readAll_('LOCALES').forEach(function (x) {
+    if (x.rut !== rut || enviados[x.id]) return;
+    if (localUsado_(x.id)) { x.estado = 'archivado'; update_('LOCALES', x); } else borrar.push(x);
+  });
+  deleteRows_('LOCALES', borrar);
+
+  // Precios negociados por empresa (reemplazo completo).
+  deleteRows_('PRECIOS_CLIENTE', readAll_('PRECIOS_CLIENTE').filter(function (pc) { return pc.rut === rut; }));
+  append_('PRECIOS_CLIENTE', (b.precios || []).filter(function (pc) { return pc.producto_id && (num_(pc.precio_directo) > 0 || num_(pc.precio_consig) > 0); })
+    .map(function (pc) { return { rut: rut, producto_id: pc.producto_id, precio_directo: num_(pc.precio_directo) || '', precio_consig: num_(pc.precio_consig) || '' }; }));
+  return { ok: true, rut: rut };
+}
+
+function deleteCliente_(b) {
+  const emp = empresa_(b.rut);
+  if (!emp) throw new Error('No encontré ese cliente.');
+  if (clienteUsado_(emp.rut)) {
+    emp.estado = 'archivado'; emp.actualizado = now_(); update_('EMPRESAS', emp);
+    return { ok: true, result: 'archivado' };
+  }
+  deleteRows_('PRECIOS_CLIENTE', readAll_('PRECIOS_CLIENTE').filter(function (pc) { return pc.rut === emp.rut; }));
+  deleteRows_('LOCALES', readAll_('LOCALES').filter(function (l) { return l.rut === emp.rut; }));
+  deleteRows_('EMPRESAS', [emp]);
+  return { ok: true, result: 'eliminado' };
+}
+
+function restoreCliente_(b) {
+  const emp = empresa_(b.rut);
+  if (!emp) throw new Error('No encontré ese cliente.');
+  emp.estado = 'activo'; emp.actualizado = now_(); update_('EMPRESAS', emp);
+  return { ok: true };
+}
+
+// ─────────────────────────────────────────────────────────────
+// Ventas: utilidades
+// ─────────────────────────────────────────────────────────────
+function lineasVenta_(lineas) {
+  const prods = {};
+  readAll_('PRODUCTOS').forEach(function (p) { prods[p.id] = p; });
+  const out = (lineas || []).filter(function (l) { return l && l.producto_id && num_(l.cantidad) > 0; }).map(function (l) {
+    const p = prods[l.producto_id];
+    if (!p) throw new Error('Hay un producto que no existe.');
+    return { producto_id: p.id, cantidad: num_(l.cantidad), precio: num_(l.precio), costo_unit: Math.round(costoReceta_(p.id, p.rinde_lote, 0)) };
+  });
+  if (!out.length) throw new Error('Agrega al menos un producto con cantidad.');
+  return out;
+}
+function guardarDetalle_(ventaId, lineas) {
+  deleteRows_('VENTAS_DET', readAll_('VENTAS_DET').filter(function (d) { return d.venta_id === ventaId; }));
+  append_('VENTAS_DET', lineas.map(function (l) {
+    return { venta_id: ventaId, producto_id: l.producto_id, cantidad: l.cantidad, precio: l.precio, subtotal: Math.round(l.cantidad * l.precio), costo_unit: l.costo_unit };
+  }));
+}
+function totalesNeto_(lineas) {
+  const neto = Math.round(lineas.reduce(function (s, l) { return s + l.cantidad * l.precio; }, 0));
+  const iva = Math.round(neto * IVA);
+  return { neto: neto, iva: iva, total: neto + iva };
+}
+function localActivo_(id) {
+  const l = readAll_('LOCALES').filter(function (x) { return x.id === id; })[0];
+  if (!l) throw new Error('Elige el local del cliente.');
+  return l;
+}
+function pagadoDe_(ventaId) {
+  return readAll_('PAGOS').filter(function (p) { return p.venta_id === ventaId && p.estado === 'activo'; })
+    .reduce(function (s, p) { return s + p.monto; }, 0);
+}
+
+// ─────────────────────────────────────────────────────────────
+// Venta rápida (ferias y público): precios con IVA, pagada al momento
+// ─────────────────────────────────────────────────────────────
+function ventaRapida_(b) {
+  const lineas = lineasVenta_(b.lineas);
+  const medios = ['Débito', 'Crédito', 'Efectivo', 'Transferencia'];
+  if (medios.indexOf(b.medio_pago) === -1) throw new Error('Elige el medio de pago.');
+  const total = Math.round(lineas.reduce(function (s, l) { return s + l.cantidad * l.precio; }, 0));
+  const neto = Math.round(total / (1 + IVA));
+  const fecha = validDate_(b.fecha);
+  const v = {
+    id: nextSeq_('VENTAS', 'V'), fecha: fecha, canal: 'publico', rut: '', local_id: '', estado: 'entregada',
+    neto: neto, iva: total - neto, total: total, folio: '', fecha_folio: '', medio_pago: b.medio_pago,
+    lugar: String(b.lugar || '').trim(), origen: '', notas: '', creado: now_(), actualizado: now_()
+  };
+  append_('VENTAS', [v]);
+  guardarDetalle_(v.id, lineas);
+  append_('MOVIMIENTOS', lineas.map(function (l) { return mov_(fecha, 'venta', 'producto', l.producto_id, -l.cantidad, v.id, v.lugar || 'Venta rápida'); }));
+  append_('PAGOS', [{ id: uid_('PG'), venta_id: v.id, fecha: fecha, monto: total, medio: b.medio_pago, estado: 'activo', creado: now_() }]);
+  return { ok: true, venta: v };
+}
+
+// ─────────────────────────────────────────────────────────────
+// Órdenes de venta a negocios (precios netos + IVA)
+// Estados: borrador → entregada (descuenta stock). La factura (folio) y los pagos se registran aparte.
+// ─────────────────────────────────────────────────────────────
+function saveOrden_(b) {
+  const loc = localActivo_(b.local_id);
+  const emp = empresa_(loc.rut);
+  if (!emp) throw new Error('El local no tiene empresa asociada.');
+  const lineas = lineasVenta_(b.lineas);
+  if (lineas.some(function (l) { return !(l.precio > 0); })) throw new Error('Todos los productos necesitan precio.');
+  let v;
+  if (b.id) {
+    v = findById_('VENTAS', b.id);
+    if (!v) throw new Error('No encontré esa orden.');
+    if (v.estado !== 'borrador') throw new Error('Solo se pueden editar órdenes en borrador.');
+  } else {
+    v = { id: nextSeq_('VENTAS', 'OV'), canal: 'directa', estado: 'borrador', folio: '', fecha_folio: '', medio_pago: '', lugar: '', origen: '', creado: now_() };
+  }
+  const t = totalesNeto_(lineas);
+  v.fecha = validDate_(b.fecha); v.rut = emp.rut; v.local_id = loc.id; v.neto = t.neto; v.iva = t.iva; v.total = t.total;
+  v.notas = String(b.notas || '').trim(); v.actualizado = now_();
+  if (v._row) update_('VENTAS', v); else append_('VENTAS', [v]);
+  guardarDetalle_(v.id, lineas);
+  if (b.entregar) entregarOrden_({ id: v.id, fecha: v.fecha });
+  return { ok: true, venta: strip_(findById_('VENTAS', v.id)) };
+}
+
+function entregarOrden_(b) {
+  const v = findById_('VENTAS', b.id);
+  if (!v) throw new Error('No encontré esa orden.');
+  if (v.estado !== 'borrador') throw new Error('La orden ya fue entregada o anulada.');
+  const fecha = validDate_(b.fecha || v.fecha);
+  const det = readAll_('VENTAS_DET').filter(function (d) { return d.venta_id === v.id; });
+  // El costo se congela al momento de entregar (para calcular el margen real de la venta).
+  const prods = {};
+  readAll_('PRODUCTOS').forEach(function (p) { prods[p.id] = p; });
+  det.forEach(function (d) { const p = prods[d.producto_id]; if (p) { d.costo_unit = Math.round(costoReceta_(p.id, p.rinde_lote, 0)); update_('VENTAS_DET', d); } });
+  append_('MOVIMIENTOS', det.map(function (d) { return mov_(fecha, 'venta', 'producto', d.producto_id, -d.cantidad, v.id, 'Orden de venta'); }));
+  v.estado = 'entregada'; v.fecha = fecha; v.actualizado = now_(); update_('VENTAS', v);
+  return { ok: true };
+}
+
+/** Asigna (o quita, con folio vacío) el folio SII a una o varias órdenes (factura múltiple). */
+function asignarFolio_(b) {
+  const ids = b.ids || [b.id];
+  const folio = String(b.folio || '').trim();
+  ids.forEach(function (id) {
+    const v = findById_('VENTAS', id);
+    if (!v) throw new Error('No encontré la orden ' + id + '.');
+    if (v.canal === 'publico') throw new Error('Las ventas rápidas no llevan folio de factura.');
+    if (v.estado !== 'entregada') throw new Error('La orden ' + id + ' debe estar entregada para facturarla.');
+    v.folio = folio; v.fecha_folio = folio ? validDate_(b.fecha) : ''; v.actualizado = now_(); update_('VENTAS', v);
+  });
+  return { ok: true };
+}
+
+function registrarPago_(b) {
+  const v = findById_('VENTAS', b.venta_id);
+  if (!v) throw new Error('No encontré esa venta.');
+  if (v.estado !== 'entregada') throw new Error('Solo se registran pagos de ventas entregadas.');
+  const monto = Math.round(num_(b.monto));
+  if (monto <= 0) throw new Error('Ingresa el monto pagado.');
+  const saldo = v.total - pagadoDe_(v.id);
+  if (monto > saldo + 1) throw new Error('El pago (' + monto + ') es mayor que el saldo pendiente (' + saldo + ').');
+  append_('PAGOS', [{ id: uid_('PG'), venta_id: v.id, fecha: validDate_(b.fecha), monto: monto, medio: String(b.medio || '').trim() || 'Transferencia', estado: 'activo', creado: now_() }]);
+  return { ok: true };
+}
+
+function anularPago_(b) {
+  const p = findById_('PAGOS', b.id);
+  if (!p) throw new Error('No encontré ese pago.');
+  p.estado = 'anulado'; update_('PAGOS', p);
+  return { ok: true };
+}
+
+function anularVenta_(b) {
+  const v = findById_('VENTAS', b.id);
+  if (!v) throw new Error('No encontré esa venta.');
+  if (v.estado === 'anulada') return { ok: true };
+  if (v.origen) throw new Error('Esta orden viene de la liquidación ' + v.origen + '. Anula la liquidación.');
+  readAll_('PAGOS').forEach(function (p) { if (p.venta_id === v.id && p.estado === 'activo') { p.estado = 'anulado'; update_('PAGOS', p); } });
+  anularMovsDeRef_(v.id);
+  v.estado = 'anulada'; v.actualizado = now_(); update_('VENTAS', v);
+  return { ok: true };
+}
+
+// ─────────────────────────────────────────────────────────────
+// Consignación: el producto sigue siendo de Magia Verde, pero está en el local del cliente.
+// El stock se mueve de BODEGA a la ubicación LOCAL:<id>. Se cobra al liquidar.
+// ─────────────────────────────────────────────────────────────
+function entregarConsignacion_(b) {
+  const loc = localActivo_(b.local_id);
+  const lineas = lineasVenta_(b.lineas);
+  const fecha = validDate_(b.fecha);
+  const oc = { id: nextSeq_('CONSIGNACIONES', 'OC'), fecha: fecha, rut: loc.rut, local_id: loc.id, guia: String(b.guia || '').trim(), notas: String(b.notas || '').trim(), estado: 'entregada', creado: now_() };
+  append_('CONSIGNACIONES', [oc]);
+  append_('CONSIG_DET', lineas.map(function (l) { return { oc_id: oc.id, producto_id: l.producto_id, cantidad: l.cantidad, precio: l.precio }; }));
+  const movs = [];
+  lineas.forEach(function (l) {
+    movs.push(mov_(fecha, 'consignacion', 'producto', l.producto_id, -l.cantidad, oc.id, 'A ' + loc.nombre));
+    const m = mov_(fecha, 'consignacion', 'producto', l.producto_id, l.cantidad, oc.id, loc.nombre); m.ubicacion = 'LOCAL:' + loc.id; movs.push(m);
+  });
+  append_('MOVIMIENTOS', movs);
+  return { ok: true, consignacion: oc };
+}
+
+function anularConsignacion_(b) {
+  const oc = findById_('CONSIGNACIONES', b.id);
+  if (!oc) throw new Error('No encontré esa consignación.');
+  if (oc.estado === 'anulada') return { ok: true };
+  const st = stockMap_();
+  const det = readAll_('CONSIG_DET').filter(function (d) { return d.oc_id === oc.id; });
+  det.forEach(function (d) {
+    const enLocal = (st[d.producto_id] && st[d.producto_id]['LOCAL:' + oc.local_id]) || 0;
+    if (enLocal < d.cantidad) throw new Error('Parte de esta entrega ya se liquidó. Anula primero la liquidación posterior.');
+  });
+  anularMovsDeRef_(oc.id);
+  oc.estado = 'anulada'; update_('CONSIGNACIONES', oc);
+  return { ok: true };
+}
+
+/**
+ * Liquidación de un local: Javi cuenta lo que queda. Vendido = en local − contado.
+ * Lo que se retira vuelve a bodega; el resto sigue en consignación.
+ * Si hubo ventas, se genera una orden de venta (entregada) por lo vendido, lista para folio y cobro.
+ */
+function liquidar_(b) {
+  const loc = localActivo_(b.local_id);
+  const ubic = 'LOCAL:' + loc.id;
+  const st = stockMap_();
+  const prods = {};
+  readAll_('PRODUCTOS').forEach(function (p) { prods[p.id] = p; });
+  const fecha = validDate_(b.fecha);
+  const lineas = (b.lineas || []).map(function (l) {
+    const enLocal = (st[l.producto_id] && st[l.producto_id][ubic]) || 0;
+    const contado = num_(l.contado), devuelto = num_(l.devuelto);
+    const p = prods[l.producto_id];
+    if (!p) throw new Error('Hay un producto que no existe.');
+    if (contado < 0 || contado > enLocal) throw new Error(p.nombre + ': el conteo (' + contado + ') no puede ser mayor a lo que hay en el local (' + enLocal + ').');
+    if (devuelto < 0 || devuelto > contado) throw new Error(p.nombre + ': lo que vuelve a bodega no puede ser mayor a lo contado.');
+    return { producto_id: p.id, en_local: enLocal, contado: contado, vendido: round_(enLocal - contado), devuelto: devuelto, precio: num_(l.precio), costo_unit: Math.round(costoReceta_(p.id, p.rinde_lote, 0)) };
+  }).filter(function (l) { return l.en_local > 0; });
+  if (!lineas.length) throw new Error('Este local no tiene productos en consignación.');
+  if (lineas.some(function (l) { return l.vendido > 0 && !(l.precio > 0); })) throw new Error('Falta el precio de algún producto vendido.');
+
+  const lq = { id: nextSeq_('LIQUIDACIONES', 'LQ'), fecha: fecha, rut: loc.rut, local_id: loc.id, venta_id: '', notas: String(b.notas || '').trim(), estado: 'activa', creado: now_() };
+  const vendidas = lineas.filter(function (l) { return l.vendido > 0; });
+  if (vendidas.length) {
+    const vl = vendidas.map(function (l) { return { producto_id: l.producto_id, cantidad: l.vendido, precio: l.precio, costo_unit: l.costo_unit }; });
+    const t = totalesNeto_(vl);
+    const v = { id: nextSeq_('VENTAS', 'OV'), fecha: fecha, canal: 'consignacion', rut: loc.rut, local_id: loc.id, estado: 'entregada', neto: t.neto, iva: t.iva, total: t.total,
+      folio: '', fecha_folio: '', medio_pago: '', lugar: '', origen: lq.id, notas: 'Liquidación ' + lq.id, creado: now_(), actualizado: now_() };
+    append_('VENTAS', [v]);
+    guardarDetalle_(v.id, vl);
+    lq.venta_id = v.id;
+  }
+  append_('LIQUIDACIONES', [lq]);
+  append_('LIQ_DET', lineas.map(function (l) { return { lq_id: lq.id, producto_id: l.producto_id, en_local: l.en_local, contado: l.contado, vendido: l.vendido, devuelto: l.devuelto, precio: l.precio }; }));
+  const movs = [];
+  lineas.forEach(function (l) {
+    if (l.vendido > 0) { const m = mov_(fecha, 'venta', 'producto', l.producto_id, -l.vendido, lq.id, 'Vendido en ' + loc.nombre); m.ubicacion = ubic; movs.push(m); }
+    if (l.devuelto > 0) {
+      const a = mov_(fecha, 'devolucion', 'producto', l.producto_id, -l.devuelto, lq.id, 'Retirado de ' + loc.nombre); a.ubicacion = ubic; movs.push(a);
+      movs.push(mov_(fecha, 'devolucion', 'producto', l.producto_id, l.devuelto, lq.id, 'Vuelve de ' + loc.nombre));
+    }
+  });
+  append_('MOVIMIENTOS', movs);
+  return { ok: true, liquidacion: lq };
+}
+
+function anularLiquidacion_(b) {
+  const lq = findById_('LIQUIDACIONES', b.id);
+  if (!lq) throw new Error('No encontré esa liquidación.');
+  if (lq.estado === 'anulada') return { ok: true };
+  // Solo se puede anular la última liquidación del local (las siguientes partieron de su conteo).
+  const posterior = readAll_('LIQUIDACIONES').some(function (x) { return x.local_id === lq.local_id && x.estado === 'activa' && x.id !== lq.id && (x.fecha + x.creado) > (lq.fecha + lq.creado); });
+  if (posterior) throw new Error('Hay una liquidación posterior en este local. Anula primero la más reciente.');
+  if (lq.venta_id) {
+    const v = findById_('VENTAS', lq.venta_id);
+    if (v && pagadoDe_(v.id) > 0) throw new Error('La orden ' + v.id + ' ya tiene pagos. Anula los pagos primero.');
+    if (v && v.folio) throw new Error('La orden ' + v.id + ' ya tiene folio ' + v.folio + '. Quita el folio primero (y emite la nota de crédito en el SII si corresponde).');
+    if (v) { v.estado = 'anulada'; v.actualizado = now_(); update_('VENTAS', v); }
+  }
+  anularMovsDeRef_(lq.id);
+  lq.estado = 'anulada'; update_('LIQUIDACIONES', lq);
+  return { ok: true };
 }

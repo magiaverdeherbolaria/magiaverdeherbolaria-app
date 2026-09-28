@@ -1,8 +1,12 @@
-# Magia Verde · App de gestión — versión 1.2
+# Magia Verde · App de gestión — versión 2.0
 
-Incluye: insumos (con varios formatos de compra e insumos elaborados), compras con historial y totales,
-productos y recetas (costeo, márgenes e historial de costo), producción, inventario con ajustes,
-listas editables y método de costo configurable.
+Incluye:
+- **Ventas**: clientes (empresas por RUT con sus locales y precios negociados), venta rápida para ferias,
+  órdenes de venta con PDF y WhatsApp, folio SII (también factura múltiple), pagos y cobranza,
+  consignaciones con liquidación, historial de ventas con margen.
+- **Producción y stock**: insumos (con varios formatos de compra e insumos elaborados), compras con historial,
+  productos y recetas (costeo, márgenes e historial de costo), producción, inventario en bodega y en locales.
+- **Configuración**: datos de la empresa, listas editables, método de costo, versión.
 El menú ya muestra las secciones de la fase 2 (ventas, órdenes, consignaciones, clientes, talleres) como «pronto».
 
 ```
@@ -52,13 +56,17 @@ Nunca subas al repositorio la URL /exec ni la clave: van solo en Configuración 
    3. **Inventario → Ajustar**: carga el stock real que tienes hoy (motivo «Carga inicial»).
    4. **Productos**: crea cada producto con su receta por lote y precios.
    5. Desde ahí, cada **producción** descuenta insumos y suma producto sola.
+   6. **Configuración → Datos de la empresa**: razón social, RUT y contacto (salen en el PDF de las órdenes).
+   7. **Clientes**: cada empresa con su RUT, sus locales y, si hay, sus precios negociados.
+   8. Si hay productos que ya están en consignación en algún local, regístralos con **Entregar en consignación**
+      (fecha real de entrega) para que la primera liquidación cuadre.
 3. En el celular: abrir el enlace en Chrome → menú ⋮ → **Instalar app**.
 
 ## Cuando actualices la app
 
 - Cambios en `Code.gs`: **Implementar → Administrar implementaciones → editar (lápiz) → Versión: Nueva versión → Implementar**.
   Así la URL no cambia. (Si creas una implementación nueva, cambia la URL y hay que pegarla otra vez en Configuración.)
-- Cambios en `index.html`: sube el archivo y cambia `VERSION` en `sw.js` (ej. `mv-v3`) para que los celulares tomen la versión nueva.
+- Cambios en `index.html`: sube el archivo y cambia `VERSION` en `sw.js` (ej. `mv-v5`) para que los celulares tomen la versión nueva.
 - Para comprobar: **Configuración → Versión** muestra la versión de la app y la de Apps Script. Deben coincidir;
   si no, la app muestra un aviso arriba.
 - Las actualizaciones crean solas las hojas y columnas nuevas. No hace falta volver a ejecutar `setup`.
@@ -70,11 +78,23 @@ Nunca subas al repositorio la URL /exec ni la clave: van solo en Configuración 
 - El costo de cada insumo sale de sus entradas (compras, o lotes si es elaborado) según el **método de costo** de Configuración:
   **última entrada** (por defecto) o **costo promedio**. Si anulas una compra, el costo se recalcula sin ella.
 - Listas (tipos, unidades, categorías, motivos): renombrar actualiza los registros; eliminar un valor en uso solo lo oculta.
+- Ventas: la venta rápida usa el precio público (con IVA) y queda pagada al momento. Las órdenes a negocios usan
+  precios netos + IVA: el precio negociado de la empresa si existe, si no el general del producto.
+- Una orden en **borrador** no mueve stock; al **confirmar la entrega** sale de bodega. La factura se emite en el SII
+  y aquí solo se anota el **folio**. Los pagos pueden ser parciales.
+- **Consignación**: el producto pasa de bodega al local del cliente (sigue siendo de Magia Verde). Al **liquidar** se
+  cuenta lo que queda: vendido = en el local − contado. Lo retirado vuelve a bodega y el resto sigue en consignación.
+  La liquidación genera la orden de venta por lo vendido, lista para folio y cobro.
+- Anular: una orden entregada devuelve el stock y anula sus pagos (si tenía folio, en el SII corresponde nota de crédito).
+  La orden de una liquidación se anula anulando la liquidación (solo la más reciente de cada local).
 - Compras: se ingresa siempre el **total pagado**. Con **factura** el costo se calcula sin IVA (se recupera como crédito fiscal);
   con **boleta o sin documento** el costo es todo lo pagado.
 
 ## Versiones
 
+- **2.0** — Fase de ventas: clientes con locales y precios negociados, venta rápida, órdenes de venta (PDF, WhatsApp,
+  folio, pagos), consignaciones y liquidaciones, ventas y cobranza (historial con margen, por cobrar, por facturar,
+  factura múltiple, CSV), datos de la empresa, inicio con ventas del mes, por cobrar y pendientes.
 - **1.2** — Botón de sincronizar en el computador y sincronización automática al volver a la app; versión visible en
   Configuración con aviso si no coinciden; listas editables; varios formatos de compra por insumo (botones al comprar);
   stock y mínimo expresados en formatos («quedan 2 frascos»); insumos elaborados con receta propia (oleatos, tinturas,
