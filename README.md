@@ -66,7 +66,7 @@ Nunca subas al repositorio la URL /exec ni la clave: van solo en Configuración 
 
 - Cambios en `Code.gs`: **Implementar → Administrar implementaciones → editar (lápiz) → Versión: Nueva versión → Implementar**.
   Así la URL no cambia. (Si creas una implementación nueva, cambia la URL y hay que pegarla otra vez en Configuración.)
-- Cambios en `index.html`: sube el archivo y cambia `VERSION` en `sw.js` (ej. `mv-v7`) para que los celulares tomen la versión nueva.
+- Cambios en `index.html`: sube el archivo y cambia `VERSION` en `sw.js` (ej. `mv-v8`) para que los celulares tomen la versión nueva.
 - Para comprobar: **Configuración → Versión** muestra la versión de la app y la de Apps Script. Los dos primeros
   números deben coincidir (ej. 2.0.x); si no, la app muestra un aviso arriba. El último número puede diferir cuando
   un arreglo toca solo una de las partes.
@@ -92,9 +92,19 @@ Nunca subas al repositorio la URL /exec ni la clave: van solo en Configuración 
   La orden de una liquidación se anula anulando la liquidación (solo la más reciente de cada local).
 - Compras: se ingresa siempre el **total pagado**. Con **factura** el costo se calcula sin IVA (se recupera como crédito fiscal);
   con **boleta o sin documento** el costo es todo lo pagado.
+- **Formación**: cada taller o curso es un **proyecto** (origen: Licitación, Compra Ágil, Trato directo o Privado) que
+  pasa por costeo → postulado → adjudicado → ejecutado → cerrado. Los materiales se indican **por alumno**; al
+  **registrar la ejecución** se descuentan del stock según los alumnos reales. **Generar venta** crea la orden por el
+  precio ofertado (afecto o exento de IVA) para anotar folio y pagos en Ventas y cobranza.
+- **Servicios o cursos** (ej. el curso online): son productos de tipo servicio, sin receta ni stock. Se venden en
+  venta rápida (lugar «Online» y, opcional, el nombre del comprador) y quedan en el historial de ventas.
 
 ## Versiones
 
+- **2.1** — Nueva sección **Formación** (talleres y cursos: costeo con materiales por alumno y otros costos, precio
+  sugerido según margen, control del presupuesto máximo con IVA, estados, ejecución que descuenta stock, venta y
+  resultado final). Productos de tipo **servicio o curso** (sin stock ni receta) y campo **comprador** en venta rápida.
+  Cambian las dos partes: subir `index.html` y `sw.js`, y en Apps Script pegar `Code.gs` y crear **Nueva versión**.
 - **2.0.2** (solo app) — Botones de acción con fondo propio (WhatsApp, PDF, Anular…); «WhatsApp con PDF»: en el celular
   abre el menú de compartir con el PDF y el mensaje, en el computador descarga el PDF y abre el chat del cliente;
   casilla «Cant.» rotulada al entregar u ordenar. Apps Script sigue en 2.0.1.

@@ -15,13 +15,13 @@
  *  - Al actualizar la app, las hojas y columnas nuevas se crean solas; los datos no se tocan.
  */
 
-const VERSION_BACKEND = '2.0.1';
+const VERSION_BACKEND = '2.1.0';
 const IVA = 0.19;
 const BODEGA = 'BODEGA';
 
 const SCHEMA = {
   INSUMOS: ['id', 'nombre', 'tipo', 'unidad', 'stock_min', 'costo_unit', 'ultima_compra', 'proveedor', 'estado', 'creado', 'actualizado', 'formato', 'formato_cant', 'elaborado', 'rinde_lote'],
-  PRODUCTOS: ['id', 'nombre', 'categoria', 'presentacion', 'rinde_lote', 'precio_publico', 'precio_directo', 'precio_consig', 'stock_min', 'estado', 'creado', 'actualizado', 'precio_b2b'],
+  PRODUCTOS: ['id', 'nombre', 'categoria', 'presentacion', 'rinde_lote', 'precio_publico', 'precio_directo', 'precio_consig', 'stock_min', 'estado', 'creado', 'actualizado', 'precio_b2b', 'tipo'],
   RECETAS: ['producto_id', 'tipo', 'ref', 'cantidad', 'costo'],
   COMPRAS: ['id', 'fecha', 'insumo_id', 'cantidad', 'total_neto', 'costo_unit', 'proveedor', 'documento', 'iva_incluido', 'estado', 'creado', 'tipo_doc', 'total_pagado', 'formato', 'formatos', 'formato_cant'],
   PRODUCCION: ['id', 'fecha', 'producto_id', 'lotes', 'unidades', 'costo_total', 'costo_unit', 'notas', 'estado', 'creado', 'item_tipo'],
@@ -39,13 +39,19 @@ const SCHEMA = {
   CONSIGNACIONES: ['id', 'fecha', 'rut', 'local_id', 'guia', 'notas', 'estado', 'creado'],
   CONSIG_DET: ['oc_id', 'producto_id', 'cantidad', 'precio'],
   LIQUIDACIONES: ['id', 'fecha', 'rut', 'local_id', 'venta_id', 'notas', 'estado', 'creado'],
-  LIQ_DET: ['lq_id', 'producto_id', 'en_local', 'contado', 'vendido', 'devuelto', 'precio']
+  LIQ_DET: ['lq_id', 'producto_id', 'en_local', 'contado', 'vendido', 'devuelto', 'precio'],
+  PROYECTOS: ['id', 'nombre', 'origen', 'institucion', 'rut', 'id_licitacion', 'estado', 'fecha_postulacion', 'fecha_inicio', 'fecha_fin',
+    'alumnos', 'sesiones', 'horas', 'presupuesto_max', 'margen_obj', 'precio_ofertado', 'afecto_iva', 'link_doc', 'notas',
+    'venta_id', 'ejecutado_fecha', 'alumnos_reales', 'costo_mat_real', 'creado', 'actualizado'],
+  PROY_MAT: ['proyecto_id', 'tipo', 'ref', 'cantidad'],
+  PROY_COSTOS: ['proyecto_id', 'descripcion', 'cantidad', 'valor_unit']
 };
 
 // Columnas numéricas; todas las demás se guardan como texto plano (evita que Sheets convierta fechas o IDs).
 const NUMERIC = ['stock_min', 'costo_unit', 'rinde_lote', 'precio_publico', 'precio_directo', 'precio_consig', 'precio_b2b',
   'cantidad', 'costo', 'total_neto', 'lotes', 'unidades', 'costo_total', 'formato_cant', 'total_pagado', 'formatos', 'orden',
-  'cond_pago_dias', 'neto', 'iva', 'total', 'precio', 'subtotal', 'monto', 'en_local', 'contado', 'vendido', 'devuelto'];
+  'cond_pago_dias', 'neto', 'iva', 'total', 'precio', 'subtotal', 'monto', 'en_local', 'contado', 'vendido', 'devuelto',
+  'alumnos', 'sesiones', 'horas', 'presupuesto_max', 'margen_obj', 'precio_ofertado', 'alumnos_reales', 'costo_mat_real', 'valor_unit'];
 
 const LISTAS_BASE = {
   tipo_insumo: ['Materia prima', 'Envase', 'Etiqueta', 'Otro'],
@@ -105,7 +111,9 @@ function doPost(e) {
       ventaRapida: ventaRapida_, saveOrden: saveOrden_, entregarOrden: entregarOrden_,
       asignarFolio: asignarFolio_, registrarPago: registrarPago_, anularPago: anularPago_, anularVenta: anularVenta_,
       entregarConsignacion: entregarConsignacion_, anularConsignacion: anularConsignacion_,
-      liquidar: liquidar_, anularLiquidacion: anularLiquidacion_
+      liquidar: liquidar_, anularLiquidacion: anularLiquidacion_,
+      saveProyecto: saveProyecto_, estadoProyecto: estadoProyecto_, ejecutarProyecto: ejecutarProyecto_,
+      anularEjecucion: anularEjecucion_, facturarProyecto: facturarProyecto_, deleteProyecto: deleteProyecto_
     };
     if (action === 'getAll') {
       if (!readAll_('LISTAS').length) conLock_(sembrarListas_); // primera vez tras actualizar
@@ -518,6 +526,9 @@ function getAll_() {
     consig_det: readAll_('CONSIG_DET').map(strip_),
     liquidaciones: desc(readAll_('LIQUIDACIONES'), 2000),
     liq_det: readAll_('LIQ_DET').map(strip_),
+    proyectos: desc(readAll_('PROYECTOS'), 2000),
+    proy_mat: readAll_('PROY_MAT').map(strip_),
+    proy_costos: readAll_('PROY_COSTOS').map(strip_),
     serverTime: now_()
   };
 }
@@ -627,7 +638,8 @@ function saveProducto_(b) {
   const d = b.producto || {};
   const nombre = String(d.nombre || '').trim();
   if (!nombre) throw new Error('El producto necesita un nombre.');
-  if (num_(d.rinde_lote) <= 0) throw new Error('Indica cuántas unidades rinde un lote.');
+  if (d.tipo !== 'servicio' && num_(d.rinde_lote) <= 0) throw new Error('Indica cuántas unidades rinde un lote.');
+  if (d.tipo === 'servicio') { d.rinde_lote = d.rinde_lote || 1; b.receta = []; }
   const all = readAll_('PRODUCTOS');
   const dup = all.filter(function (x) { return x.id !== d.id && x.estado !== 'archivado' && norm_(x.nombre) === norm_(nombre); });
   if (dup.length) throw new Error('Ya existe un producto llamado "' + dup[0].nombre + '".');
@@ -645,6 +657,7 @@ function saveProducto_(b) {
   // Desde 2.0.1 hay un solo precio para negocios (B2B, neto). Las columnas antiguas quedan vacías.
   prod.precio_b2b = num_(d.precio_b2b); prod.precio_directo = ''; prod.precio_consig = '';
   prod.stock_min = num_(d.stock_min); prod.actualizado = now_();
+  prod.tipo = d.tipo === 'servicio' ? 'servicio' : '';
   if (prod._row) update_('PRODUCTOS', prod); else append_('PRODUCTOS', [prod]);
   guardarReceta_(prod.id, lineas);
   asegurarEnLista_('categoria', prod.categoria);
@@ -928,7 +941,7 @@ function lineasVenta_(lineas) {
   const out = (lineas || []).filter(function (l) { return l && l.producto_id && num_(l.cantidad) > 0; }).map(function (l) {
     const p = prods[l.producto_id];
     if (!p) throw new Error('Hay un producto que no existe.');
-    return { producto_id: p.id, cantidad: num_(l.cantidad), precio: num_(l.precio), costo_unit: Math.round(costoReceta_(p.id, p.rinde_lote, 0)) };
+    return { producto_id: p.id, cantidad: num_(l.cantidad), precio: num_(l.precio), costo_unit: Math.round(costoReceta_(p.id, p.rinde_lote, 0)), servicio: p.tipo === 'servicio' };
   });
   if (!out.length) throw new Error('Agrega al menos un producto con cantidad.');
   return out;
@@ -967,11 +980,11 @@ function ventaRapida_(b) {
   const v = {
     id: nextSeq_('VENTAS', 'V'), fecha: fecha, canal: 'publico', rut: '', local_id: '', estado: 'entregada',
     neto: neto, iva: total - neto, total: total, folio: '', fecha_folio: '', medio_pago: b.medio_pago,
-    lugar: String(b.lugar || '').trim(), origen: '', notas: '', creado: now_(), actualizado: now_()
+    lugar: String(b.lugar || '').trim(), origen: '', notas: String(b.comprador || '').trim(), creado: now_(), actualizado: now_()
   };
   append_('VENTAS', [v]);
   guardarDetalle_(v.id, lineas);
-  append_('MOVIMIENTOS', lineas.map(function (l) { return mov_(fecha, 'venta', 'producto', l.producto_id, -l.cantidad, v.id, v.lugar || 'Venta rápida'); }));
+  append_('MOVIMIENTOS', lineas.filter(function (l) { return !l.servicio; }).map(function (l) { return mov_(fecha, 'venta', 'producto', l.producto_id, -l.cantidad, v.id, v.lugar || 'Venta rápida'); }));
   append_('PAGOS', [{ id: uid_('PG'), venta_id: v.id, fecha: fecha, monto: total, medio: b.medio_pago, estado: 'activo', creado: now_() }]);
   return { ok: true, venta: v };
 }
@@ -1013,7 +1026,7 @@ function entregarOrden_(b) {
   const prods = {};
   readAll_('PRODUCTOS').forEach(function (p) { prods[p.id] = p; });
   det.forEach(function (d) { const p = prods[d.producto_id]; if (p) { d.costo_unit = Math.round(costoReceta_(p.id, p.rinde_lote, 0)); update_('VENTAS_DET', d); } });
-  append_('MOVIMIENTOS', det.map(function (d) { return mov_(fecha, 'venta', 'producto', d.producto_id, -d.cantidad, v.id, 'Orden de venta'); }));
+  append_('MOVIMIENTOS', det.filter(function (d) { return prods[d.producto_id] && prods[d.producto_id].tipo !== 'servicio'; }).map(function (d) { return mov_(fecha, 'venta', 'producto', d.producto_id, -d.cantidad, v.id, 'Orden de venta'); }));
   v.estado = 'entregada'; v.fecha = fecha; v.actualizado = now_(); update_('VENTAS', v);
   return { ok: true };
 }
@@ -1055,7 +1068,8 @@ function anularVenta_(b) {
   const v = findById_('VENTAS', b.id);
   if (!v) throw new Error('No encontré esa venta.');
   if (v.estado === 'anulada') return { ok: true };
-  if (v.origen) throw new Error('Esta orden viene de la liquidación ' + v.origen + '. Anula la liquidación.');
+  if (v.origen && v.origen.indexOf('LQ-') === 0) throw new Error('Esta orden viene de la liquidación ' + v.origen + '. Anula la liquidación.');
+  if (v.origen && v.origen.indexOf('FP-') === 0) { const pr = findById_('PROYECTOS', v.origen); if (pr && pr.venta_id === v.id) { pr.venta_id = ''; pr.actualizado = now_(); update_('PROYECTOS', pr); } }
   readAll_('PAGOS').forEach(function (p) { if (p.venta_id === v.id && p.estado === 'activo') { p.estado = 'anulado'; update_('PAGOS', p); } });
   anularMovsDeRef_(v.id);
   v.estado = 'anulada'; v.actualizado = now_(); update_('VENTAS', v);
@@ -1162,4 +1176,126 @@ function anularLiquidacion_(b) {
   anularMovsDeRef_(lq.id);
   lq.estado = 'anulada'; update_('LIQUIDACIONES', lq);
   return { ok: true };
+}
+
+
+// ─────────────────────────────────────────────────────────────
+// Formación: talleres y cursos (licitaciones, Compra Ágil, trato directo o privados)
+// Etapas: costeo → postulado → adjudicado → ejecutado → cerrado (o no_adjudicado / cancelado).
+// Los materiales se costean por alumno; al ejecutar se descuentan del stock; la venta se
+// genera como una orden (canal «formacion») que sigue el flujo normal de folio y cobro.
+// ─────────────────────────────────────────────────────────────
+const ESTADOS_PROY = ['costeo', 'postulado', 'adjudicado', 'ejecutado', 'cerrado', 'no_adjudicado', 'cancelado'];
+
+function saveProyecto_(b) {
+  const d = b.proyecto || {};
+  const nombre = String(d.nombre || '').trim();
+  if (!nombre) throw new Error('El proyecto necesita un nombre.');
+  let pr;
+  if (d.id) { pr = findById_('PROYECTOS', d.id); if (!pr) throw new Error('No encontré ese proyecto.'); }
+  else pr = { id: nextSeq_('PROYECTOS', 'FP'), estado: 'costeo', venta_id: '', ejecutado_fecha: '', alumnos_reales: '', costo_mat_real: '', creado: now_() };
+  const ejecutado = !!pr.ejecutado_fecha;
+  ['nombre', 'institucion', 'id_licitacion', 'link_doc', 'notas'].forEach(function (k) { pr[k] = String(d[k] || '').trim(); });
+  pr.origen = ['Licitación', 'Compra Ágil', 'Trato directo', 'Privado'].indexOf(d.origen) >= 0 ? d.origen : 'Licitación';
+  pr.rut = d.rut ? normRut_(d.rut) : '';
+  if (pr.rut && !rutValido_(pr.rut)) throw new Error('El RUT de la institución no es válido.');
+  ['fecha_postulacion', 'fecha_inicio', 'fecha_fin'].forEach(function (k) { pr[k] = /^\d{4}-\d{2}-\d{2}$/.test(String(d[k] || '')) ? d[k] : ''; });
+  ['alumnos', 'sesiones', 'horas', 'presupuesto_max', 'margen_obj', 'precio_ofertado'].forEach(function (k) { pr[k] = num_(d[k]); });
+  pr.afecto_iva = d.afecto_iva === 'no' ? 'no' : 'si';
+  pr.nombre = nombre; pr.actualizado = now_();
+  if (pr._row) update_('PROYECTOS', pr); else append_('PROYECTOS', [pr]);
+  if (!ejecutado || b.forzarMateriales) {
+    const ins = {}, prods = {};
+    readAll_('INSUMOS').forEach(function (i) { ins[i.id] = 1; });
+    readAll_('PRODUCTOS').forEach(function (p) { prods[p.id] = 1; });
+    const mats = (b.materiales || []).filter(function (m) { return m && m.ref && num_(m.cantidad) > 0 && (m.tipo === 'producto' ? prods[m.ref] : ins[m.ref]); });
+    deleteRows_('PROY_MAT', readAll_('PROY_MAT').filter(function (m) { return m.proyecto_id === pr.id; }));
+    append_('PROY_MAT', mats.map(function (m) { return { proyecto_id: pr.id, tipo: m.tipo === 'producto' ? 'producto' : 'insumo', ref: m.ref, cantidad: num_(m.cantidad) }; }));
+  }
+  const costos = (b.costos || []).filter(function (c) { return c && String(c.descripcion || '').trim() && num_(c.valor) > 0; });
+  deleteRows_('PROY_COSTOS', readAll_('PROY_COSTOS').filter(function (c) { return c.proyecto_id === pr.id; }));
+  append_('PROY_COSTOS', costos.map(function (c) { return { proyecto_id: pr.id, descripcion: String(c.descripcion).trim(), cantidad: num_(c.cantidad) || 1, valor_unit: num_(c.valor) }; }));
+  return { ok: true, proyecto: strip_(findById_('PROYECTOS', pr.id)) };
+}
+
+function estadoProyecto_(b) {
+  const pr = findById_('PROYECTOS', b.id);
+  if (!pr) throw new Error('No encontré ese proyecto.');
+  if (ESTADOS_PROY.indexOf(b.estado) === -1) throw new Error('Estado no válido.');
+  if (b.estado === 'ejecutado' && !pr.ejecutado_fecha) throw new Error('Registra la ejecución para descontar los materiales.');
+  if ((b.estado === 'cancelado' || b.estado === 'no_adjudicado') && pr.ejecutado_fecha) throw new Error('El proyecto ya se ejecutó. Anula la ejecución primero.');
+  if (b.estado === 'postulado' && !pr.fecha_postulacion) pr.fecha_postulacion = today_();
+  pr.estado = b.estado; pr.actualizado = now_(); update_('PROYECTOS', pr);
+  return { ok: true };
+}
+
+/** Descuenta del stock los materiales (cantidad por alumno × alumnos reales) y guarda su costo. */
+function ejecutarProyecto_(b) {
+  const pr = findById_('PROYECTOS', b.id);
+  if (!pr) throw new Error('No encontré ese proyecto.');
+  if (pr.ejecutado_fecha) throw new Error('Este proyecto ya tiene la ejecución registrada.');
+  const alumnos = num_(b.alumnos_reales) || pr.alumnos;
+  if (!(alumnos > 0)) throw new Error('Indica cuántos alumnos participaron.');
+  const fecha = validDate_(b.fecha);
+  const ins = {}, prods = {};
+  readAll_('INSUMOS').forEach(function (i) { ins[i.id] = i; });
+  readAll_('PRODUCTOS').forEach(function (p) { prods[p.id] = p; });
+  let costo = 0;
+  const movs = [];
+  readAll_('PROY_MAT').filter(function (m) { return m.proyecto_id === pr.id; }).forEach(function (m) {
+    const q = round_(m.cantidad * alumnos);
+    if (m.tipo === 'producto') {
+      const p = prods[m.ref]; if (!p) return;
+      costo += q * costoReceta_(p.id, p.rinde_lote, 0);
+      if (p.tipo !== 'servicio') movs.push(mov_(fecha, 'formacion', 'producto', p.id, -q, pr.id, pr.nombre));
+    } else {
+      const i = ins[m.ref]; if (!i) return;
+      costo += q * costoInsumo_(i);
+      movs.push(mov_(fecha, 'formacion', 'insumo', i.id, -q, pr.id, pr.nombre));
+    }
+  });
+  append_('MOVIMIENTOS', movs);
+  pr.ejecutado_fecha = fecha; pr.alumnos_reales = alumnos; pr.costo_mat_real = Math.round(costo);
+  if (pr.estado !== 'cerrado') pr.estado = 'ejecutado';
+  pr.actualizado = now_(); update_('PROYECTOS', pr);
+  return { ok: true };
+}
+
+function anularEjecucion_(b) {
+  const pr = findById_('PROYECTOS', b.id);
+  if (!pr) throw new Error('No encontré ese proyecto.');
+  if (!pr.ejecutado_fecha) return { ok: true };
+  anularMovsDeRef_(pr.id);
+  pr.ejecutado_fecha = ''; pr.alumnos_reales = ''; pr.costo_mat_real = '';
+  pr.estado = 'adjudicado'; pr.actualizado = now_(); update_('PROYECTOS', pr);
+  return { ok: true };
+}
+
+/** Crea la orden de venta del proyecto (sin productos): queda lista para folio SII y pagos. */
+function facturarProyecto_(b) {
+  const pr = findById_('PROYECTOS', b.id);
+  if (!pr) throw new Error('No encontré ese proyecto.');
+  if (pr.venta_id) { const v0 = findById_('VENTAS', pr.venta_id); if (v0 && v0.estado !== 'anulada') throw new Error('Este proyecto ya tiene la orden ' + v0.id + '.'); }
+  const neto = Math.round(num_(b.neto) || pr.precio_ofertado);
+  if (!(neto > 0)) throw new Error('Indica el monto a facturar (precio ofertado).');
+  const iva = pr.afecto_iva === 'no' ? 0 : Math.round(neto * IVA);
+  const v = { id: nextSeq_('VENTAS', 'OV'), fecha: validDate_(b.fecha), canal: 'formacion', rut: pr.rut, local_id: '', estado: 'entregada', neto: neto, iva: iva, total: neto + iva,
+    folio: '', fecha_folio: '', medio_pago: '', lugar: pr.institucion || pr.nombre, origen: pr.id, notas: pr.nombre + (pr.id_licitacion ? ' · ' + pr.id_licitacion : ''), creado: now_(), actualizado: now_() };
+  append_('VENTAS', [v]);
+  pr.venta_id = v.id; pr.actualizado = now_(); update_('PROYECTOS', pr);
+  return { ok: true, venta: v };
+}
+
+function deleteProyecto_(b) {
+  const pr = findById_('PROYECTOS', b.id);
+  if (!pr) throw new Error('No encontré ese proyecto.');
+  const v = pr.venta_id ? findById_('VENTAS', pr.venta_id) : null;
+  if (pr.ejecutado_fecha || (v && v.estado !== 'anulada')) {
+    if (pr.ejecutado_fecha) throw new Error('El proyecto tiene ejecución registrada. Anúlala primero, o márcalo como cerrado.');
+    throw new Error('El proyecto tiene la orden ' + v.id + '. Anúlala primero.');
+  }
+  deleteRows_('PROY_MAT', readAll_('PROY_MAT').filter(function (m) { return m.proyecto_id === pr.id; }));
+  deleteRows_('PROY_COSTOS', readAll_('PROY_COSTOS').filter(function (c) { return c.proyecto_id === pr.id; }));
+  deleteRows_('PROYECTOS', [pr]);
+  return { ok: true, result: 'eliminado' };
 }

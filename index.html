@@ -94,6 +94,11 @@ h2{font-size:16px;font-weight:700;margin:0}
 .chk-row input{width:18px;height:18px;accent-color:var(--oliva)}
 .locrow{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr) 36px;gap:8px;margin-bottom:8px;align-items:center}
 .prrow{display:grid;grid-template-columns:minmax(0,1fr) 120px 120px;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--linea);font-size:14px}
+.fmat{display:grid;grid-template-columns:minmax(0,1fr) 110px 90px 36px;gap:8px;align-items:center;margin-bottom:8px}
+.fcos{display:grid;grid-template-columns:minmax(0,1fr) 70px 100px 90px 36px;gap:8px;align-items:center;margin-bottom:8px}
+.fmat .cost,.fcos .cost{text-align:right;font-size:14px}
+.ohead.fcos-h{grid-template-columns:minmax(0,1fr) 70px 100px 90px 36px}
+.fmat .unit{display:flex;align-items:center;gap:6px;min-width:0}.fmat .unit .in{min-width:0;flex:1}.fmat .unit span{font-size:13px;color:var(--gris);white-space:nowrap}
 .ok-box{background:var(--oliva-tinte);color:var(--oliva-texto);border-radius:10px;padding:10px 14px;font-size:14px;font-weight:600}
 .dot{width:8px;height:8px;border-radius:4px;background:var(--oliva);flex-shrink:0}
 .dot.off{background:#b0701a}
@@ -244,6 +249,9 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
   .locrow{grid-template-columns:minmax(0,1fr) 36px}
   .locrow .hide-m{display:none}
   .prrow{grid-template-columns:minmax(0,1fr) 90px 90px}
+  .fmat{grid-template-columns:minmax(0,1fr) 96px 36px}
+  .fcos,.ohead.fcos-h{grid-template-columns:minmax(0,1fr) 60px 90px 36px}
+  .fmat .cost,.fcos .cost,.fcos-h .cost{display:none}
   .rline .cost{display:none}
   .card{padding:16px}
   .hide-m{display:none}
@@ -263,7 +271,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
     <button class="nav-i" data-go="ventas"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><span class="tx">Ventas y cobranza</span></button>
     <button class="nav-i" data-go="produccion"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6"/><path d="M10 3v5l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/><path d="M7.5 14h9"/></svg></span><span class="tx">Producción</span></button>
     <button class="nav-i" data-go="inventario"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8l8-4 8 4-8 4z"/><path d="M4 8v8l8 4 8-4V8"/><path d="M12 12v8"/></svg></span><span class="tx">Inventario</span></button>
-    <button class="nav-i" disabled><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h7a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4z"/><path d="M20 5h-7a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="tx">Talleres</span><span class="pronto">pronto</span></button>
+    <button class="nav-i" data-go="formacion"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h7a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4z"/><path d="M20 5h-7a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="tx">Formación</span></button>
     <div class="grp">Maestros</div>
     <button class="nav-i" data-go="clientes"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></svg></span><span class="tx">Clientes</span></button>
     <button class="nav-i" data-go="productos"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8v4H8z"/><path d="M6 7h12v14H6z"/><path d="M9 12h6"/></svg></span><span class="tx">Productos y recetas</span></button>
@@ -400,6 +408,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
       <div class="head">
         <div><h1>Venta rápida</h1><div class="small muted" id="vrHoy"></div></div>
         <div class="acts" style="align-items:flex-end">
+          <div style="min-width:200px"><label class="f" for="vrComp">Comprador (opcional) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Para ventas en que importa saber quién compró, como el curso online. Queda anotado en la venta.">i</button></label><input class="in" id="vrComp" placeholder="Nombre o correo"></div>
           <div style="min-width:220px"><label class="f" for="vrLugar">Lugar <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Opcional. Ej: «Feria Parque Ecuador». Se recuerda en este dispositivo durante el día, y después puedes ver cuánto vendiste en cada feria en Ventas y cobranza.">i</button></label><input class="in" id="vrLugar" list="vrLugares" placeholder="Ej: Feria Parque Ecuador"><datalist id="vrLugares"></datalist></div>
         </div>
       </div>
@@ -442,7 +451,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
         <div class="filters" id="vFiltros">
           <div><label class="f" for="vDesde">Desde</label><input class="in" id="vDesde" type="date"></div>
           <div><label class="f" for="vHasta">Hasta</label><input class="in" id="vHasta" type="date"></div>
-          <div><label class="f" for="vCanal">Canal</label><select class="in" id="vCanal"><option value="">Todos</option><option value="publico">Venta rápida / público</option><option value="directa">Venta directa</option><option value="consignacion">Consignación</option></select></div>
+          <div><label class="f" for="vCanal">Canal</label><select class="in" id="vCanal"><option value="">Todos</option><option value="publico">Venta rápida / público</option><option value="directa">Venta directa</option><option value="consignacion">Consignación</option><option value="formacion">Formación</option></select></div>
           <div><label class="f" for="vCli">Cliente</label><select class="in" id="vCli"></select></div>
           <div><label class="f" for="vLugar">Lugar</label><select class="in" id="vLugar"></select></div>
         </div>
@@ -463,6 +472,17 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
       <div class="grid g3" id="cliGrid"></div>
     </section>
 
+    <!-- FORMACIÓN -->
+    <section class="sec" id="sec-formacion">
+      <div class="head"><h1>Formación</h1><div class="acts"><button class="btn pri" id="fpNuevo">+ Nuevo proyecto</button></div></div>
+      <p class="note" style="margin:0">Talleres y cursos para instituciones o privados: costeo, postulación, ejecución (descuenta materiales) y venta para facturar.</p>
+      <div class="search">
+        <input class="in" id="fpQ" type="search" placeholder="Buscar proyecto, institución o ID de licitación">
+        <div class="chips" id="fpChips"><button class="chip on" data-f="curso">En curso</button><button class="chip" data-f="cerrado">Cerrados</button><button class="chip" data-f="no">No adjudicados / cancelados</button><button class="chip" data-f="todos">Todos</button></div>
+      </div>
+      <div class="grid g3" id="fpGrid"></div>
+    </section>
+
     <!-- MÁS (celular) -->
     <section class="sec" id="sec-mas">
       <div class="head"><h1>Más</h1></div>
@@ -471,6 +491,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
         <button class="nav-i" data-go="consig" style="padding:14px 0">Consignaciones</button>
         <button class="nav-i" data-go="ventas" style="padding:14px 0">Ventas y cobranza</button>
         <button class="nav-i" data-go="clientes" style="padding:14px 0">Clientes</button>
+        <button class="nav-i" data-go="formacion" style="padding:14px 0">Formación</button>
       </div>
       <div class="card" style="padding:6px 16px">
         <div class="small muted" style="padding:12px 0 4px">Producción</div>
@@ -480,7 +501,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
       </div>
       <div class="card" style="padding:6px 16px">
         <button class="nav-i" data-go="config" style="padding:14px 0">Configuración</button>
-        <button class="nav-i" disabled style="padding:12px 0">Talleres <span class="pronto">pronto</span></button>
+        
       </div>
     </section>
 
@@ -608,11 +629,12 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
   <div class="pgrid">
     <div>
       <div class="fld"><label class="f" for="prdNom">Nombre</label><input class="in" id="prdNom" placeholder="Ej: Ungüento de caléndula"></div>
+      <label class="check" style="padding-top:0"><input type="checkbox" id="prdServ"> Es un servicio o curso (sin stock ni receta) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Para vender cosas que no se fabrican ni se guardan en bodega, como el curso online «Introducción a la Herbolaria» o una asesoría. Aparecen en Venta rápida y en órdenes, pero no descuentan stock.">i</button></label>
       <div class="row2">
         <div class="fld"><label class="f" for="prdCat">Categoría</label><input class="in" id="prdCat" list="catList" placeholder="Ungüentos"><datalist id="catList"></datalist></div>
         <div class="fld"><label class="f" for="prdPres">Presentación</label><input class="in" id="prdPres" placeholder="30 g"></div>
       </div>
-      <div class="row2">
+      <div class="row2" id="prdStockBox">
         <div class="fld"><label class="f" for="prdRinde">Rinde por lote (u) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Cuántas unidades terminadas salen de una preparación completa de la receta. Ej: la receta da para 20 frascos → 20. El costo por unidad = costo del lote ÷ este número.">i</button></label><input class="in r" id="prdRinde" inputmode="decimal"></div>
         <div class="fld"><label class="f" for="prdMin">Stock mínimo (u) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Bajo esta cantidad en bodega, la app avisa en Inicio que conviene volver a producir. 0 = sin aviso.">i</button></label><input class="in r" id="prdMin" inputmode="decimal" placeholder="0"></div>
       </div>
@@ -621,7 +643,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
       <div class="fld"><label class="f" for="prdPB">B2B · negocios (neto) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Precio general sin IVA para negocios, en venta directa o en consignación. Si con una empresa acordaste otro precio, se anota como precio especial en su ficha de Clientes y reemplaza a este.">i</button></label><input class="in r" id="prdPB" inputmode="numeric" placeholder="$0"></div>
       <p class="note">Los precios especiales negociados con cada empresa se anotan en su ficha de Clientes y reemplazan al B2B.</p>
     </div>
-    <div>
+    <div id="prdRecBox">
       <div class="head" style="margin-bottom:10px"><h2>Receta por lote <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Lo que usa UNA preparación completa (un lote), en la unidad de cada insumo. «+ Costo extra» sirve para costos que no son insumos, como mano de obra o gas, por lote.">i</button></h2><span class="small muted" id="recMet"></span></div>
       <div id="recLines"></div>
       <div class="acts" style="margin:4px 0 14px"><button class="btn sm" id="recAddI">+ Insumo</button><button class="btn sm ghost" id="recAddE">+ Costo extra</button></div>
@@ -758,6 +780,62 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
   <div class="mf"><button class="btn ghost" data-close>Cancelar</button><button class="btn pri" id="pgSave">Guardar pago</button></div>
 </div></div>
 
+<!-- MODAL PROYECTO DE FORMACIÓN -->
+<div class="ov" id="mFP"><div class="modal wide" role="dialog" aria-modal="true" aria-labelledby="mFPT">
+  <div class="mh"><h2 id="mFPT">Nuevo proyecto</h2><button class="closeb" data-close aria-label="Cerrar">×</button></div>
+  <input type="hidden" id="fpId">
+  <div class="steps" id="fpSteps" style="margin-bottom:14px"></div>
+  <div id="fpRes"></div>
+  <div class="pgrid">
+    <div>
+      <div class="fld"><label class="f" for="fpNom">Nombre del taller o curso</label><input class="in" id="fpNom" placeholder="Ej: Taller de cosmética natural"></div>
+      <div class="row2">
+        <div class="fld"><label class="f" for="fpOrigen">Origen</label><select class="in" id="fpOrigen"><option>Licitación</option><option>Compra Ágil</option><option>Trato directo</option><option>Privado</option></select></div>
+        <div class="fld"><label class="f" for="fpLic">ID licitación / orden</label><input class="in" id="fpLic" placeholder="Ej: 1234-56-L126"></div>
+      </div>
+      <div class="row2">
+        <div class="fld"><label class="f" for="fpInst">Institución</label><input class="in" id="fpInst" placeholder="Ej: Municipalidad de…"></div>
+        <div class="fld"><label class="f" for="fpRut">RUT institución (opcional)</label><input class="in" id="fpRut"></div>
+      </div>
+      <div class="row2">
+        <div class="fld"><label class="f" for="fpFPost">Postulación</label><input class="in" id="fpFPost" type="date"></div>
+        <div class="fld"><label class="f" for="fpAl">Alumnos</label><input class="in r" id="fpAl" inputmode="numeric"></div>
+      </div>
+      <div class="row2">
+        <div class="fld"><label class="f" for="fpFIni">Inicio</label><input class="in" id="fpFIni" type="date"></div>
+        <div class="fld"><label class="f" for="fpFFin">Término</label><input class="in" id="fpFFin" type="date"></div>
+      </div>
+      <div class="row2">
+        <div class="fld"><label class="f" for="fpSes">Sesiones</label><input class="in r" id="fpSes" inputmode="numeric"></div>
+        <div class="fld"><label class="f" for="fpHrs">Horas totales</label><input class="in r" id="fpHrs" inputmode="decimal"></div>
+      </div>
+      <div class="row2">
+        <div class="fld"><label class="f" for="fpPres">Presupuesto máximo <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="El monto máximo disponible que publica la licitación (presupuesto excluyente). Se compara con el total de tu oferta, impuestos incluidos: si lo supera, la oferta queda fuera.">i</button></label><input class="in r" id="fpPres" inputmode="numeric" placeholder="$0"></div>
+        <div class="fld"><label class="f">IVA <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Afecto: se suma 19% de IVA al precio neto. Exento: solo si el servicio de capacitación tiene reconocimiento formal (por ejemplo OTEC/SENCE); el giro por sí solo no basta. Conviene confirmarlo con el contador antes de postular.">i</button></label><div class="seg" id="fpIva"><button type="button" data-v="si" class="on">Afecto</button><button type="button" data-v="no">Exento</button></div></div>
+      </div>
+      <div class="fld"><label class="f" for="fpLink">Enlace a bases o documento postulado (opcional)</label><input class="in" id="fpLink" placeholder="https://drive.google.com/…"></div>
+      <div class="fld"><label class="f" for="fpNotas">Notas</label><textarea class="in" id="fpNotas"></textarea></div>
+    </div>
+    <div>
+      <h2 style="margin-bottom:8px">Materiales por alumno <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Lo que usa o se lleva CADA alumno (insumos para elaborar en el taller o productos terminados). La app lo multiplica por el número de alumnos. Al registrar la ejecución se descuenta del stock.">i</button></h2>
+      <div id="fpMats"></div>
+      <button class="btn sm" id="fpMatAdd" style="margin-bottom:14px">+ Material</button>
+      <h2 style="margin-bottom:8px">Otros costos <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Costos del proyecto que no son materiales: relatoría (horas × valor hora), traslados, arriendo de sala, impresiones, colaciones…">i</button></h2>
+      <div class="ohead fcos-h"><span>Descripción</span><span class="r">Cant.</span><span class="r">Valor unit.</span><span class="r cost">Total</span><span></span></div>
+      <div id="fpCostos"></div>
+      <datalist id="fpCostoSug"><option value="Relatoría (horas)"><option value="Traslado"><option value="Arriendo de sala"><option value="Impresiones y material escrito"><option value="Colación"><option value="Seguro"></datalist>
+      <button class="btn sm ghost" id="fpCostoAdd" style="margin-bottom:14px">+ Costo</button>
+      <div class="box" id="fpTot"></div>
+      <div class="row2" style="margin-top:12px">
+        <div class="fld"><label class="f" for="fpMargen">Margen objetivo (%)</label><input class="in r" id="fpMargen" inputmode="decimal" placeholder="30"></div>
+        <div class="fld"><label class="f" for="fpPrecio">Precio ofertado (neto)</label><input class="in r" id="fpPrecio" inputmode="numeric" placeholder="$0"></div>
+      </div>
+      <div class="box" id="fpOferta"></div>
+    </div>
+  </div>
+  <div class="mf" id="fpFoot"></div>
+</div></div>
+
 <!-- MODAL PREGUNTA -->
 <div class="ov" id="mPrompt"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="prT" style="max-width:440px">
   <h2 id="prT" style="margin-bottom:12px"></h2>
@@ -777,10 +855,10 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
 
 <script>
 // ───────────── Estado ─────────────
-const APP_VERSION = '2.0.2';
+const APP_VERSION = '2.1.0';
 const LS = { url: 'mv_gs_url', key: 'mv_gs_key', cache: 'mv_cache_v1' };
 let GS = lsGet(LS.url), KEY = lsGet(LS.key);
-const DB0 = () => ({ insumos: [], productos: [], recetas: [], compras: [], produccion: [], movimientos: [], stock: {}, formatos: [], listas: [], costos_hist: [], config: {}, empresas: [], locales: [], precios_cliente: [], ventas: [], ventas_det: [], pagos: [], consignaciones: [], consig_det: [], liquidaciones: [], liq_det: [] });
+const DB0 = () => ({ insumos: [], productos: [], recetas: [], compras: [], produccion: [], movimientos: [], stock: {}, formatos: [], listas: [], costos_hist: [], config: {}, empresas: [], locales: [], precios_cliente: [], ventas: [], ventas_det: [], pagos: [], consignaciones: [], consig_det: [], liquidaciones: [], liq_det: [], proyectos: [], proy_mat: [], proy_costos: [] });
 let DB = DB0();
 let busy = false, lastSync = 0;
 const UI = { sec: 'inicio', invTab: 'productos', iFiltro: 'todos', prFiltro: 'act', comDocT: 'factura', insFmts: [] };
@@ -812,6 +890,7 @@ const nombreItem = id => (producto(id) || insumo(id) || {}).nombre || '—';
 const stockDe = id => (DB.stock[id] && DB.stock[id].BODEGA) || 0;
 const pagadoDe = c => Number(c.total_pagado) || Number(c.total_neto) || 0;
 const esElab = i => i && i.elaborado === 'si';
+const esServ = p => p && p.tipo === 'servicio';
 /** Costo de referencia por kilo o litro (como se piensa al comprar). */
 const porMil = (i, cu) => i && (i.unidad === 'g' || i.unidad === 'ml') && cu > 0 ? clp(cu * 1000) + (i.unidad === 'g' ? ' / kg' : ' / L') : '';
 
@@ -967,7 +1046,7 @@ function preguntar(titulo, valor, nota) {
 function go(sec) {
   UI.sec = sec;
   document.querySelectorAll('.sec').forEach(s => s.classList.toggle('on', s.id === 'sec-' + sec));
-  const enMas = ['consig', 'ventas', 'clientes', 'produccion', 'productos', 'insumos', 'config'].includes(sec);
+  const enMas = ['consig', 'ventas', 'clientes', 'formacion', 'produccion', 'productos', 'insumos', 'config'].includes(sec);
   document.querySelectorAll('.bottom [data-go]').forEach(b => b.classList.toggle('on', b.dataset.go === sec || (enMas && b.dataset.go === 'mas')));
   document.querySelectorAll('.side [data-go]').forEach(b => b.classList.toggle('on', b.dataset.go === sec));
   window.scrollTo(0, 0);
@@ -1005,7 +1084,7 @@ const metodoTxt = () => (DB.config && DB.config.metodo_costo) === 'promedio' ? '
 // ───────────── Render general ─────────────
 function renderAll() {
   renderVersion(); renderInicio(); renderProdSelect(); renderPrev(); renderLotes(); renderInv(); renderInsumos(); renderHcFiltros(); renderCompras(); renderProductos();
-  renderVR(); renderOrdenes(); renderConsig(); renderVFiltros(); renderVentas(); renderClientes();
+  renderVR(); renderOrdenes(); renderConsig(); renderVFiltros(); renderVentas(); renderClientes(); renderFormacion();
   if (UI.sec === 'config') renderConfig();
 }
 
@@ -1021,7 +1100,7 @@ function renderVersion() {
 function renderInicio() {
   $('hoyTxt').textContent = new Date().toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^./, c => c.toUpperCase());
   const act = DB.insumos.filter(i => i.estado === 'activo');
-  const prods = DB.productos.filter(p => p.estado === 'activo');
+  const prods = DB.productos.filter(p => p.estado === 'activo' && !esServ(p));
   const vIns = act.reduce((s, i) => s + Math.max(0, stockDe(i.id)) * costoIns(i), 0);
   const vPrd = prods.reduce((s, p) => s + Math.max(0, stockDe(p.id)) * costoProducto(p).unit, 0);
   const mes = mesActual();
@@ -1032,7 +1111,7 @@ function renderInicio() {
   const vm = ventasActivas().filter(v => String(v.fecha).startsWith(mes));
   const porCanal = c => vm.filter(v => v.canal === c).reduce((s, v) => s + (Number(v.neto) || 0), 0);
   $('kVentas').textContent = clp(vm.reduce((s, v) => s + (Number(v.neto) || 0), 0));
-  $('kVentasSub').textContent = `Público ${clp(porCanal('publico'))} · Directa ${clp(porCanal('directa'))} · Consig. ${clp(porCanal('consignacion'))}`;
+  $('kVentasSub').textContent = `Público ${clp(porCanal('publico'))} · Directa ${clp(porCanal('directa'))} · Consig. ${clp(porCanal('consignacion'))}` + (porCanal('formacion') ? ` · Formación ${clp(porCanal('formacion'))}` : '');
   const pc = porCobrar();
   $('kCobrar').textContent = clp(pc.reduce((s, v) => s + saldoDe(v), 0));
   const venc = pc.filter(vencida);
@@ -1054,9 +1133,11 @@ function renderInicio() {
   // Pendientes con negocios
   const pend = [];
   consigPorLocal().filter(x => x.dias >= 30).forEach(x => pend.push({ t: 'Liquidar consignación', d: x.local.nombre, r: x.dias + ' días', f: `abrirLiq('${x.local.id}')`, c: 'warn-t' }));
-  DB.ventas.filter(v => v.estado === 'entregada' && v.canal !== 'publico' && !v.folio).forEach(v => pend.push({ t: 'Asignar folio SII', d: v.id + ' · ' + nombreLocal(v.local_id), r: clp(v.total), f: `abrirVenta('${v.id}')` }));
-  venc.forEach(v => pend.push({ t: 'Pago vencido', d: (v.folio ? 'Factura ' + v.folio : v.id) + ' · ' + nombreLocal(v.local_id), r: clp(saldoDe(v)), f: `abrirVenta('${v.id}')`, c: 'bad-t' }));
-  DB.ventas.filter(v => v.estado === 'borrador').forEach(v => pend.push({ t: 'Orden en borrador', d: v.id + ' · ' + nombreLocal(v.local_id), r: clp(v.total), f: `abrirVenta('${v.id}')` }));
+  DB.ventas.filter(v => v.estado === 'entregada' && v.canal !== 'publico' && !v.folio).forEach(v => pend.push({ t: 'Asignar folio SII', d: v.id + ' · ' + quien(v), r: clp(v.total), f: `abrirVenta('${v.id}')` }));
+  venc.forEach(v => pend.push({ t: 'Pago vencido', d: (v.folio ? 'Factura ' + v.folio : v.id) + ' · ' + quien(v), r: clp(saldoDe(v)), f: `abrirVenta('${v.id}')`, c: 'bad-t' }));
+  DB.proyectos.filter(p => p.estado === 'adjudicado' && p.fecha_inicio && diasEntre(hoy(), p.fecha_inicio) <= 14).forEach(p => pend.push({ t: 'Taller próximo', d: p.nombre, r: fechaCorta(p.fecha_inicio), f: `abrirFP('${p.id}')`, c: 'warn-t' }));
+  DB.proyectos.filter(p => (p.estado === 'ejecutado' || p.estado === 'cerrado') && !ventaFP(p)).forEach(p => pend.push({ t: 'Generar venta del taller', d: p.nombre, r: clp(p.precio_ofertado), f: `abrirFP('${p.id}')` }));
+  DB.ventas.filter(v => v.estado === 'borrador').forEach(v => pend.push({ t: 'Orden en borrador', d: v.id + ' · ' + quien(v), r: clp(v.total), f: `abrirVenta('${v.id}')` }));
   $('cPend').textContent = pend.length;
   $('lPend').innerHTML = pend.length ? pend.slice(0, 7).map(x => `<div class="list-row click" style="cursor:pointer" onclick="${x.f}"><div class="small bold ${x.c || 'ok-t'}">${x.t}</div><div class="lr-top" style="margin-top:2px"><span>${esc(x.d)}</span><span>${esc(x.r)}</span></div></div>`).join('') + (pend.length > 7 ? `<div class="sub" style="padding-top:8px">y ${pend.length - 7} más…</div>` : '')
     : `<div class="empty">Nada pendiente.</div>`;
@@ -1064,7 +1145,7 @@ function renderInicio() {
   const ev = [];
   DB.produccion.filter(l => l.estado === 'activa').slice(0, 5).forEach(l => ev.push({ k: l.fecha + l.creado, t: 'Producción', d: `${qty(l.unidades)} ${l.item_tipo === 'insumo' ? esc(insumo(l.producto_id)?.unidad || '') : 'u'} de ${nombreItem(l.producto_id)}` }));
   DB.compras.filter(c => c.estado === 'activa').slice(0, 5).forEach(c => ev.push({ k: c.fecha + c.creado, t: 'Compra', d: `${qty(c.cantidad)} ${insumo(c.insumo_id)?.unidad || ''} de ${insumo(c.insumo_id)?.nombre || '—'} · ${clp(pagadoDe(c))}` }));
-  ventasActivas().slice(0, 6).forEach(v => ev.push({ k: v.fecha + v.creado, t: v.canal === 'publico' ? 'Venta rápida' : v.canal === 'consignacion' ? 'Liquidación' : 'Orden ' + v.id, d: `${v.canal === 'publico' ? (v.lugar || v.medio_pago) : nombreLocal(v.local_id)} · ${clp(v.total)}` }));
+  ventasActivas().slice(0, 6).forEach(v => ev.push({ k: v.fecha + v.creado, t: v.canal === 'publico' ? 'Venta rápida' : v.canal === 'consignacion' ? 'Liquidación' : v.canal === 'formacion' ? 'Formación' : 'Orden ' + v.id, d: `${v.canal === 'publico' ? (v.lugar || v.medio_pago) + (v.notas ? ' · ' + v.notas : '') : quien(v)} · ${clp(v.total)}` }));
   ev.sort((a, b) => b.k.localeCompare(a.k));
   $('lAct').innerHTML = ev.length ? ev.slice(0, 6).map(e => `<div class="list-row"><div class="small muted">${e.t} · ${fechaCorta(e.k.slice(0, 10))}</div><div style="font-size:14px;margin-top:2px">${esc(e.d)}</div></div>`).join('')
     : `<div class="empty">Aún no hay registros.</div>`;
@@ -1073,7 +1154,7 @@ function renderInicio() {
 // ───────────── Producción (productos e insumos elaborados) ─────────────
 function renderProdSelect() {
   const sel = $('pProd'), cur = sel.value;
-  const ps = DB.productos.filter(p => p.estado === 'activo').sort((a, b) => a.nombre.localeCompare(b.nombre));
+  const ps = DB.productos.filter(p => p.estado === 'activo' && !esServ(p)).sort((a, b) => a.nombre.localeCompare(b.nombre));
   const is = DB.insumos.filter(i => i.estado === 'activo' && esElab(i)).sort((a, b) => a.nombre.localeCompare(b.nombre));
   const op = (v, x, extra) => `<option value="${v}">${esc(x.nombre)}${extra}${recetaDe(x.id).length ? '' : ' (sin receta)'}</option>`;
   sel.innerHTML = '<option value="">Elegir…</option>' +
@@ -1151,7 +1232,7 @@ function renderInv() {
   const m = s => !q || String(s).toLowerCase().includes(q);
   const t = $('invTable');
   if (UI.invTab === 'productos') {
-    const ps = DB.productos.filter(p => p.estado === 'activo' && m(p.nombre)).sort((a, b) => a.nombre.localeCompare(b.nombre));
+    const ps = DB.productos.filter(p => p.estado === 'activo' && !esServ(p) && m(p.nombre)).sort((a, b) => a.nombre.localeCompare(b.nombre));
     let tot = 0;
     t.innerHTML = `<thead><tr><th>Producto</th><th class="r">En bodega</th><th class="r">En locales</th><th class="r hide-m">Mínimo</th><th class="r hide-m">Costo unit.</th><th class="r">Valor bodega</th><th></th></tr></thead><tbody>` +
       (ps.length ? ps.map(p => { const s = stockDe(p.id), sl = stockLocales(p.id), cu = costoProducto(p).unit, v = Math.max(0, s) * cu; tot += v; const low = Number(p.stock_min) > 0 && s < Number(p.stock_min);
@@ -1490,7 +1571,8 @@ function renderProductos() {
   const q = $('prQ').value.toLowerCase().trim();
   const ps = DB.productos.filter(p => (UI.prFiltro === 'arch' ? p.estado === 'archivado' : p.estado === 'activo') && (!q || (p.nombre + ' ' + p.categoria).toLowerCase().includes(q)))
     .sort((a, b) => (a.categoria + a.nombre).localeCompare(b.categoria + b.nombre));
-  $('prGrid').innerHTML = ps.length ? ps.map(p => { const c = costoProducto(p), mg = margenes(p, c.unit)[0][1], sinRec = !recetaDe(p.id).length;
+  $('prGrid').innerHTML = ps.length ? ps.map(p => { if (esServ(p)) return `<button class="pcard" onclick="abrirProducto('${p.id}')"><div><div class="nm">${esc(p.nombre)}</div><div class="sub">${esc(p.categoria || 'Servicio')}</div></div><span class="tag ok" style="align-self:flex-start">Servicio o curso</span><div class="kv"><span class="muted">Precio público</span><span>${p.precio_publico ? clp(p.precio_publico) : '—'}</span></div><div class="kv"><span class="muted">Precio B2B</span><span>${precioB2B(p) ? clp(precioB2B(p)) : '—'}</span></div></button>`;
+    const c = costoProducto(p), mg = margenes(p, c.unit)[0][1], sinRec = !recetaDe(p.id).length;
     return `<button class="pcard" onclick="abrirProducto('${p.id}')"><div><div class="nm">${esc(p.nombre)}</div><div class="sub">${esc([p.categoria, p.presentacion].filter(Boolean).join(' · ') || 'Sin categoría')}</div></div>
       ${sinRec ? '<span class="tag warn" style="align-self:flex-start">Sin receta</span>' : ''}
       <div class="kv"><span class="muted">Costo unitario</span><b>${clpU(c.unit)}</b></div>
@@ -1506,6 +1588,7 @@ function abrirProducto(id) {
   $('prdId').value = p ? p.id : '';
   $('prdNom').value = p ? p.nombre : ''; $('prdCat').value = p ? p.categoria : ''; $('prdPres').value = p ? p.presentacion : '';
   $('prdRinde').value = p ? qty(p.rinde_lote) : ''; $('prdMin').value = p && p.stock_min ? qty(p.stock_min) : '';
+  $('prdServ').checked = esServ(p); prdServSync();
   const fm = v => v ? Math.round(v).toLocaleString('es-CL') : '';
   $('prdPP').value = p ? fm(p.precio_publico) : ''; $('prdPB').value = p ? fm(precioB2B(p)) : '';
   $('catList').innerHTML = lista('categoria').map(c => `<option value="${esc(c)}">`).join('');
@@ -1518,6 +1601,8 @@ function abrirProducto(id) {
   renderReceta('prd'); openM('mPrd');
 }
 $('prNuevo').addEventListener('click', () => abrirProducto());
+function prdServSync() { const sv = $('prdServ').checked; $('prdStockBox').classList.toggle('hidden', sv); $('prdRecBox').classList.toggle('hidden', sv); if (sv) $('prdHistBox').classList.add('hidden'); }
+$('prdServ').addEventListener('change', prdServSync);
 
 function renderPrdHist(p) {
   const hs = p ? (DB.costos_hist || []).filter(h => h.item_id === p.id).slice().sort((a, b) => (a.fecha + a.creado).localeCompare(b.fecha + b.creado)) : [];
@@ -1533,6 +1618,8 @@ function renderPrdHist(p) {
 $('prdSave').addEventListener('click', async () => {
   const d = { id: $('prdId').value, nombre: $('prdNom').value.trim(), categoria: $('prdCat').value.trim(), presentacion: $('prdPres').value.trim(), rinde_lote: parseNum($('prdRinde').value), stock_min: parseNum($('prdMin').value), precio_publico: parseNum($('prdPP').value), precio_b2b: parseNum($('prdPB').value) };
   if (!d.nombre) return toast('Falta el nombre', 'err');
+  d.tipo = $('prdServ').checked ? 'servicio' : '';
+  if (d.tipo === 'servicio') { const r = await write('saveProducto', { producto: { ...d, rinde_lote: 1, stock_min: 0 }, receta: [] }, 'Servicio guardado'); if (r) closeM('mPrd'); return; }
   if (d.rinde_lote <= 0) return toast('Indica cuántas unidades rinde un lote', 'err');
   const receta = recetaValida('prd'); if (!receta) return;
   const incompletas = RE.prd.lines.length - receta.length - RE.prd.lines.filter(l => l.tipo === 'insumo' && !l.ref && !Number(l.cantidad)).length;
@@ -1693,7 +1780,7 @@ function renderVR() {
   $('vrQ').classList.toggle('hidden', ps.length <= 12);
   const q = $('vrQ').value.toLowerCase().trim();
   $('vrGrid').innerHTML = ps.filter(p => !q || p.nombre.toLowerCase().includes(q)).map(p => { const n = VR.carro[p.id] || 0, st = stockDe(p.id);
-    return `<button type="button" class="vr-p ${n ? 'on' : ''}" data-p="${p.id}"><span class="n">${esc(p.nombre)}${p.presentacion ? ' ' + esc(p.presentacion) : ''}</span><span class="pr">${clp(p.precio_publico)}</span><span class="st ${st - n < 0 ? 'bad-t' : ''}">${qty(st - n)} en bodega</span>${n ? `<span class="q">${n}</span>` : ''}</button>`; }).join('')
+    return `<button type="button" class="vr-p ${n ? 'on' : ''}" data-p="${p.id}"><span class="n">${esc(p.nombre)}${p.presentacion ? ' ' + esc(p.presentacion) : ''}</span><span class="pr">${clp(p.precio_publico)}</span><span class="st ${!esServ(p) && st - n < 0 ? 'bad-t' : ''}">${esServ(p) ? 'servicio / curso' : qty(st - n) + ' en bodega'}</span>${n ? `<span class="q">${n}</span>` : ''}</button>`; }).join('')
     || `<div class="card empty" style="grid-column:1/-1">No hay productos con precio público. Agrégalo en Productos y recetas.</div>`;
   const items = Object.entries(VR.carro).filter(([, n]) => n > 0).map(([pid, n]) => ({ p: producto(pid), n })).filter(x => x.p);
   const total = items.reduce((s, x) => s + x.n * Number(x.p.precio_publico), 0), unid = items.reduce((s, x) => s + x.n, 0);
@@ -1712,8 +1799,8 @@ $('vrPagos').addEventListener('click', e => { const b = e.target.closest('button
 $('vrGo').addEventListener('click', async () => {
   const lineas = Object.entries(VR.carro).filter(([, n]) => n > 0).map(([pid, n]) => ({ producto_id: pid, cantidad: n, precio: Number(producto(pid).precio_publico) }));
   if (!lineas.length || !VR.medio) return;
-  const r = await write('ventaRapida', { lineas, medio_pago: VR.medio, lugar: $('vrLugar').value.trim(), fecha: hoy() }, 'Venta registrada');
-  if (r) { VR.carro = {}; VR.medio = ''; renderVR(); }
+  const r = await write('ventaRapida', { lineas, medio_pago: VR.medio, lugar: $('vrLugar').value.trim(), comprador: $('vrComp').value.trim(), fecha: hoy() }, 'Venta registrada');
+  if (r) { VR.carro = {}; VR.medio = ''; $('vrComp').value = ''; renderVR(); }
 });
 
 // ───────────── Órdenes de venta / entregas en consignación ─────────────
@@ -1765,8 +1852,8 @@ function repreciar(keep) {
   renderOVLines();
 }
 function renderOVLines() {
-  const ps = DB.productos.filter(p => p.estado === 'activo').sort((a, b) => a.nombre.localeCompare(b.nombre));
-  $('ovLines').innerHTML = OV.lines.map((l, k) => { const pr = l.pid ? precioPara(OV.rut, l.pid) : null, st = l.pid ? stockDe(l.pid) : null;
+  const ps = DB.productos.filter(p => p.estado === 'activo' && !(OV.mod === 'consignacion' && esServ(p))).sort((a, b) => a.nombre.localeCompare(b.nombre));
+  $('ovLines').innerHTML = OV.lines.map((l, k) => { const pr = l.pid ? precioPara(OV.rut, l.pid) : null, st = l.pid && !esServ(producto(l.pid)) ? stockDe(l.pid) : null;
     return `<div class="oline"><select class="in" aria-label="Producto" onchange="ovSet(${k},'pid',this.value)"><option value="">Elegir producto…</option>${ps.map(p => `<option value="${p.id}" ${p.id === l.pid ? 'selected' : ''}>${esc(p.nombre)}${p.presentacion ? ' · ' + esc(p.presentacion) : ''}</option>`).join('')}</select>
       <span class="st ${st !== null && st < (Number(l.q) || 0) ? 'bad-t' : ''}">${st === null ? '' : qty(st)}</span>
       <input class="in r" aria-label="Cantidad" placeholder="Cant." inputmode="decimal" value="${l.q === '' ? '' : numIn(l.q)}" oninput="ovSet(${k},'q',this.value)">
@@ -1790,7 +1877,7 @@ function ovCalc() {
   const cons = OV.mod === 'consignacion';
   $('ovTot').innerHTML = `<div class="ln"><span class="muted">${qty(u)} unidades</span><span></span></div><div class="ln"><span>Neto</span><span>${clp(neto)}</span></div><div class="ln"><span>IVA 19%</span><span>${clp(iva)}</span></div><div class="ln tot"><span>${cons ? 'Valor en consignación' : 'Total'}</span><span>${clp(neto + iva)}</span></div>
     ${cons ? '<p class="note" style="margin:8px 0 0">No se factura ahora: se cobra lo que se venda, al liquidar.</p>' : '<p class="note" style="margin:8px 0 0">«Confirmar entrega» descuenta el stock de bodega.</p>'}`;
-  const faltan = OV.lines.filter(l => l.pid && Number(l.q) > stockDe(l.pid)).map(l => producto(l.pid).nombre);
+  const faltan = OV.lines.filter(l => l.pid && !esServ(producto(l.pid)) && Number(l.q) > stockDe(l.pid)).map(l => producto(l.pid).nombre);
   $('ovFalta').classList.toggle('hidden', !faltan.length); $('ovFalta').textContent = faltan.length ? 'No alcanza el stock en bodega de: ' + faltan.join(', ') + '. Puedes entregar igual (quedará en negativo) o registrar antes la producción.' : '';
 }
 function ovPayload() {
@@ -1829,7 +1916,7 @@ function renderOrdenes() {
   const f = { abiertas: v => v.estado === 'borrador' || (v.estado === 'entregada' && (!v.folio || saldoDe(v) > 0)), borrador: v => v.estado === 'borrador', facturar: v => v.estado === 'entregada' && !v.folio,
     cobrar: v => v.estado === 'entregada' && saldoDe(v) > 0, todas: () => true }[O.f];
   const vs = DB.ventas.filter(v => v.canal !== 'publico' && f(v) && (!q || norm(v.id + ' ' + nombreLocal(v.local_id) + ' ' + ((empresaDe(v.rut) || {}).razon_social || '') + ' ' + v.folio).includes(q)));
-  $('tOrd').innerHTML = vs.length ? vs.slice(0, 200).map(v => `<tr class="click" onclick="abrirVenta('${v.id}')" style="${v.estado === 'anulada' ? 'opacity:.55' : ''}"><td class="bold nw">${esc(v.id)}${v.origen ? '<div class="sub">' + esc(v.origen) + '</div>' : ''}</td><td class="nw">${fechaCorta(v.fecha)}</td><td>${esc(nombreLocal(v.local_id))}<div class="sub">${esc((empresaDe(v.rut) || {}).razon_social || '')}${v.folio ? ' · Factura ' + esc(v.folio) : ''}</div></td><td class="r">${clp(v.total)}${saldoDe(v) > 0 && pagado(v) > 0 ? `<div class="sub">saldo ${clp(saldoDe(v))}</div>` : ''}</td><td>${tagEstado(v)}</td></tr>`).join('')
+  $('tOrd').innerHTML = vs.length ? vs.slice(0, 200).map(v => `<tr class="click" onclick="abrirVenta('${v.id}')" style="${v.estado === 'anulada' ? 'opacity:.55' : ''}"><td class="bold nw">${esc(v.id)}${v.origen ? '<div class="sub">' + esc(v.origen) + '</div>' : ''}</td><td class="nw">${fechaCorta(v.fecha)}</td><td>${esc(quien(v))}<div class="sub">${esc(v.canal === 'formacion' ? v.notas : ((empresaDe(v.rut) || {}).razon_social || ''))}${v.folio ? ' · Factura ' + esc(v.folio) : ''}</div></td><td class="r">${clp(v.total)}${saldoDe(v) > 0 && pagado(v) > 0 ? `<div class="sub">saldo ${clp(saldoDe(v))}</div>` : ''}</td><td>${tagEstado(v)}</td></tr>`).join('')
     : `<tr><td colspan="5"><div class="empty">${DB.ventas.some(v => v.canal !== 'publico') ? 'Nada en este filtro.' : 'Aún no hay órdenes. Crea la primera con «+ Nueva orden».'}</div></td></tr>`;
 }
 
@@ -1838,18 +1925,19 @@ function abrirVenta(id) {
   const v = DB.ventas.find(x => x.id === id); if (!v) return;
   const e = empresaDe(v.rut), l = local(v.local_id), pub = v.canal === 'publico';
   $('mVD').dataset.id = id;
-  $('mVDT').textContent = (pub ? 'Venta rápida ' : 'Orden de venta ') + v.id;
+  $('mVDT').textContent = (pub ? 'Venta rápida ' : v.canal === 'formacion' ? 'Venta de formación ' : 'Orden de venta ') + v.id;
   const st = [['borrador', 'Borrador'], ['entregada', 'Entregada'], ['folio', 'Facturada'], ['pagada', 'Pagada']];
   const hecho = { borrador: true, entregada: v.estado === 'entregada', folio: !!v.folio, pagada: v.estado === 'entregada' && saldoDe(v) <= 0 };
   $('vdSteps').innerHTML = v.estado === 'anulada' ? '<span class="tag bad">Anulada</span>' : pub ? '' : st.map(([k, t]) => `<span class="${hecho[k] ? 'on' : ''}">${t}</span>`).join('');
-  $('vdInfo').innerHTML = `<div class="box" style="margin-bottom:10px">${pub ? `<div class="ln"><span>Fecha</span><span>${fechaCorta(v.fecha)}</span></div><div class="ln"><span>Lugar</span><span>${esc(v.lugar || '—')}</span></div><div class="ln"><span>Medio de pago</span><span>${esc(v.medio_pago)}</span></div>`
+  $('vdInfo').innerHTML = `<div class="box" style="margin-bottom:10px">${pub ? `<div class="ln"><span>Fecha</span><span>${fechaCorta(v.fecha)}</span></div><div class="ln"><span>Lugar</span><span>${esc(v.lugar || '—')}</span></div><div class="ln"><span>Medio de pago</span><span>${esc(v.medio_pago)}</span></div>${v.notas ? `<div class="ln"><span>Comprador</span><span>${esc(v.notas)}</span></div>` : ''}`
+      : v.canal === 'formacion' ? `<div class="ln"><span>Institución</span><b>${esc(v.lugar)}</b></div>${v.rut ? `<div class="ln"><span>RUT</span><span>${esc(fmtRut(v.rut))}</span></div>` : ''}<div class="ln"><span>Proyecto</span><span><button class="lnk" onclick="closeM('mVD');abrirFP('${v.origen}')">${esc(v.origen)}</button> ${esc(v.notas)}</span></div><div class="ln"><span>Fecha</span><span>${fechaCorta(v.fecha)}</span></div>`
       : `<div class="ln"><span>Local</span><b>${esc(l ? l.nombre : '—')}</b></div><div class="ln"><span>Cliente</span><span>${esc(e ? e.razon_social : '')} · ${esc(fmtRut(v.rut))}</span></div><div class="ln"><span>Fecha${v.estado === 'borrador' ? '' : ' de entrega'}</span><span>${fechaCorta(v.fecha)}</span></div>${v.origen ? `<div class="ln"><span>Origen</span><span>Liquidación ${esc(v.origen)}</span></div>` : ''}${v.notas ? `<div class="ln"><span>Notas</span><span>${esc(v.notas)}</span></div>` : ''}`}</div>
     <div class="tw"><table><thead><tr><th>Producto</th><th class="r">Cant.</th><th class="r">Precio ${pub ? '' : 'neto'}</th><th class="r">Subtotal</th></tr></thead><tbody>${detDe(v.id).map(d => `<tr><td>${esc(nombreItem(d.producto_id))}</td><td class="r">${qty(d.cantidad)}</td><td class="r">${clp(d.precio)}</td><td class="r">${clp(d.subtotal)}</td></tr>`).join('')}</tbody></table></div>
     <div class="box" style="margin-top:10px"><div class="ln"><span>Neto</span><span>${clp(v.neto)}</span></div><div class="ln"><span>IVA</span><span>${clp(v.iva)}</span></div><div class="ln tot"><span>Total</span><span>${clp(v.total)}</span></div>
     ${!pub && v.estado === 'entregada' ? (() => { const c = detDe(v.id).reduce((s, d) => s + d.cantidad * (Number(d.costo_unit) || 0), 0); return c ? `<div class="ln"><span class="muted">Margen (sobre neto)</span><span class="muted">${clp(v.neto - c)} · ${pct((v.neto - c) / v.neto)}</span></div>` : ''; })() : ''}</div>`;
   const activa = v.estado !== 'anulada';
-  $('vdShare').classList.toggle('hidden', pub || !activa);
-  $('vdShareNote').classList.toggle('hidden', pub || !activa);
+  $('vdShare').classList.toggle('hidden', pub || !activa || v.canal === 'formacion');
+  $('vdShareNote').classList.toggle('hidden', pub || !activa || v.canal === 'formacion');
   $('vdShareNote').textContent = esMovil() ? '«WhatsApp con PDF» abre el menú de compartir: elige WhatsApp y el contacto. «Solo mensaje» abre directo el chat del cliente.' : '«WhatsApp con PDF» descarga el PDF y abre el chat del cliente: arrastra el PDF al chat. «Solo mensaje» abre el chat sin PDF.';
   $('vdFolioBox').classList.toggle('hidden', pub || v.estado !== 'entregada');
   $('vdFolio').innerHTML = v.folio ? `<div class="lrow"><div class="v">Factura N° <b>${esc(v.folio)}</b> · ${fechaCorta(v.fecha_folio)}</div><button class="lnk" onclick="pedirFolio(['${v.id}'])">Cambiar</button><button class="lnk danger" onclick="quitarFolio('${v.id}')">Quitar</button></div>`
@@ -1861,7 +1949,7 @@ function abrirVenta(id) {
   $('vdEditar').classList.toggle('hidden', v.estado !== 'borrador');
   $('vdEntregar').classList.toggle('hidden', v.estado !== 'borrador');
   $('vdAnular').classList.toggle('hidden', !activa);
-  $('vdAnular').textContent = v.origen ? 'Anular liquidación' : 'Anular';
+  $('vdAnular').textContent = v.origen && v.origen.startsWith('LQ-') ? 'Anular liquidación' : 'Anular';
   openM('mVD');
 }
 const vdId = () => $('mVD').dataset.id;
@@ -1873,7 +1961,7 @@ $('vdEntregar').addEventListener('click', async () => {
 });
 $('vdAnular').addEventListener('click', async () => {
   const v = DB.ventas.find(x => x.id === vdId());
-  if (v.origen) { closeM('mVD'); return anularLiq(v.origen); }
+  if (v.origen && v.origen.startsWith('LQ-')) { closeM('mVD'); return anularLiq(v.origen); }
   const txt = v.estado === 'borrador' ? 'El borrador quedará anulado.' : `Se devolverán los productos a bodega${pagosDe(v.id).length ? ' y se anularán los pagos registrados' : ''}.${v.folio ? `\n\nOjo: tiene la factura ${v.folio}. En el SII tendrás que emitir una nota de crédito.` : ''}`;
   if (!await confirmar('Anular ' + v.id, txt, 'Anular', true)) return;
   if (await write('anularVenta', { id: v.id }, 'Anulada')) closeM('mVD');
@@ -2106,7 +2194,8 @@ function ventasFiltradas() {
   if (VT.tab === 'facturar') vs = DB.ventas.filter(v => v.estado === 'entregada' && v.canal !== 'publico' && !v.folio);
   return vs.filter(v => (!ca || v.canal === ca) && (!cl || v.rut === cl) && (!lu || v.lugar === lu));
 }
-const CANAL = { publico: 'Público', directa: 'Directa', consignacion: 'Consignación' };
+const CANAL = { publico: 'Público', directa: 'Directa', consignacion: 'Consignación', formacion: 'Formación' };
+const quien = v => v.local_id ? nombreLocal(v.local_id) : (v.lugar || '—');
 function renderVentas() {
   ['vDesde', 'vHasta'].forEach(id => $(id).parentElement.classList.toggle('hidden', VT.tab !== 'hist'));
   const vs = ventasFiltradas(), act = vs.filter(v => v.estado === 'entregada');
@@ -2123,7 +2212,7 @@ function renderVentas() {
   $('vHead').innerHTML = `<tr>${fac ? '<th></th>' : ''}<th>N°</th><th>Fecha</th><th>Canal</th><th>Cliente / lugar</th><th class="r">Total</th>${VT.tab === 'cobrar' ? '<th class="r">Saldo</th><th>Vence</th>' : ''}<th>Estado</th></tr>`;
   $('tVen').innerHTML = vs.length ? vs.slice(0, 300).map(v => `<tr class="click" style="${v.estado === 'anulada' ? 'opacity:.55' : ''}">${fac ? `<td onclick="event.stopPropagation()"><input type="checkbox" aria-label="Seleccionar ${v.id}" ${VT.sel.has(v.id) ? 'checked' : ''} onchange="vSel('${v.id}',this.checked)" style="width:18px;height:18px;accent-color:var(--oliva)"></td>` : ''}
     <td class="bold nw" onclick="abrirVenta('${v.id}')">${esc(v.id)}</td><td class="nw" onclick="abrirVenta('${v.id}')">${fechaCorta(v.fecha)}</td><td onclick="abrirVenta('${v.id}')">${CANAL[v.canal]}</td>
-    <td onclick="abrirVenta('${v.id}')">${v.canal === 'publico' ? esc(v.lugar || '—') + `<div class="sub">${esc(v.medio_pago)}</div>` : esc(nombreLocal(v.local_id)) + `<div class="sub">${esc((empresaDe(v.rut) || {}).razon_social || '')}${v.folio ? ' · Factura ' + esc(v.folio) : ''}</div>`}</td>
+    <td onclick="abrirVenta('${v.id}')">${v.canal === 'publico' ? esc(v.lugar || '—') + `<div class="sub">${esc(v.medio_pago)}</div>` : esc(quien(v)) + `<div class="sub">${esc(v.canal === 'formacion' ? v.notas : ((empresaDe(v.rut) || {}).razon_social || ''))}${v.folio ? ' · Factura ' + esc(v.folio) : ''}</div>`}</td>
     <td class="r" onclick="abrirVenta('${v.id}')">${clp(v.total)}</td>${VT.tab === 'cobrar' ? `<td class="r bold">${clp(saldoDe(v))}</td><td class="nw ${vencida(v) ? 'bad-t' : ''}">${fechaCorta(venceDe(v))}</td>` : ''}<td onclick="abrirVenta('${v.id}')">${tagEstado(v)}</td></tr>`).join('')
     : `<tr><td colspan="8"><div class="empty">Nada en este filtro.</div></td></tr>`;
   $('vMulti').classList.toggle('hidden', !fac || !vs.length);
@@ -2225,6 +2314,195 @@ $('cliRest').addEventListener('click', async () => { if (await write('restoreCli
 const EMP = { empRazon: 'emp_razon', empRut: 'emp_rut', empGiro: 'emp_giro', empDir: 'emp_direccion', empTel: 'emp_telefono', empMail: 'emp_email' };
 function renderEmpresaDatos() { Object.entries(EMP).forEach(([id, k]) => { if (document.activeElement !== $(id)) $(id).value = (DB.config || {})[k] || ''; }); }
 $('empSave').addEventListener('click', async () => { const datos = {}; Object.entries(EMP).forEach(([id, k]) => datos[k] = $(id).value.trim()); await write('setEmpresaDatos', { datos }, 'Datos guardados'); });
+
+
+// ═════════════════════════════ FORMACIÓN (2.1) ═════════════════════════════
+const EST_FP = { costeo: ['Costeo', ''], postulado: ['Postulado', 'warn'], adjudicado: ['Adjudicado', 'ok'], ejecutado: ['Ejecutado', 'ok'], cerrado: ['Cerrado', 'ok'], no_adjudicado: ['No adjudicado', 'bad'], cancelado: ['Cancelado', 'bad'] };
+const proyecto = id => DB.proyectos.find(x => x.id === id);
+const matsDe = id => DB.proy_mat.filter(m => m.proyecto_id === id);
+const costosDe = id => DB.proy_costos.filter(c => c.proyecto_id === id).map(c => ({ ...c, valor: c.valor_unit }));
+const tagFP = pr => { const [t, c] = EST_FP[pr.estado] || [pr.estado, '']; return `<span class="tag ${c}">${t}</span>`; };
+function costoMat(m) {
+  if (m.tipo === 'producto') { const p = producto(m.ref); return p ? costoProducto(p).unit : 0; }
+  return costoIns(insumo(m.ref));
+}
+function unidadMat(m) { return m.tipo === 'producto' ? 'u' : (insumo(m.ref) || {}).unidad || ''; }
+function nombreMat(m) { return m.tipo === 'producto' ? (producto(m.ref) || {}).nombre : (insumo(m.ref) || {}).nombre; }
+/** Costeo de un proyecto (con los datos del formulario o guardados). */
+function calcFP(alumnos, mats, costos, margen, precio, afecto, pres) {
+  const cMat = mats.reduce((s, m) => s + (Number(m.cantidad) || 0) * alumnos * costoMat(m), 0);
+  const cOtros = costos.reduce((s, c) => s + (Number(c.cantidad) || 1) * (Number(c.valor) || 0), 0);
+  const costo = cMat + cOtros;
+  const sug = margen > 0 && margen < 100 ? costo / (1 - margen / 100) : costo;
+  const neto = precio > 0 ? precio : 0, iva = afecto ? Math.round(neto * 0.19) : 0, total = neto + iva;
+  return { cMat, cOtros, costo, porAlumno: alumnos > 0 ? costo / alumnos : 0, sug: Math.ceil(sug / 1000) * 1000, neto, iva, total,
+    margen: neto > 0 ? (neto - costo) / neto : NaN, excede: pres > 0 && total > pres, holgura: pres > 0 ? pres - total : null };
+}
+function ventaFP(pr) { const v = pr.venta_id ? DB.ventas.find(x => x.id === pr.venta_id) : null; return v && v.estado !== 'anulada' ? v : null; }
+
+// Lista
+const FP = { f: 'curso', mats: [], costos: [], iva: 'si' };
+$('fpChips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; FP.f = b.dataset.f; [...$('fpChips').children].forEach(x => x.classList.toggle('on', x === b)); renderFormacion(); });
+$('fpQ').addEventListener('input', renderFormacion);
+function renderFormacion() {
+  const q = norm($('fpQ').value);
+  const g = { curso: ['costeo', 'postulado', 'adjudicado', 'ejecutado'], cerrado: ['cerrado'], no: ['no_adjudicado', 'cancelado'] }[FP.f];
+  const ps = DB.proyectos.filter(p => (!g || g.includes(p.estado)) && (!q || norm(p.nombre + ' ' + p.institucion + ' ' + p.id_licitacion + ' ' + p.id).includes(q)));
+  $('fpGrid').innerHTML = ps.length ? ps.map(pr => {
+    const c = calcFP(Number(pr.alumnos) || 0, matsDe(pr.id), costosDe(pr.id), 0, Number(pr.precio_ofertado) || 0, pr.afecto_iva !== 'no', Number(pr.presupuesto_max) || 0);
+    const v = ventaFP(pr), real = pr.ejecutado_fecha ? (Number(pr.costo_mat_real) || 0) + c.cOtros : null;
+    return `<button class="pcard" onclick="abrirFP('${pr.id}')"><div style="display:flex;justify-content:space-between;gap:8px"><div><div class="nm">${esc(pr.nombre)}</div><div class="sub">${esc(pr.id)} · ${esc(pr.origen)}${pr.institucion ? ' · ' + esc(pr.institucion) : ''}</div></div>${tagFP(pr)}</div>
+      <div class="kv"><span class="muted">Fechas</span><span>${pr.fecha_inicio ? fechaCorta(pr.fecha_inicio) + (pr.fecha_fin ? ' – ' + fechaCorta(pr.fecha_fin) : '') : '—'}</span></div>
+      <div class="kv"><span class="muted">Alumnos</span><span>${qty(pr.alumnos_reales || pr.alumnos)}</span></div>
+      <div class="kv"><span class="muted">Precio ofertado (neto)</span><b>${pr.precio_ofertado ? clp(pr.precio_ofertado) : '—'}</b></div>
+      ${real !== null && pr.precio_ofertado ? `<div class="kv"><span class="muted">Resultado real</span><span class="${pr.precio_ofertado - real < 0 ? 'bad-t' : 'ok-t'}">${clp(pr.precio_ofertado - real)}</span></div>` : `<div class="kv"><span class="muted">Margen estimado</span><span>${pct(c.margen)}</span></div>`}
+      ${v ? `<div class="kv"><span class="muted">Venta</span><span>${esc(v.id)} ${tagEstado(v)}</span></div>` : ''}</button>`; }).join('')
+    : `<div class="card empty" style="grid-column:1/-1">${DB.proyectos.length ? 'Nada en este filtro.' : 'Crea el primer proyecto con «+ Nuevo proyecto» para costear un taller o una licitación.'}</div>`;
+}
+
+// Modal
+function abrirFP(id) {
+  const pr = id ? proyecto(id) : null;
+  $('fpId').value = pr ? pr.id : '';
+  $('mFPT').textContent = pr ? pr.nombre : 'Nuevo proyecto de formación';
+  const val = (el, v) => $(el).value = v == null ? '' : v;
+  val('fpNom', pr && pr.nombre); $('fpOrigen').value = pr ? pr.origen : 'Licitación'; val('fpLic', pr && pr.id_licitacion); val('fpInst', pr && pr.institucion); val('fpRut', pr && pr.rut ? fmtRut(pr.rut) : '');
+  val('fpFPost', pr && pr.fecha_postulacion); val('fpFIni', pr && pr.fecha_inicio); val('fpFFin', pr && pr.fecha_fin);
+  val('fpAl', pr && pr.alumnos ? pr.alumnos : ''); val('fpSes', pr && pr.sesiones ? pr.sesiones : ''); val('fpHrs', pr && pr.horas ? numIn(pr.horas) : '');
+  val('fpPres', pr && pr.presupuesto_max ? Math.round(pr.presupuesto_max).toLocaleString('es-CL') : ''); val('fpLink', pr && pr.link_doc); val('fpNotas', pr && pr.notas);
+  val('fpMargen', pr && pr.margen_obj ? numIn(pr.margen_obj) : '30'); val('fpPrecio', pr && pr.precio_ofertado ? Math.round(pr.precio_ofertado).toLocaleString('es-CL') : '');
+  setFPIva(pr ? (pr.afecto_iva === 'no' ? 'no' : 'si') : 'si');
+  FP.mats = pr ? matsDe(pr.id).map(m => ({ ...m })) : [];
+  FP.costos = pr ? costosDe(pr.id).map(c => ({ ...c })) : [{ descripcion: 'Relatoría (horas)', cantidad: '', valor: '' }];
+  if (!FP.mats.length) FP.mats.push({ tipo: 'insumo', ref: '', cantidad: '' });
+  const bloq = pr && pr.ejecutado_fecha;
+  $('fpMatAdd').classList.toggle('hidden', !!bloq);
+  const st = ['costeo', 'postulado', 'adjudicado', 'ejecutado', 'cerrado'], i = pr ? st.indexOf(pr.estado) : 0;
+  $('fpSteps').innerHTML = pr && (pr.estado === 'no_adjudicado' || pr.estado === 'cancelado') ? tagFP(pr) : st.map((k, j) => `<span class="${j <= i ? 'on' : ''}">${EST_FP[k][0]}</span>`).join('');
+  renderFPMats(); renderFPCostos(); renderFPFoot(pr); renderFPRes(pr);
+  openM('mFP');
+}
+function setFPIva(v) { FP.iva = v; [...$('fpIva').children].forEach(b => b.classList.toggle('on', b.dataset.v === v)); fpCalc(); }
+$('fpIva').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setFPIva(b.dataset.v); });
+['fpAl', 'fpPres', 'fpMargen', 'fpPrecio'].forEach(id => $(id).addEventListener('input', fpCalc));
+function renderFPMats() {
+  const bloq = !!(proyecto($('fpId').value) || {}).ejecutado_fecha;
+  const is = DB.insumos.filter(i => i.estado === 'activo').sort((a, b) => a.nombre.localeCompare(b.nombre));
+  const ps = DB.productos.filter(p => p.estado === 'activo' && !esServ(p)).sort((a, b) => a.nombre.localeCompare(b.nombre));
+  $('fpMats').innerHTML = FP.mats.map((m, k) => `<div class="fmat"><select class="in" aria-label="Material" ${bloq ? 'disabled' : ''} onchange="fpMatSet(${k},'ref',this.value)"><option value="">Elegir insumo o producto…</option>
+      <optgroup label="Insumos">${is.map(i => `<option value="i:${i.id}" ${m.tipo !== 'producto' && m.ref === i.id ? 'selected' : ''}>${esc(i.nombre)}</option>`).join('')}</optgroup>
+      <optgroup label="Productos terminados">${ps.map(p => `<option value="p:${p.id}" ${m.tipo === 'producto' && m.ref === p.id ? 'selected' : ''}>${esc(p.nombre)}</option>`).join('')}</optgroup></select>
+    <div class="unit"><input class="in r" aria-label="Cantidad por alumno" placeholder="por alumno" inputmode="decimal" ${bloq ? 'disabled' : ''} value="${m.cantidad === '' ? '' : numIn(m.cantidad)}" oninput="fpMatSet(${k},'cantidad',this.value)"><span>${m.ref ? esc(unidadMat(m)) : ''}</span></div>
+    <div class="cost" id="fpMc${k}"></div>${bloq ? '<span></span>' : `<button class="xbtn" aria-label="Quitar" onclick="fpMatDel(${k})">×</button>`}</div>`).join('') + (bloq ? '<p class="note" style="margin:0 0 10px">Materiales bloqueados: ya se descontaron del stock. Anula la ejecución para cambiarlos.</p>' : '');
+  fpCalc();
+}
+function fpMatSet(k, c, v) {
+  const m = FP.mats[k];
+  if (c === 'ref') { const [t, id] = v.split(':'); m.tipo = t === 'p' ? 'producto' : 'insumo'; m.ref = id || ''; renderFPMats(); return; }
+  m.cantidad = parseNum(v); fpCalc();
+}
+function fpMatDel(k) { FP.mats.splice(k, 1); if (!FP.mats.length) FP.mats.push({ tipo: 'insumo', ref: '', cantidad: '' }); renderFPMats(); }
+$('fpMatAdd').addEventListener('click', () => { FP.mats.push({ tipo: 'insumo', ref: '', cantidad: '' }); renderFPMats(); });
+function renderFPCostos() {
+  $('fpCostos').innerHTML = FP.costos.map((c, k) => `<div class="fcos"><input class="in" list="fpCostoSug" aria-label="Descripción" placeholder="Ej: Relatoría (horas)" value="${esc(c.descripcion)}" oninput="fpCosSet(${k},'descripcion',this.value)">
+    <input class="in r" aria-label="Cantidad" placeholder="Cant." inputmode="decimal" value="${c.cantidad === '' ? '' : numIn(c.cantidad)}" oninput="fpCosSet(${k},'cantidad',this.value)">
+    <input class="in r" aria-label="Valor unitario" placeholder="Valor" inputmode="numeric" value="${c.valor ? Math.round(c.valor).toLocaleString('es-CL') : ''}" oninput="fpCosSet(${k},'valor',this.value)">
+    <div class="cost" id="fpCc${k}"></div><button class="xbtn" aria-label="Quitar" onclick="fpCosDel(${k})">×</button></div>`).join('');
+  fpCalc();
+}
+function fpCosSet(k, c, v) { FP.costos[k][c] = c === 'descripcion' ? v : parseNum(v); fpCalc(); }
+function fpCosDel(k) { FP.costos.splice(k, 1); renderFPCostos(); }
+$('fpCostoAdd').addEventListener('click', () => { FP.costos.push({ descripcion: '', cantidad: '', valor: '' }); renderFPCostos(); });
+function fpCalc() {
+  const al = parseNum($('fpAl').value), pres = parseNum($('fpPres').value), mar = parseNum($('fpMargen').value), precio = parseNum($('fpPrecio').value);
+  const mats = FP.mats.filter(m => m.ref);
+  FP.mats.forEach((m, k) => { const el = $('fpMc' + k); if (el) el.textContent = m.ref && m.cantidad ? clp(m.cantidad * al * costoMat(m)) : ''; });
+  FP.costos.forEach((c, k) => { const el = $('fpCc' + k); if (el) el.textContent = c.valor ? clp((Number(c.cantidad) || 1) * c.valor) : ''; });
+  const c = calcFP(al, mats, FP.costos, mar, precio, FP.iva === 'si', pres);
+  $('fpTot').innerHTML = `<div class="ln"><span>Materiales (${qty(al)} alumnos)</span><span>${clp(c.cMat)}</span></div><div class="ln"><span>Otros costos</span><span>${clp(c.cOtros)}</span></div>
+    <div class="ln tot"><span>Costo total</span><span>${clp(c.costo)}</span></div><div class="ln"><span class="muted">Costo por alumno</span><span class="muted">${clp(c.porAlumno)}</span></div>
+    <div class="ln"><span>Precio sugerido (neto, ${qty(mar)}% margen)</span><span><b>${clp(c.sug)}</b> <button class="lnk" type="button" onclick="$('fpPrecio').value=(${c.sug}).toLocaleString('es-CL');fpCalc()">Usar</button></span></div>`;
+  $('fpOferta').innerHTML = c.neto ? `<div class="ln"><span>Neto ofertado</span><span>${clp(c.neto)}</span></div><div class="ln"><span>${FP.iva === 'si' ? 'IVA 19%' : 'Exento de IVA'}</span><span>${clp(c.iva)}</span></div>
+    <div class="ln tot"><span>Total de la oferta</span><span>${clp(c.total)}</span></div><div class="ln"><span>Margen</span><span class="${c.margen < 0 ? 'bad-t' : 'bold'}">${pct(c.margen)} · ${clp(c.neto - c.costo)}</span></div>
+    ${pres ? `<div class="ln"><span>Presupuesto máximo</span><span class="${c.excede ? 'bad-t' : 'ok-t'}">${c.excede ? 'Excede por ' + clp(-c.holgura) + ': la oferta quedaría fuera' : 'Dentro · holgura ' + clp(c.holgura)}</span></div>` : ''}`
+    : '<p class="note" style="margin:0">Ingresa el precio ofertado (o usa el sugerido) para ver el margen y compararlo con el presupuesto máximo.</p>';
+}
+function renderFPRes(pr) {
+  if (!pr || (!pr.ejecutado_fecha && !ventaFP(pr))) { $('fpRes').innerHTML = ''; return; }
+  const v = ventaFP(pr), otros = costosDe(pr.id).reduce((s, c) => s + (Number(c.cantidad) || 1) * (Number(c.valor) || 0), 0);
+  const ingreso = v ? Number(v.neto) || 0 : Number(pr.precio_ofertado) || 0, mat = Number(pr.costo_mat_real) || 0, res = ingreso - mat - otros;
+  $('fpRes').innerHTML = `<div class="grid g4 kpis" style="margin-bottom:14px">${[
+    ['Ingreso neto', clp(ingreso) + (v ? '' : ' (ofertado)')],
+    ['Materiales usados', pr.ejecutado_fecha ? clp(mat) + ` · ${qty(pr.alumnos_reales)} alumnos` : 'Sin ejecutar'],
+    ['Otros costos', clp(otros)],
+    ['Resultado', `<span class="${res < 0 ? 'bad-t' : 'ok-t'}">${clp(res)}${ingreso ? ' · ' + pct(res / ingreso) : ''}</span>`]
+  ].map(([a, b]) => `<div class="card kpi" style="padding:12px"><div class="lbl">${a}</div><div class="val" style="font-size:17px">${b}</div></div>`).join('')}</div>
+  ${v ? `<p class="note" style="margin:-6px 0 12px">Venta ${esc(v.id)} ${tagEstado(v)} · <button class="lnk" type="button" onclick="abrirVenta('${v.id}')">Ver folio y pagos</button></p>` : ''}`;
+}
+function renderFPFoot(pr) {
+  const e = pr ? pr.estado : 'nuevo', v = pr ? ventaFP(pr) : null, B = (id, t, cls) => `<button class="btn ${cls || ''}" onclick="${id}">${t}</button>`;
+  const acc = {
+    nuevo: [], costeo: [B("fpEstado('postulado')", 'Marcar postulado')],
+    postulado: [B("fpEstado('no_adjudicado')", 'No adjudicado', 'danger'), B("fpEstado('adjudicado')", 'Adjudicado')],
+    adjudicado: [B("fpEstado('cancelado')", 'Cancelar proyecto', 'danger'), ...(v ? [] : [B('fpVender()', 'Generar venta')]), B('fpEjecutar()', 'Registrar ejecución')],
+    ejecutado: [B('fpAnularEj()', 'Anular ejecución', 'danger'), ...(v ? [] : [B('fpVender()', 'Generar venta')]), B("fpEstado('cerrado')", 'Cerrar proyecto')],
+    cerrado: [B("fpEstado('ejecutado')", 'Reabrir')],
+    no_adjudicado: [B("fpEstado('costeo')", 'Reabrir')], cancelado: [B("fpEstado('costeo')", 'Reabrir')]
+  }[e] || [];
+  $('fpFoot').innerHTML = (pr && !pr.ejecutado_fecha && !v ? B('fpDel()', 'Eliminar', 'danger') : '') + '<span class="sp"></span>' + acc.join('') + B("closeM('mFP')", 'Cerrar', 'ghost') + B('fpGuardar()', pr ? 'Guardar cambios' : 'Guardar proyecto', 'pri');
+}
+function fpPayload() {
+  const d = { id: $('fpId').value, nombre: $('fpNom').value.trim(), origen: $('fpOrigen').value, id_licitacion: $('fpLic').value.trim(), institucion: $('fpInst').value.trim(), rut: $('fpRut').value.trim(),
+    fecha_postulacion: $('fpFPost').value, fecha_inicio: $('fpFIni').value, fecha_fin: $('fpFFin').value, alumnos: parseNum($('fpAl').value), sesiones: parseNum($('fpSes').value), horas: parseNum($('fpHrs').value),
+    presupuesto_max: parseNum($('fpPres').value), margen_obj: parseNum($('fpMargen').value), precio_ofertado: parseNum($('fpPrecio').value), afecto_iva: FP.iva, link_doc: $('fpLink').value.trim(), notas: $('fpNotas').value.trim() };
+  if (!d.nombre) { toast('Falta el nombre del taller', 'err'); return null; }
+  if (d.rut && !rutOk(rutNorm(d.rut))) { toast('El RUT de la institución no es válido', 'err'); return null; }
+  // Leer desde pantalla (algunos teclados no avisan el último cambio)
+  document.querySelectorAll('#fpCostos .fcos').forEach((r, k) => { const [a, b, c] = r.querySelectorAll('input'); if (FP.costos[k]) { FP.costos[k].descripcion = a.value; FP.costos[k].cantidad = parseNum(b.value); FP.costos[k].valor = parseNum(c.value); } });
+  return { proyecto: d, materiales: FP.mats.filter(m => m.ref && Number(m.cantidad) > 0), costos: FP.costos.filter(c => String(c.descripcion).trim() && Number(c.valor) > 0) };
+}
+async function fpGuardar(silencioso) {
+  const b = fpPayload(); if (!b) return null;
+  const r = await write('saveProyecto', b, 'Proyecto guardado');
+  if (r && !silencioso) abrirFP(r.proyecto.id);
+  return r;
+}
+async function fpEstado(estado) {
+  const r = await fpGuardar(true); if (!r) return;
+  const txt = { no_adjudicado: 'El proyecto quedará como no adjudicado (se conserva el costeo).', cancelado: 'El proyecto quedará cancelado.', cerrado: 'Se cierra el proyecto con su resultado final.' }[estado];
+  if (txt && !await confirmar('Cambiar estado', txt, 'Confirmar')) return;
+  if (await write('estadoProyecto', { id: r.proyecto.id, estado }, 'Estado: ' + EST_FP[estado][0])) abrirFP(r.proyecto.id);
+}
+async function fpEjecutar() {
+  const r = await fpGuardar(true); if (!r) return;
+  const pr = proyecto(r.proyecto.id);
+  const al = await preguntar('¿Cuántos alumnos participaron?', String(pr.alumnos || ''), 'Se descontarán del stock los materiales por alumno × este número.');
+  if (!al) return;
+  const n = parseNum(al); if (!(n > 0)) return toast('Número de alumnos no válido', 'err');
+  const falta = matsDe(pr.id).filter(m => (Number(m.cantidad) || 0) * n > stockDe(m.ref)).map(nombreMat);
+  const detalle = matsDe(pr.id).map(m => `• ${qty(m.cantidad * n)} ${unidadMat(m)} de ${nombreMat(m)}`).join('\n');
+  if (!await confirmar('Registrar ejecución', `Se descuenta del stock:\n${detalle || '(sin materiales)'}${falta.length ? '\n\nOjo: no alcanza el stock de ' + falta.join(', ') + '. Quedará en negativo.' : ''}`, 'Registrar')) return;
+  if (await write('ejecutarProyecto', { id: pr.id, alumnos_reales: n, fecha: pr.fecha_fin || hoy() }, 'Ejecución registrada')) abrirFP(pr.id);
+}
+async function fpAnularEj() {
+  const pr = proyecto($('fpId').value);
+  if (!await confirmar('Anular ejecución', 'Los materiales vuelven al stock y el proyecto vuelve a «adjudicado».', 'Anular', true)) return;
+  if (await write('anularEjecucion', { id: pr.id }, 'Ejecución anulada')) abrirFP(pr.id);
+}
+async function fpVender() {
+  const r = await fpGuardar(true); if (!r) return;
+  const pr = proyecto(r.proyecto.id);
+  if (!(pr.precio_ofertado > 0)) return toast('Primero ingresa el precio ofertado', 'err');
+  const iva = pr.afecto_iva === 'no' ? 0 : Math.round(pr.precio_ofertado * 0.19);
+  if (!await confirmar('Generar venta', `Se crea una orden de venta por ${clp(pr.precio_ofertado)} neto${iva ? ' + IVA ' + clp(iva) : ' (exento)'} a ${pr.institucion || 'la institución'}, lista para asignarle folio y registrar el pago.`, 'Generar')) return;
+  if (await write('facturarProyecto', { id: pr.id, fecha: hoy() }, 'Venta generada')) abrirFP(pr.id);
+}
+async function fpDel() {
+  const pr = proyecto($('fpId').value);
+  if (!await confirmar('Eliminar proyecto', `«${pr.nombre}» y su costeo se eliminarán.`, 'Eliminar', true)) return;
+  if (await write('deleteProyecto', { id: pr.id }, 'Proyecto eliminado')) closeM('mFP');
+}
+$('fpNuevo').addEventListener('click', () => abrirFP());
 
 
 // ───────────── Inicio ─────────────
