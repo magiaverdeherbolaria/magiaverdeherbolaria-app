@@ -66,7 +66,7 @@ Nunca subas al repositorio la URL /exec ni la clave: van solo en Configuración 
 
 - Cambios en `Code.gs`: **Implementar → Administrar implementaciones → editar (lápiz) → Versión: Nueva versión → Implementar**.
   Así la URL no cambia. (Si creas una implementación nueva, cambia la URL y hay que pegarla otra vez en Configuración.)
-- Cambios en `index.html`: sube el archivo y cambia `VERSION` en `sw.js` (ej. `mv-v11`) para que los celulares tomen la versión nueva.
+- Cambios en `index.html`: sube el archivo y cambia `VERSION` en `sw.js` (ej. `mv-v12`) para que los celulares tomen la versión nueva.
 - Para comprobar: **Configuración → Versión** muestra la versión de la app y la de Apps Script. Los dos primeros
   números deben coincidir (ej. 2.0.x); si no, la app muestra un aviso arriba. El último número puede diferir cuando
   un arreglo toca solo una de las partes.
@@ -101,6 +101,7 @@ Nunca subas al repositorio la URL /exec ni la clave: van solo en Configuración 
 
 ## Versiones
 
+- **2.1.4** (solo app) — PDF: ícono de Magia Verde junto al logo; la razón social del cliente ocupa todo el ancho y el local de entrega va debajo, separado. Apps Script sigue en 2.1.0.
 - **2.1.3** (solo app) — En la calculadora de costo, «Factura/Boleta» pasa a ser «Precio tal cual» (por defecto) o «Quitar IVA (19%)», porque no es una compra. Apps Script sigue en 2.1.0.
 - **2.1.2** (solo app) — Calculadora de costo al crear o editar un insumo: precio de un envase + cuánto trae (en g, kg, ml, litro, unidades o un formato) + factura/boleta → costo por unidad, sin registrar compra. Apps Script sigue en 2.1.0.
 - **2.1.1** (solo app) — Ícono nuevo: circular, con degradado de oliva a rosado. Apps Script sigue en 2.1.0.
