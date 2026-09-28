@@ -1,4 +1,4 @@
-# Magia Verde · App de gestión — versión 2.0.1
+# Magia Verde · App de gestión — versión 2.0.2
 
 Incluye:
 - **Ventas**: clientes (empresas por RUT con sus locales y precios negociados), venta rápida para ferias,
@@ -66,9 +66,10 @@ Nunca subas al repositorio la URL /exec ni la clave: van solo en Configuración 
 
 - Cambios en `Code.gs`: **Implementar → Administrar implementaciones → editar (lápiz) → Versión: Nueva versión → Implementar**.
   Así la URL no cambia. (Si creas una implementación nueva, cambia la URL y hay que pegarla otra vez en Configuración.)
-- Cambios en `index.html`: sube el archivo y cambia `VERSION` en `sw.js` (ej. `mv-v6`) para que los celulares tomen la versión nueva.
-- Para comprobar: **Configuración → Versión** muestra la versión de la app y la de Apps Script. Deben coincidir;
-  si no, la app muestra un aviso arriba.
+- Cambios en `index.html`: sube el archivo y cambia `VERSION` en `sw.js` (ej. `mv-v7`) para que los celulares tomen la versión nueva.
+- Para comprobar: **Configuración → Versión** muestra la versión de la app y la de Apps Script. Los dos primeros
+  números deben coincidir (ej. 2.0.x); si no, la app muestra un aviso arriba. El último número puede diferir cuando
+  un arreglo toca solo una de las partes.
 - Las actualizaciones crean solas las hojas y columnas nuevas. No hace falta volver a ejecutar `setup`.
 
 ## Reglas del sistema
@@ -94,6 +95,9 @@ Nunca subas al repositorio la URL /exec ni la clave: van solo en Configuración 
 
 ## Versiones
 
+- **2.0.2** (solo app) — Botones de acción con fondo propio (WhatsApp, PDF, Anular…); «WhatsApp con PDF»: en el celular
+  abre el menú de compartir con el PDF y el mensaje, en el computador descarga el PDF y abre el chat del cliente;
+  casilla «Cant.» rotulada al entregar u ordenar. Apps Script sigue en 2.0.1.
 - **2.0.1** — Un solo precio B2B por producto (antes había dos: directa y consignación) más el precio especial por
   empresa. Los precios ya cargados se conservan. Círculo oliva en el ícono de la sección activa (celular y computador).
 - **2.0** — Fase de ventas: clientes con locales y precios negociados, venta rápida, órdenes de venta (PDF, WhatsApp,

@@ -131,7 +131,15 @@ td.r,td.nw{white-space:nowrap}
 .btn.sm{height:34px;padding:0 12px;font-size:13px}
 .btn.full{width:100%}
 .btn[disabled]{opacity:.5;cursor:default}
-.lnk{border:0;background:none;color:var(--oliva);font-weight:600;cursor:pointer;padding:4px 0;font-size:13px}
+.lnk{display:inline-flex;align-items:center;gap:5px;border:1px solid #cdd3ad;background:var(--oliva-tinte);color:var(--oliva-texto);font-weight:600;cursor:pointer;padding:5px 10px;border-radius:8px;font-size:13px;line-height:1.2;white-space:nowrap;margin:2px 0}
+.lnk:hover{background:#d6dbb9;border-color:var(--oliva)}
+.lnk.danger{border-color:#e3c2ba;background:var(--peligro-bg);color:var(--peligro)}
+.lnk.danger:hover{background:#ecc9c0;border-color:var(--peligro)}
+.lnk.wa{border-color:#b9d9c2;background:#e3f2e7;color:#1d6b3a}
+.lnk.wa:hover{background:#cfe9d7;border-color:#1d6b3a}
+.lnk svg,.btn svg{width:15px;height:15px;flex-shrink:0}
+.btn.wa{border-color:#1d6b3a;color:#1d6b3a;background:#eef7f0}
+.btn.wa:hover{background:#dcefe1}
 .lnk.danger{color:var(--peligro)}
 label.f{display:block;font-size:12px;font-weight:600;color:var(--gris);margin:0 0 6px}
 .fld{margin-bottom:12px}
@@ -228,9 +236,10 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
   .fmtrow{grid-template-columns:minmax(0,1fr) 100px 36px}
   .fmtrow label{grid-column:1/3}
   .filters{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .oline{grid-template-columns:minmax(0,1fr) 70px 96px 36px}
+  .oline{grid-template-columns:minmax(0,1fr) 76px 36px}
   .oline .st,.oline .sub-t{display:none}
-  .ohead{display:none}
+  .ohead{grid-template-columns:minmax(0,1fr) 76px 36px}
+  .ohead .st,.ohead .sub-t{display:none}
   .pagos button{height:52px}
   .locrow{grid-template-columns:minmax(0,1fr) 36px}
   .locrow .hide-m{display:none}
@@ -517,7 +526,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
       <div class="card" style="max-width:620px">
         <h2 style="margin-bottom:8px">Versión</h2>
         <div class="box" id="verBox"></div>
-        <p class="note" style="margin-top:10px">Las dos versiones deben coincidir. Si no, falta subir el index.html a GitHub o publicar la «Nueva versión» en Apps Script.</p>
+        <p class="note" style="margin-top:10px">Los dos primeros números deben coincidir (ej. 2.0.x). El último puede ser distinto: son arreglos que tocan solo una de las dos partes. Si no coinciden, falta subir el index.html a GitHub o publicar la «Nueva versión» en Apps Script.</p>
       </div>
     </section>
   </main>
@@ -650,7 +659,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
     <div class="fld"><label class="f" for="ovFecha">Fecha de entrega</label><input class="in" id="ovFecha" type="date"></div>
   </div>
   <div class="fld"><label class="f">Modalidad <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Venta directa: el negocio compra el producto; se le factura al entregar.&#10;Consignación: el producto queda en su local pero sigue siendo de Magia Verde; se cobra solo lo que venda, al liquidar.">i</button></label><div class="seg" id="ovMod" style="max-width:420px"><button type="button" data-v="directa" class="on">Venta directa</button><button type="button" data-v="consignacion">Consignación</button></div></div>
-  <div class="ohead"><span>Producto</span><span class="r">En bodega</span><span class="r">Cantidad</span><span class="r">Precio neto</span><span class="r">Subtotal</span><span></span></div>
+  <div class="ohead"><span>Producto</span><span class="r st">En bodega</span><span class="r">Cant.</span><span class="r sub-t">Precio neto</span><span class="r st">Subtotal</span><span></span></div>
   <div id="ovLines"></div>
   <button class="btn sm ghost" id="ovAdd">+ Producto</button>
   <div class="row2" style="margin-top:14px;align-items:start">
@@ -674,7 +683,8 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
   <div class="mh"><h2 id="mVDT"></h2><button class="closeb" data-close aria-label="Cerrar">×</button></div>
   <div class="steps" id="vdSteps" style="margin-bottom:14px"></div>
   <div id="vdInfo"></div>
-  <div class="acts" style="margin:14px 0 4px" id="vdShare"><button class="btn sm" id="vdWa">WhatsApp</button><button class="btn sm" id="vdPdf">PDF</button></div>
+  <div class="acts" style="margin:14px 0 4px" id="vdShare"><button class="btn sm wa" id="vdWaPdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/><path d="M9 9.5c.3 1.8 2.7 4.2 4.5 4.5l1.2-1.2 1.8.8-.4 1.6c-3.4.3-7.6-3.9-7.3-7.3l1.6-.4.8 1.8z"/></svg> WhatsApp con PDF</button><button class="btn sm wa" id="vdWa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/><path d="M9 9.5c.3 1.8 2.7 4.2 4.5 4.5l1.2-1.2 1.8.8-.4 1.6c-3.4.3-7.6-3.9-7.3-7.3l1.6-.4.8 1.8z"/></svg> Solo mensaje</button><button class="btn sm" id="vdPdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M12 11v6M9.5 14.5L12 17l2.5-2.5"/></svg> PDF</button></div>
+  <p class="note" id="vdShareNote" style="margin:0 0 4px"></p>
   <div class="subsec" id="vdFolioBox"><h2 style="margin-bottom:8px">Factura (folio SII) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Cuando emitas la factura en el SII, anota aquí su número de folio. Si una misma factura cubre varias órdenes, usa «Por facturar» en Ventas y cobranza para asignar un folio a varias a la vez.">i</button></h2><div id="vdFolio"></div></div>
   <div class="subsec" id="vdPagosBox"><h2 style="margin-bottom:8px">Pagos</h2><div id="vdPagos"></div></div>
   <div class="mf"><button class="btn danger" id="vdAnular">Anular</button><span class="sp"></span><button class="btn" id="vdEditar">Editar</button><button class="btn pri" id="vdEntregar">Confirmar entrega</button></div>
@@ -767,7 +777,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
 
 <script>
 // ───────────── Estado ─────────────
-const APP_VERSION = '2.0.1';
+const APP_VERSION = '2.0.2';
 const LS = { url: 'mv_gs_url', key: 'mv_gs_key', cache: 'mv_cache_v1' };
 let GS = lsGet(LS.url), KEY = lsGet(LS.key);
 const DB0 = () => ({ insumos: [], productos: [], recetas: [], compras: [], produccion: [], movimientos: [], stock: {}, formatos: [], listas: [], costos_hist: [], config: {}, empresas: [], locales: [], precios_cliente: [], ventas: [], ventas_det: [], pagos: [], consignaciones: [], consig_det: [], liquidaciones: [], liq_det: [] });
@@ -1001,7 +1011,8 @@ function renderAll() {
 
 function renderVersion() {
   const be = DB.version || '1.1 o anterior';
-  const dif = lastSync > 0 && be !== APP_VERSION;
+  const mm = v => String(v).split('.').slice(0, 2).join('.');
+  const dif = lastSync > 0 && mm(be) !== mm(APP_VERSION); // solo importan los dos primeros números (ej. 2.0)
   $('verBanner').classList.toggle('hidden', !dif);
   $('verTxt').textContent = dif ? `La app está en ${APP_VERSION} y Apps Script en ${be}. Falta actualizar una de las dos partes.` : '';
   $('verBox').innerHTML = `<div class="ln"><span>App (index.html)</span><b>${APP_VERSION}</b></div><div class="ln"><span>Apps Script (Code.gs)</span><b class="${dif ? 'bad-t' : ''}">${DB.serverTime ? esc(be) : '—'}</b></div>`;
@@ -1758,8 +1769,8 @@ function renderOVLines() {
   $('ovLines').innerHTML = OV.lines.map((l, k) => { const pr = l.pid ? precioPara(OV.rut, l.pid) : null, st = l.pid ? stockDe(l.pid) : null;
     return `<div class="oline"><select class="in" aria-label="Producto" onchange="ovSet(${k},'pid',this.value)"><option value="">Elegir producto…</option>${ps.map(p => `<option value="${p.id}" ${p.id === l.pid ? 'selected' : ''}>${esc(p.nombre)}${p.presentacion ? ' · ' + esc(p.presentacion) : ''}</option>`).join('')}</select>
       <span class="st ${st !== null && st < (Number(l.q) || 0) ? 'bad-t' : ''}">${st === null ? '' : qty(st)}</span>
-      <input class="in r" aria-label="Cantidad" inputmode="decimal" value="${l.q === '' ? '' : numIn(l.q)}" oninput="ovSet(${k},'q',this.value)">
-      <div class="sub-t" style="position:relative"><input class="in r" aria-label="Precio neto" inputmode="numeric" value="${l.precio ? Math.round(l.precio).toLocaleString('es-CL') : ''}" oninput="ovSet(${k},'precio',this.value)" style="${pr && pr.negociado && !l.manual ? 'background:var(--oliva-tinte)' : ''}" title="${pr && pr.negociado ? 'Precio especial de este cliente' : 'Precio B2B general'}"></div>
+      <input class="in r" aria-label="Cantidad" placeholder="Cant." inputmode="decimal" value="${l.q === '' ? '' : numIn(l.q)}" oninput="ovSet(${k},'q',this.value)">
+      <div class="sub-t" style="position:relative"><input class="in r" aria-label="Precio neto" placeholder="Precio" inputmode="numeric" value="${l.precio ? Math.round(l.precio).toLocaleString('es-CL') : ''}" oninput="ovSet(${k},'precio',this.value)" style="${pr && pr.negociado && !l.manual ? 'background:var(--oliva-tinte)' : ''}" title="${pr && pr.negociado ? 'Precio especial de este cliente' : 'Precio B2B general'}"></div>
       <span class="st sub-t" id="ovSub${k}"></span>
       <button class="xbtn" aria-label="Quitar" onclick="ovDel(${k})">×</button></div>`; }).join('');
   ovCalc();
@@ -1838,6 +1849,8 @@ function abrirVenta(id) {
     ${!pub && v.estado === 'entregada' ? (() => { const c = detDe(v.id).reduce((s, d) => s + d.cantidad * (Number(d.costo_unit) || 0), 0); return c ? `<div class="ln"><span class="muted">Margen (sobre neto)</span><span class="muted">${clp(v.neto - c)} · ${pct((v.neto - c) / v.neto)}</span></div>` : ''; })() : ''}</div>`;
   const activa = v.estado !== 'anulada';
   $('vdShare').classList.toggle('hidden', pub || !activa);
+  $('vdShareNote').classList.toggle('hidden', pub || !activa);
+  $('vdShareNote').textContent = esMovil() ? '«WhatsApp con PDF» abre el menú de compartir: elige WhatsApp y el contacto. «Solo mensaje» abre directo el chat del cliente.' : '«WhatsApp con PDF» descarga el PDF y abre el chat del cliente: arrastra el PDF al chat. «Solo mensaje» abre el chat sin PDF.';
   $('vdFolioBox').classList.toggle('hidden', pub || v.estado !== 'entregada');
   $('vdFolio').innerHTML = v.folio ? `<div class="lrow"><div class="v">Factura N° <b>${esc(v.folio)}</b> · ${fechaCorta(v.fecha_folio)}</div><button class="lnk" onclick="pedirFolio(['${v.id}'])">Cambiar</button><button class="lnk danger" onclick="quitarFolio('${v.id}')">Quitar</button></div>`
     : `<button class="btn sm pri" onclick="pedirFolio(['${v.id}'])">Asignar folio</button>`;
@@ -1903,14 +1916,15 @@ function docDe(id) {
   const neto = Math.round(ls.reduce((s, l) => s + l.q * l.p, 0)), iva = Math.round(neto * 0.19);
   return { tipo: 'oc', id, titulo: 'Entrega en consignación', fecha: c.fecha, rut: c.rut, local_id: c.local_id, lineas: ls, neto, iva, total: neto + iva, notas: c.notas, guia: c.guia };
 }
-function whatsapp(id) {
+function mensajeWa(id) {
   const d = docDe(id), e = empresaDe(d.rut) || {}, l = local(d.local_id) || {};
   const tel = telWa(l.telefono || e.telefono);
   const txt = `Hola${(l.contacto || e.contacto) ? ' ' + (l.contacto || e.contacto).split(' ')[0] : ''}, te envío ${d.tipo === 'oc' ? 'el detalle de la entrega en consignación' : 'la orden de venta'} ${d.id} de ${(DB.config.emp_razon || 'Magia Verde Herbolaria')} para ${l.nombre || ''} (${fechaCorta(d.fecha)}):\n\n` +
     d.lineas.map(x => `• ${qty(x.q)} × ${x.nombre} — ${clp(x.p)} c/u`).join('\n') +
     `\n\nNeto ${clp(d.neto)} · IVA ${clp(d.iva)}\n*Total ${clp(d.total)}*` + (d.tipo === 'oc' ? '\n(Se factura solo lo vendido, al liquidar.)' : '') + (d.notas ? `\n\n${d.notas}` : '') + '\n\n¡Gracias!';
-  window.open(`https://wa.me/${tel}?text=${encodeURIComponent(txt)}`, '_blank');
+  return { tel, texto: txt };
 }
+function whatsapp(id) { const m = mensajeWa(id); window.open(`https://wa.me/${m.tel}?text=${encodeURIComponent(m.texto)}`, '_blank'); }
 function cargarScript(src) { return new Promise((ok, err) => { if (document.querySelector(`script[src="${src}"]`)) return ok(); const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = () => err(new Error('No se pudo cargar el generador de PDF. Revisa la conexión.')); document.head.appendChild(s); }); }
 let LOGO64 = null;
 async function logoData() {
@@ -1919,9 +1933,8 @@ async function logoData() {
   LOGO64 = await new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(b); });
   return LOGO64;
 }
-async function pdf(id) {
-  toast('Generando PDF…', 'load');
-  try {
+async function crearPdf(id) {
+  {
     await cargarScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
     await cargarScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js');
     const d = docDe(id), e = empresaDe(d.rut) || {}, l = local(d.local_id) || {}, C = DB.config || {};
@@ -1954,17 +1967,41 @@ async function pdf(id) {
     if (d.tipo === 'oc') { doc.text('Productos entregados en consignación: se factura solo lo vendido, al momento de la liquidación.', 15, y); y += 5; }
     if (d.notas) doc.text(doc.splitTextToSize('Notas: ' + d.notas, 180), 15, y);
     const blob = doc.output('blob'), nombre = `${d.id}_${(l.nombre || 'cliente').replace(/[^\w]+/g, '_')}.pdf`;
-    const file = new File([blob], nombre, { type: 'application/pdf' });
-    // En celulares se abre el panel de compartir (WhatsApp, correo…); en computadores se descarga.
-    if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent) && navigator.canShare && navigator.canShare({ files: [file] })) {
-      toast('PDF listo', 'ok'); navigator.share({ files: [file], title: nombre }).catch(() => {});
+    return { blob, nombre, file: new File([blob], nombre, { type: 'application/pdf' }) };
+  }
+}
+const esMovil = () => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+function descargar(blob, nombre) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nombre; document.body.appendChild(a); a.click(); a.remove(); }
+/** PDF solo: en el celular abre el panel de compartir; en el computador se descarga. */
+async function pdf(id) {
+  toast('Generando PDF…', 'load');
+  try {
+    const r = await crearPdf(id);
+    if (esMovil() && navigator.canShare && navigator.canShare({ files: [r.file] })) { toast('PDF listo', 'ok'); navigator.share({ files: [r.file], title: r.nombre }).catch(() => {}); }
+    else { descargar(r.blob, r.nombre); toast('PDF descargado', 'ok'); }
+  } catch (x) { toast(x.message, 'err', 5000); }
+}
+/**
+ * WhatsApp con PDF. WhatsApp no permite adjuntar archivos desde un enlace, así que:
+ *  - Celular: se abre el panel de compartir con el PDF y el mensaje; se elige WhatsApp y el contacto.
+ *  - Computador: se descarga el PDF y se abre el chat del cliente con el mensaje; el PDF se arrastra al chat.
+ */
+async function waConPdf(id) {
+  toast('Preparando PDF…', 'load');
+  try {
+    const r = await crearPdf(id), txt = mensajeWa(id);
+    if (esMovil() && navigator.canShare && navigator.canShare({ files: [r.file] })) {
+      toast('Elige WhatsApp y el contacto', 'ok', 3500);
+      navigator.share({ files: [r.file], text: txt.texto, title: r.nombre }).catch(() => {});
     } else {
-      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nombre; document.body.appendChild(a); a.click(); a.remove();
-      toast('PDF descargado', 'ok');
+      descargar(r.blob, r.nombre);
+      window.open(`https://wa.me/${txt.tel}?text=${encodeURIComponent(txt.texto)}`, '_blank');
+      toast('PDF descargado: arrástralo al chat de WhatsApp', 'ok', 6000);
     }
   } catch (x) { toast(x.message, 'err', 5000); }
 }
 $('vdWa').addEventListener('click', () => whatsapp(vdId()));
+$('vdWaPdf').addEventListener('click', () => waConPdf(vdId()));
 $('vdPdf').addEventListener('click', () => pdf(vdId()));
 
 // ───────────── Consignaciones ─────────────
@@ -1983,7 +2020,7 @@ function renderConsig() {
     const cs = DB.consignaciones;
     t.innerHTML = `<thead><tr><th>N°</th><th>Fecha</th><th>Local</th><th class="r">Unidades</th><th class="r hide-m">Valor neto</th><th></th></tr></thead><tbody>` + (cs.length ? cs.slice(0, 100).map(c => { const det = DB.consig_det.filter(d => d.oc_id === c.id);
       return `<tr style="${c.estado === 'anulada' ? 'opacity:.55' : ''}"><td class="bold nw">${esc(c.id)}${c.guia ? `<div class="sub">guía ${esc(c.guia)}</div>` : ''}</td><td class="nw">${fechaCorta(c.fecha)}</td><td>${esc(nombreLocal(c.local_id))}<div class="sub">${det.map(d => qty(d.cantidad) + ' × ' + esc(nombreItem(d.producto_id))).join(' · ')}</div></td><td class="r">${qty(det.reduce((s, d) => s + d.cantidad, 0))}</td><td class="r hide-m">${clp(det.reduce((s, d) => s + d.cantidad * d.precio, 0))}</td>
-      <td class="r nw">${c.estado === 'anulada' ? '<span class="tag bad">anulada</span>' : `<button class="lnk" onclick="whatsapp('${c.id}')">WhatsApp</button> <button class="lnk" onclick="pdf('${c.id}')">PDF</button> <button class="lnk danger" onclick="anularConsig('${c.id}')">Anular</button>`}</td></tr>`; }).join('') : '<tr><td colspan="6"><div class="empty">Sin entregas.</div></td></tr>') + '</tbody>';
+      <td class="r nw">${c.estado === 'anulada' ? '<span class="tag bad">anulada</span>' : `<button class="lnk wa" onclick="waConPdf('${c.id}')" title="WhatsApp con PDF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/><path d="M9 9.5c.3 1.8 2.7 4.2 4.5 4.5l1.2-1.2 1.8.8-.4 1.6c-3.4.3-7.6-3.9-7.3-7.3l1.6-.4.8 1.8z"/></svg> WhatsApp</button> <button class="lnk" onclick="pdf('${c.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/><path d="M12 11v6M9.5 14.5L12 17l2.5-2.5"/></svg> PDF</button> <button class="lnk danger" onclick="anularConsig('${c.id}')">Anular</button>`}</td></tr>`; }).join('') : '<tr><td colspan="6"><div class="empty">Sin entregas.</div></td></tr>') + '</tbody>';
   } else {
     const qs = DB.liquidaciones;
     t.innerHTML = `<thead><tr><th>N°</th><th>Fecha</th><th>Local</th><th class="r">Vendido</th><th class="r">Vuelve</th><th>Orden</th><th></th></tr></thead><tbody>` + (qs.length ? qs.slice(0, 100).map(q => { const det = DB.liq_det.filter(d => d.lq_id === q.id), v = DB.ventas.find(x => x.id === q.venta_id);
