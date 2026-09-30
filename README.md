@@ -66,7 +66,7 @@ Nunca subas al repositorio la URL /exec ni la clave: van solo en Configuración 
 
 - Cambios en `Code.gs`: **Implementar → Administrar implementaciones → editar (lápiz) → Versión: Nueva versión → Implementar**.
   Así la URL no cambia. (Si creas una implementación nueva, cambia la URL y hay que pegarla otra vez en Configuración.)
-- Cambios en `index.html`: sube el archivo y cambia `VERSION` en `sw.js` (ej. `mv-v15`) para que los celulares tomen la versión nueva.
+- Cambios en `index.html`: sube el archivo y cambia `VERSION` en `sw.js` (ej. `mv-v16`) para que los celulares tomen la versión nueva.
 - Para comprobar: **Configuración → Versión** muestra la versión de la app y la de Apps Script. Los dos primeros
   números deben coincidir (ej. 2.0.x); si no, la app muestra un aviso arriba. El último número puede diferir cuando
   un arreglo toca solo una de las partes.
@@ -122,12 +122,28 @@ día anterior). Se actualiza solo al guardar; si Google falla, el guardado igual
 - **Sesiones de talleres**: cada proyecto de Formación puede tener sus sesiones (fecha, horario y lugar); con ellas
   el inicio, el término y la cantidad de sesiones se calculan solos. Al generar la venta de un taller se elige
   factura (queda «Por facturar»), boleta (número opcional) o sin documento (no queda pendiente de folio).
+- **Gastos**: cada documento de compra (XML del SII o a mano) guarda sus líneas. Cada línea es un **insumo** (entra a
+  bodega como compra y actualiza su costo), un **gasto** (ítem con categoría fijo/variable, tipo directo/indirecto,
+  subtipo y área) o **despacho** repartido entre los insumos del documento. En facturas el costo es el neto (el IVA es
+  crédito fiscal); en boletas, todo lo pagado. La clasificación de cada producto de cada proveedor se aprende (hoja EQUIV).
+- **Duplicados**: mismo RUT + tipo + folio = ya ingresado (no se puede guardar de nuevo). Mismo RUT y monto con fecha
+  cercana (±7 días) pero otro folio = posible duplicado (se avisa). Por eso a mano el RUT, proveedor y folio son obligatorios.
+- **Por pagar**: contado queda pagado en la fecha del documento; crédito queda pendiente hasta registrar el pago (se
+  aceptan pagos parciales). Los vencimientos aparecen en Inicio y en el Calendario.
+- **Cambios de precio**: cada compra de un insumo se compara con la compra anterior (por fecha, de cualquier proveedor).
+  Alzas y bajas quedan en la hoja ALERTAS_PRECIO con documento, fecha y proveedor, y se avisan en Inicio.
+- **Análisis de gastos**: costo operacional (operativo + comercial) separado de inversión, financiero y pasivos;
+  devengado (fecha del documento) o flujo de caja (fecha de pago); por ítem, área y tipo; IVA crédito fiscal del mes.
 - **Calendario**: vista mes y agenda con ferias, sesiones de talleres/licitaciones y eventos libres, por colores.
 - **Servicios o cursos** (ej. el curso online): son productos de tipo servicio, sin receta ni stock. Se venden en
   venta rápida (lugar «Online» y, opcional, el nombre del comprador) y quedan en el historial de ventas.
 
 ## Versiones
 
+- **2.4** — Sección **Gastos**: carga de XML del SII en lote (facturas o archivo de respaldo), ingreso a mano con
+  RUT/proveedor/folio obligatorios, control de duplicados, clasificación por línea (insumo, gasto o despacho) que se
+  aprende por proveedor, cuentas por pagar con pagos parciales, análisis de gastos, **alertas de cambio de precio**
+  (alzas y bajas) con trazabilidad. Ítems de gasto y áreas editables en Configuración. Cambian las dos partes.
 - **2.3.1** (solo app) — Botones de tipo del calendario en tinte oliva con borde verde oscuro (más livianos). Apps Script sigue en 2.3.0.
 - **2.3** — **Calendario** (mes y agenda) con ferias, sesiones y eventos libres; **sesiones** en los proyectos de
   Formación; copia opcional a **Google Calendar** con recordatorios; documento al generar la venta de un taller

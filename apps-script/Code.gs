@@ -15,7 +15,7 @@
  *  - Al actualizar la app, las hojas y columnas nuevas se crean solas; los datos no se tocan.
  */
 
-const VERSION_BACKEND = '2.3.0';
+const VERSION_BACKEND = '2.4.0';
 const IVA = 0.19;
 const BODEGA = 'BODEGA';
 
@@ -23,7 +23,7 @@ const SCHEMA = {
   INSUMOS: ['id', 'nombre', 'tipo', 'unidad', 'stock_min', 'costo_unit', 'ultima_compra', 'proveedor', 'estado', 'creado', 'actualizado', 'formato', 'formato_cant', 'elaborado', 'rinde_lote'],
   PRODUCTOS: ['id', 'nombre', 'categoria', 'presentacion', 'rinde_lote', 'precio_publico', 'precio_directo', 'precio_consig', 'stock_min', 'estado', 'creado', 'actualizado', 'precio_b2b', 'tipo'],
   RECETAS: ['producto_id', 'tipo', 'ref', 'cantidad', 'costo'],
-  COMPRAS: ['id', 'fecha', 'insumo_id', 'cantidad', 'total_neto', 'costo_unit', 'proveedor', 'documento', 'iva_incluido', 'estado', 'creado', 'tipo_doc', 'total_pagado', 'formato', 'formatos', 'formato_cant'],
+  COMPRAS: ['id', 'fecha', 'insumo_id', 'cantidad', 'total_neto', 'costo_unit', 'proveedor', 'documento', 'iva_incluido', 'estado', 'creado', 'tipo_doc', 'total_pagado', 'formato', 'formatos', 'formato_cant', 'doc_id', 'area'],
   PRODUCCION: ['id', 'fecha', 'producto_id', 'lotes', 'unidades', 'costo_total', 'costo_unit', 'notas', 'estado', 'creado', 'item_tipo'],
   MOVIMIENTOS: ['id', 'fecha', 'tipo', 'item_tipo', 'item_id', 'cantidad', 'ubicacion', 'ref', 'nota', 'estado', 'creado'],
   FORMATOS: ['id', 'insumo_id', 'nombre', 'cantidad', 'principal', 'estado'],
@@ -51,21 +51,29 @@ const SCHEMA = {
   PERSONAS: ['id', 'nombre', 'telefono', 'instagram', 'email', 'notas', 'estado', 'creado', 'actualizado'],
   PROY_SESIONES: ['proyecto_id', 'n', 'fecha', 'hora_inicio', 'hora_fin', 'lugar'],
   EVENTOS: ['id', 'titulo', 'fecha', 'fecha_fin', 'hora_inicio', 'hora_fin', 'lugar', 'notas', 'estado', 'creado', 'actualizado'],
-  GCAL: ['clave', 'event_id', 'hash', 'actualizado']
+  GCAL: ['clave', 'event_id', 'hash', 'actualizado'],
+  DOCS_COMPRA: ['id', 'tipo_dte', 'rut', 'proveedor', 'folio', 'fecha', 'fecha_venc', 'forma_pago', 'neto', 'exento', 'iva', 'otros_imp', 'total', 'estado', 'origen', 'notas', 'creado', 'actualizado'],
+  DOCS_DET: ['doc_id', 'linea', 'descripcion', 'cantidad', 'unidad', 'precio_unit', 'monto', 'destino', 'insumo_id', 'factor', 'item_id', 'area', 'compra_id', 'costo'],
+  ITEMS_GASTO: ['id', 'nombre', 'categoria', 'tipo', 'subtipo', 'area', 'estado', 'orden'],
+  EQUIV: ['rut', 'clave', 'descripcion', 'destino', 'insumo_id', 'factor', 'item_id', 'area', 'usos', 'actualizado'],
+  ALERTAS_PRECIO: ['id', 'fecha', 'insumo_id', 'proveedor', 'documento', 'compra_id', 'costo_ant', 'costo_nuevo', 'variacion', 'compra_ant_id', 'fecha_ant', 'proveedor_ant', 'documento_ant', 'estado', 'creado'],
+  PAGOS_PROV: ['id', 'doc_id', 'fecha', 'monto', 'medio', 'estado', 'creado']
 };
 
 // Columnas numéricas; todas las demás se guardan como texto plano (evita que Sheets convierta fechas o IDs).
 const NUMERIC = ['stock_min', 'costo_unit', 'rinde_lote', 'precio_publico', 'precio_directo', 'precio_consig', 'precio_b2b',
   'cantidad', 'costo', 'total_neto', 'lotes', 'unidades', 'costo_total', 'formato_cant', 'total_pagado', 'formatos', 'orden',
   'cond_pago_dias', 'neto', 'iva', 'total', 'precio', 'subtotal', 'monto', 'en_local', 'contado', 'vendido', 'devuelto',
-  'alumnos', 'sesiones', 'horas', 'presupuesto_max', 'margen_obj', 'precio_ofertado', 'alumnos_reales', 'costo_mat_real', 'valor_unit', 'costo_puesto', 'dia', 'feria_dia', 'n'];
+  'alumnos', 'sesiones', 'horas', 'presupuesto_max', 'margen_obj', 'precio_ofertado', 'alumnos_reales', 'costo_mat_real', 'valor_unit', 'costo_puesto', 'dia', 'feria_dia', 'n',
+  'exento', 'otros_imp', 'linea', 'precio_unit', 'factor', 'usos', 'costo_ant', 'costo_nuevo', 'variacion'];
 
 const LISTAS_BASE = {
   tipo_insumo: ['Materia prima', 'Envase', 'Etiqueta', 'Otro'],
   unidad: ['g', 'ml', 'u', 'gotas', 'cm'],
   categoria: [],
   motivo_ajuste: ['Carga inicial', 'Conteo físico', 'Merma o pérdida', 'Vencido', 'Uso interno o muestra', 'Otro'],
-  canal_venta: ['Instagram', 'WhatsApp', 'Online', 'Venta directa'] // «Feria» es fijo (no está en la lista)
+  canal_venta: ['Instagram', 'WhatsApp', 'Online', 'Venta directa'], // «Feria» es fijo (no está en la lista)
+  area_gasto: ['Producción · uso interno (infusiones, suplementos)', 'Producción · uso externo (cosmética natural)', 'Formación', 'Reventa de insumos', 'Ventas y ferias', 'Administración']
 };
 const CANAL_FERIA = 'Feria';
 
@@ -126,13 +134,16 @@ function doPost(e) {
       saveFeria: saveFeria_, deleteFeria: deleteFeria_, restoreFeria: restoreFeria_,
       savePersona: savePersona_, deletePersona: deletePersona_, restorePersona: restorePersona_, setPersonaVenta: setPersonaVenta_,
       saveEvento: saveEvento_, deleteEvento: deleteEvento_, setSeguimiento: setSeguimiento_,
-      gcalActivar: gcalActivar_, gcalDesactivar: gcalDesactivar_, gcalSync: gcalSync_
+      gcalActivar: gcalActivar_, gcalDesactivar: gcalDesactivar_, gcalSync: gcalSync_,
+      saveDoc: saveDoc_, anularDoc: anularDoc_, pagoProv: pagoProv_, anularPagoProv: anularPagoProv_,
+      saveItemGasto: saveItemGasto_, deleteItemGasto: deleteItemGasto_, alertaVista: alertaVista_
     };
     // Acciones que cambian fechas del calendario: después se copia a Google Calendar (si está activado).
     const tocaCal = ['saveFeria', 'deleteFeria', 'restoreFeria', 'saveProyecto', 'estadoProyecto', 'deleteProyecto', 'saveEvento', 'deleteEvento'];
     if (action === 'getAll') {
       const hay = {}; readAll_('LISTAS').forEach(function (r) { hay[r.lista] = true; });
       if (Object.keys(LISTAS_BASE).some(function (l) { return !hay[l]; })) conLock_(sembrarListas_); // primera vez o lista nueva tras actualizar
+      if (!readAll_('ITEMS_GASTO').length) conLock_(sembrarItemsGasto_);
       return json_(getAll_());
     }
     if (writes[action]) return json_(conLock_(function () { const r = writes[action](body); if (tocaCal.indexOf(action) >= 0) gcalIntentar_(); return r; }));
@@ -347,6 +358,10 @@ function usosLista_(lista, valor) {
   if (lista === 'unidad') return { hoja: 'INSUMOS', campo: 'unidad', filas: readAll_('INSUMOS').filter(function (i) { return norm_(i.unidad) === n; }) };
   if (lista === 'categoria') return { hoja: 'PRODUCTOS', campo: 'categoria', filas: readAll_('PRODUCTOS').filter(function (p) { return norm_(p.categoria) === n; }) };
   if (lista === 'canal_venta') return { hoja: 'VENTAS', campo: 'medio_venta', filas: readAll_('VENTAS').filter(function (v) { return norm_(v.medio_venta) === n; }) };
+  if (lista === 'area_gasto') {
+    const f1 = readAll_('DOCS_DET').filter(function (d) { return norm_(d.area) === n; }), f2 = readAll_('ITEMS_GASTO').filter(function (i) { return norm_(i.area) === n; });
+    return { hoja: 'DOCS_DET', campo: 'area', filas: f1, extra: [{ hoja: 'ITEMS_GASTO', filas: f2 }, { hoja: 'COMPRAS', filas: readAll_('COMPRAS').filter(function (c) { return norm_(c.area) === n; }) }, { hoja: 'EQUIV', filas: readAll_('EQUIV').filter(function (e) { return norm_(e.area) === n; }) }] };
+  }
   if (lista === 'motivo_ajuste') return { hoja: 'MOVIMIENTOS', campo: 'nota', filas: readAll_('MOVIMIENTOS').filter(function (m) { return m.tipo === 'ajuste' && norm_(m.nota) === n; }) };
   throw new Error('Lista desconocida.');
 }
@@ -382,6 +397,7 @@ function listaRename_(b) {
     if (b.lista === 'canal_venta' && !r.feria_id && norm_(r.lugar) === norm_(r.medio_venta)) r.lugar = nuevo;
     r[u.campo] = nuevo; update_(u.hoja, r);
   });
+  (u.extra || []).forEach(function (x) { x.filas.forEach(function (r) { r[u.campo] = nuevo; update_(x.hoja, r); }); });
   fila.valor = nuevo; update_('LISTAS', fila);
   return { ok: true, cambiados: u.filas.length };
 }
@@ -389,7 +405,7 @@ function listaRename_(b) {
 function listaDelete_(b) {
   const fila = filaLista_(b.lista, b.valor);
   if (!fila) throw new Error('No encontré ese valor.');
-  const usos = usosLista_(b.lista, fila.valor).filas.length;
+  const uu = usosLista_(b.lista, fila.valor), usos = uu.filas.length + (uu.extra || []).reduce(function (s, x) { return s + x.filas.length; }, 0);
   if (usos) { fila.estado = 'oculto'; update_('LISTAS', fila); return { ok: true, result: 'oculto', usos: usos }; }
   deleteRows_('LISTAS', [fila]);
   return { ok: true, result: 'eliminado' };
@@ -569,6 +585,12 @@ function getAll_() {
     personas: readAll_('PERSONAS').map(strip_),
     proy_sesiones: readAll_('PROY_SESIONES').map(strip_),
     eventos: readAll_('EVENTOS').map(strip_),
+    docs_compra: desc(readAll_('DOCS_COMPRA'), 5000),
+    docs_det: readAll_('DOCS_DET').map(strip_),
+    items_gasto: readAll_('ITEMS_GASTO').map(strip_),
+    equiv: readAll_('EQUIV').map(strip_),
+    alertas_precio: readAll_('ALERTAS_PRECIO').map(strip_),
+    pagos_prov: readAll_('PAGOS_PROV').map(strip_),
     gcal_activo: !!PropertiesService.getScriptProperties().getProperty('GCAL_ID'),
     serverTime: now_()
   };
@@ -745,7 +767,8 @@ function registrarCompra_(b) {
   if (cantidad <= 0) throw new Error('La cantidad comprada debe ser mayor a 0.');
   if (pagado <= 0) throw new Error('Ingresa el total pagado.');
   const tipoDoc = b.tipo_doc === 'factura' ? 'factura' : 'boleta';
-  const costo = tipoDoc === 'factura' ? pagado / (1 + IVA) : pagado;
+  // Desde una factura cargada el costo ya viene calculado (neto de la línea + despacho repartido).
+  const costo = b.costo_directo !== undefined ? num_(b.costo_directo) : tipoDoc === 'factura' ? pagado / (1 + IVA) : pagado;
   const fecha = validDate_(b.fecha);
   const fmtNombre = String(b.formato || '').trim();
   const compra = {
@@ -753,9 +776,12 @@ function registrarCompra_(b) {
     total_neto: Math.round(costo), costo_unit: round_(costo / cantidad),
     proveedor: b.proveedor || '', documento: b.documento || '', iva_incluido: '',
     estado: 'activa', creado: now_(), tipo_doc: tipoDoc, total_pagado: Math.round(pagado),
-    formato: fmtNombre, formatos: formatos > 0 && contenido > 0 ? formatos : '', formato_cant: formatos > 0 && contenido > 0 ? contenido : ''
+    formato: fmtNombre, formatos: formatos > 0 && contenido > 0 ? formatos : '', formato_cant: formatos > 0 && contenido > 0 ? contenido : '',
+    doc_id: b.doc_id || '', area: String(b.area || '')
   };
+  const alerta = alertaPrecio_(ins, compra);
   append_('COMPRAS', [compra]);
+  if (alerta) append_('ALERTAS_PRECIO', [alerta]);
   append_('MOVIMIENTOS', [mov_(fecha, 'compra', 'insumo', ins.id, cantidad, compra.id, compra.proveedor)]);
 
   // Formato nuevo → se guarda en la lista de formatos del insumo (principal si no tenía ninguno).
@@ -774,8 +800,30 @@ function registrarCompra_(b) {
     }
   }
   recalcularCostoInsumo_(ins.id);
-  snapshotCostos_('Compra ' + compra.id + ' · ' + ins.nombre);
-  return { ok: true, compra: compra };
+  if (!b.sinSnapshot) snapshotCostos_('Compra ' + compra.id + ' · ' + ins.nombre);
+  return { ok: true, compra: compra, alerta: alerta };
+}
+
+/**
+ * Compara el costo por unidad de una compra con la compra anterior del mismo insumo (cualquier proveedor).
+ * Registra alzas y bajas (para saber qué proveedor está más barato). Queda en la hoja ALERTAS_PRECIO.
+ */
+function alertaPrecio_(ins, compra) {
+  const ants = readAll_('COMPRAS').filter(function (c) { return c.insumo_id === ins.id && c.estado === 'activa' && c.costo_unit > 0 && (c.fecha + c.creado) <= (compra.fecha + compra.creado); })
+    .sort(function (a, c) { return (a.fecha + a.creado).localeCompare(c.fecha + c.creado); });
+  const ant = ants[ants.length - 1];
+  if (!ant || !(compra.costo_unit > 0)) return null;
+  const variacion = (compra.costo_unit - ant.costo_unit) / ant.costo_unit;
+  if (Math.abs(variacion) < 0.0005) return null; // igual (diferencias de redondeo)
+  return { id: uid_('AP'), fecha: compra.fecha, insumo_id: ins.id, proveedor: compra.proveedor, documento: compra.documento, compra_id: compra.id,
+    costo_ant: ant.costo_unit, costo_nuevo: compra.costo_unit, variacion: Math.round(variacion * 10000) / 10000,
+    compra_ant_id: ant.id, fecha_ant: ant.fecha, proveedor_ant: ant.proveedor, documento_ant: ant.documento, estado: 'nueva', creado: now_() };
+}
+
+function alertaVista_(b) {
+  const ids = [].concat(b.ids || b.id || []);
+  readAll_('ALERTAS_PRECIO').filter(function (a) { return ids.indexOf(a.id) >= 0 && a.estado === 'nueva'; }).forEach(function (a) { a.estado = 'vista'; update_('ALERTAS_PRECIO', a); });
+  return { ok: true };
 }
 
 function anularCompra_(b) {
@@ -784,6 +832,7 @@ function anularCompra_(b) {
   if (c.estado === 'anulada') return { ok: true };
   c.estado = 'anulada'; update_('COMPRAS', c);
   anularMovsDeRef_(c.id);
+  readAll_('ALERTAS_PRECIO').filter(function (a) { return a.compra_id === c.id && a.estado !== 'anulada'; }).forEach(function (a) { a.estado = 'anulada'; update_('ALERTAS_PRECIO', a); });
   recalcularCostoInsumo_(c.insumo_id);
   const ins = findById_('INSUMOS', c.insumo_id);
   snapshotCostos_('Compra ' + c.id + ' anulada' + (ins ? ' · ' + ins.nombre : ''));
@@ -1145,6 +1194,164 @@ function setPersonaVenta_(b) {
   if (!v || v.canal !== 'publico') throw new Error('Solo se puede en ventas rápidas.');
   const p = personaVenta_(b);
   v.persona_id = p ? p.id : ''; v.actualizado = now_(); update_('VENTAS', v);
+  return { ok: true };
+}
+
+// ─────────────────────────────────────────────────────────────
+// GASTOS: documentos de compra (XML del SII o a mano), líneas clasificadas, cuentas por pagar.
+// Cada línea es un INSUMO (entra a stock como compra y actualiza su costo), un GASTO (ítem con categoría y área)
+// o DESPACHO a repartir entre los insumos del documento. Las clasificaciones se aprenden por proveedor (EQUIV).
+// ─────────────────────────────────────────────────────────────
+const TIPOS_DTE = { '33': 'Factura', '34': 'Factura exenta', '46': 'Factura de compra', '56': 'Nota de débito', '61': 'Nota de crédito', '39': 'Boleta', '41': 'Boleta exenta', 'B': 'Boleta (papel)', 'SD': 'Sin documento' };
+const DTE_CREDITO = ['33', '46', '56', '61']; // su IVA es crédito fiscal: el costo es el neto
+const ITEMS_BASE = [
+  ['Despacho y fletes', 'VARIABLE', 'DIRECTO', 'OPERATIVO', ''], ['Arriendo de puesto (ferias)', 'VARIABLE', 'INDIRECTO', 'COMERCIAL', 'Ventas y ferias'],
+  ['Arriendo', 'FIJO', 'INDIRECTO', 'OPERATIVO', ''], ['Luz', 'FIJO', 'INDIRECTO', 'OPERATIVO', ''], ['Agua', 'FIJO', 'INDIRECTO', 'OPERATIVO', ''],
+  ['Gas', 'VARIABLE', 'DIRECTO', 'OPERATIVO', ''], ['Internet y telefonía', 'FIJO', 'INDIRECTO', 'OPERATIVO', 'Administración'],
+  ['Marketing y publicidad', 'VARIABLE', 'INDIRECTO', 'COMERCIAL', 'Ventas y ferias'], ['Comisiones (Transbank, plataformas)', 'VARIABLE', 'INDIRECTO', 'COMERCIAL', 'Ventas y ferias'],
+  ['Contador', 'FIJO', 'INDIRECTO', 'OPERATIVO', 'Administración'], ['Materiales de talleres', 'VARIABLE', 'DIRECTO', 'OPERATIVO', 'Formación'],
+  ['Relatoría y honorarios', 'VARIABLE', 'DIRECTO', 'OPERATIVO', 'Formación'], ['Transporte y bencina', 'VARIABLE', 'INDIRECTO', 'OPERATIVO', ''],
+  ['Mantención y reparaciones', 'VARIABLE', 'INDIRECTO', 'OPERATIVO', ''], ['Aseo y oficina', 'VARIABLE', 'INDIRECTO', 'OPERATIVO', 'Administración'],
+  ['Software y suscripciones', 'FIJO', 'INDIRECTO', 'OPERATIVO', 'Administración'], ['Equipos y herramientas (activo fijo)', 'VARIABLE', 'DIRECTO', 'INVERSIÓN', ''],
+  ['Impuestos (IVA, TGR)', 'VARIABLE', 'INDIRECTO', 'PASIVO', 'Administración'], ['Gastos bancarios e intereses', 'VARIABLE', 'INDIRECTO', 'FINANCIERO', 'Administración'],
+  ['Otros gastos', 'VARIABLE', 'INDIRECTO', 'OPERATIVO', '']
+];
+function sembrarItemsGasto_() {
+  if (readAll_('ITEMS_GASTO').length) return;
+  append_('ITEMS_GASTO', ITEMS_BASE.map(function (x, k) { return { id: 'IG-' + ('00' + (k + 1)).slice(-3), nombre: x[0], categoria: x[1], tipo: x[2], subtipo: x[3], area: x[4], estado: 'activo', orden: k + 1 }; }));
+}
+const familiaDte_ = function (t) { t = String(t); return (t === '33' || t === '34' || t === '46') ? 'F' : (t === '39' || t === '41' || t === 'B') ? 'B' : t; };
+const claveEquiv_ = function (desc) { return norm_(desc).replace(/\s+/g, ' ').slice(0, 120); };
+
+function saveItemGasto_(b) {
+  const nombre = String(b.nombre || '').trim();
+  if (!nombre) throw new Error('Falta el nombre del ítem.');
+  const CAT = ['FIJO', 'VARIABLE'], TIP = ['DIRECTO', 'INDIRECTO'], SUB = ['OPERATIVO', 'COMERCIAL', 'INVERSIÓN', 'FINANCIERO', 'PASIVO'];
+  if (CAT.indexOf(b.categoria) < 0 || TIP.indexOf(b.tipo) < 0 || SUB.indexOf(b.subtipo) < 0) throw new Error('Revisa categoría, tipo y subtipo.');
+  const otro = readAll_('ITEMS_GASTO').filter(function (i) { return i.id !== b.id && norm_(i.nombre) === norm_(nombre); })[0];
+  if (otro) throw new Error('Ya existe el ítem «' + otro.nombre + '».');
+  let it;
+  if (b.id) { it = findById_('ITEMS_GASTO', b.id); if (!it) throw new Error('No encontré ese ítem.'); }
+  else it = { id: nextSeq_('ITEMS_GASTO', 'IG'), estado: 'activo', orden: readAll_('ITEMS_GASTO').length + 1 };
+  it.nombre = nombre; it.categoria = b.categoria; it.tipo = b.tipo; it.subtipo = b.subtipo; it.area = String(b.area || '');
+  if (it._row) update_('ITEMS_GASTO', it); else append_('ITEMS_GASTO', [it]);
+  if (it.area) asegurarEnLista_('area_gasto', it.area);
+  return { ok: true, item: strip_(it) };
+}
+function deleteItemGasto_(b) {
+  const it = findById_('ITEMS_GASTO', b.id);
+  if (!it) throw new Error('No encontré ese ítem.');
+  if (readAll_('DOCS_DET').some(function (d) { return d.item_id === it.id; })) { it.estado = it.estado === 'archivado' ? 'activo' : 'archivado'; update_('ITEMS_GASTO', it); return { ok: true, result: it.estado }; }
+  deleteRows_('ITEMS_GASTO', [it]);
+  return { ok: true, result: 'eliminado' };
+}
+
+/** Guarda un documento con sus líneas. Rechaza duplicados exactos (mismo RUT, tipo y folio) salvo que se fuerce. */
+function saveDoc_(b) {
+  const d = b.doc || {};
+  const tipo = TIPOS_DTE[String(d.tipo_dte)] ? String(d.tipo_dte) : '';
+  if (!tipo) throw new Error('Elige el tipo de documento.');
+  const sinDoc = tipo === 'SD';
+  const rut = d.rut ? normRut_(d.rut) : '';
+  if (!sinDoc && (!rut || !rutValido_(rut))) throw new Error('Falta el RUT del proveedor (o no es válido).');
+  const proveedor = String(d.proveedor || '').trim(), folio = String(d.folio || '').trim().replace(/^0+/, '');
+  if (!sinDoc && !proveedor) throw new Error('Falta el nombre del proveedor.');
+  if (!sinDoc && !folio) throw new Error('Falta el folio del documento.');
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(d.fecha || ''))) throw new Error('Falta la fecha del documento.');
+  const docs = readAll_('DOCS_COMPRA');
+  if (!sinDoc) {
+    const dup = docs.filter(function (x) { return x.estado !== 'anulado' && x.rut === rut && x.folio === folio && familiaDte_(x.tipo_dte) === familiaDte_(tipo); })[0];
+    if (dup && !b.forzar) throw new Error('Ese documento ya está ingresado (' + dup.id + ', ' + (dup.origen === 'xml' ? 'desde XML' : 'a mano') + ', ' + dup.fecha + ').');
+  }
+  const signo = tipo === '61' ? -1 : 1, credito = DTE_CREDITO.indexOf(tipo) >= 0;
+  const lineas = (b.lineas || []).filter(function (l) { return l && Math.abs(num_(l.monto)) > 0; });
+  if (!lineas.length) throw new Error('Agrega al menos una línea con monto.');
+  const ins = {}, items = {};
+  readAll_('INSUMOS').forEach(function (i) { ins[i.id] = i; });
+  readAll_('ITEMS_GASTO').forEach(function (i) { items[i.id] = i; });
+  lineas.forEach(function (l, k) {
+    if (l.destino === 'insumo') {
+      if (tipo === '61') throw new Error('Línea ' + (k + 1) + ': en una nota de crédito usa un ítem de gasto (no entra stock).');
+      if (!ins[l.insumo_id]) throw new Error('Línea ' + (k + 1) + ': elige el insumo.');
+      if (!(num_(l.cantidad) > 0) || !(num_(l.factor) > 0)) throw new Error('Línea ' + (k + 1) + ': indica cantidad y contenido para el stock.');
+    } else if (l.destino === 'gasto') { if (!items[l.item_id]) throw new Error('Línea ' + (k + 1) + ': elige el ítem de gasto.'); }
+    else if (l.destino !== 'prorratear') throw new Error('Línea ' + (k + 1) + ': elige si es insumo, gasto o despacho a repartir.');
+  });
+  // Montos: las líneas de una factura son netas; si no cuadran con el neto (descuentos globales), se ajustan en proporción.
+  const neto = Math.round(num_(d.neto)), exento = Math.round(num_(d.exento)), iva = Math.round(num_(d.iva)), otros = Math.round(num_(d.otros_imp));
+  const total = Math.round(num_(d.total)) || (neto + exento + iva + otros);
+  if (!(total > 0)) throw new Error('Falta el monto total.');
+  const suma = lineas.reduce(function (s, l) { return s + num_(l.monto); }, 0);
+  const base = credito ? (neto + exento || suma) : total;
+  const escala = suma ? base / suma : 1;
+  const costos = lineas.map(function (l) { return num_(l.monto) * escala; });
+  // Despacho a repartir: se suma a las líneas de insumo en proporción a su monto.
+  const idxIns = [], idxPro = [];
+  lineas.forEach(function (l, k) { if (l.destino === 'insumo') idxIns.push(k); if (l.destino === 'prorratear') idxPro.push(k); });
+  if (idxPro.length && !idxIns.length) throw new Error('Para repartir el despacho, el documento necesita al menos una línea de insumo.');
+  const despacho = idxPro.reduce(function (s, k) { return s + costos[k]; }, 0), baseIns = idxIns.reduce(function (s, k) { return s + costos[k]; }, 0);
+  const costoFinal = costos.map(function (c, k) { return lineas[k].destino === 'insumo' ? c + (baseIns ? despacho * c / baseIns : 0) : lineas[k].destino === 'prorratear' ? 0 : c; });
+  let doc;
+  const venc = /^\d{4}-\d{2}-\d{2}$/.test(String(d.fecha_venc || '')) && d.fecha_venc > d.fecha ? d.fecha_venc : '';
+  doc = { id: nextSeq_('DOCS_COMPRA', 'DC'), tipo_dte: tipo, rut: rut, proveedor: proveedor || 'Sin documento', folio: folio, fecha: d.fecha, fecha_venc: venc,
+    forma_pago: d.forma_pago === 'credito' || venc ? 'credito' : 'contado', neto: signo * neto, exento: signo * exento, iva: signo * iva, otros_imp: signo * otros, total: signo * total,
+    estado: 'activo', origen: b.origen === 'xml' ? 'xml' : 'manual', notas: String(d.notas || '').trim(), creado: now_(), actualizado: now_() };
+  append_('DOCS_COMPRA', [doc]);
+  const docTxt = (familiaDte_(tipo) === 'F' ? 'F' : familiaDte_(tipo) === 'B' ? 'B' : tipo === '61' ? 'NC' : tipo === '56' ? 'ND' : 'SD') + (folio ? ' ' + folio : '');
+  const det = [], alertas = [];
+  lineas.forEach(function (l, k) {
+    const r = { doc_id: doc.id, linea: k + 1, descripcion: String(l.descripcion || '').trim(), cantidad: num_(l.cantidad), unidad: String(l.unidad || ''), precio_unit: num_(l.precio_unit),
+      monto: signo * Math.round(num_(l.monto)), destino: l.destino, insumo_id: l.destino === 'insumo' ? l.insumo_id : '', factor: l.destino === 'insumo' ? num_(l.factor) : '',
+      item_id: l.destino === 'gasto' ? l.item_id : '', area: String(l.area || (l.destino === 'gasto' ? items[l.item_id].area : '') || ''), compra_id: '', costo: signo * Math.round(costoFinal[k]) };
+    if (l.destino === 'insumo') {
+      const c = registrarCompra_({ insumo_id: l.insumo_id, cantidad: round_(num_(l.cantidad) * num_(l.factor)), total_pagado: credito ? Math.round(costoFinal[k] * (1 + IVA)) : Math.round(costoFinal[k]),
+        costo_directo: costoFinal[k], tipo_doc: credito ? 'factura' : 'boleta', proveedor: proveedor, documento: docTxt, fecha: d.fecha, doc_id: doc.id, area: r.area, sinSnapshot: true });
+      r.compra_id = c.compra.id; if (c.alerta) alertas.push(c.alerta);
+    }
+    det.push(r);
+  });
+  append_('DOCS_DET', det);
+  if (idxIns.length) snapshotCostos_('Documento ' + doc.id + ' · ' + docTxt + ' ' + proveedor);
+  // Contado: queda pagado en la fecha del documento (o la indicada). Crédito: queda por pagar hasta registrar el pago.
+  if (doc.forma_pago === 'contado' && doc.total > 0) append_('PAGOS_PROV', [{ id: uid_('PP'), doc_id: doc.id, fecha: validDate_(d.fecha_pago || d.fecha), monto: doc.total, medio: String(d.medio || ''), estado: 'activo', creado: now_() }]);
+  // Aprender la clasificación de cada línea para la próxima factura del mismo proveedor.
+  if (rut) {
+    const eq = readAll_('EQUIV');
+    det.forEach(function (r) {
+      if (!r.descripcion) return;
+      const clave = claveEquiv_(r.descripcion), ex = eq.filter(function (e) { return e.rut === rut && e.clave === clave; })[0];
+      const o = ex || { rut: rut, clave: clave, usos: 0 };
+      o.descripcion = r.descripcion; o.destino = r.destino; o.insumo_id = r.insumo_id; o.factor = r.factor || ''; o.item_id = r.item_id; o.area = r.area; o.usos = (num_(o.usos) || 0) + 1; o.actualizado = now_();
+      if (ex) update_('EQUIV', o); else { append_('EQUIV', [o]); eq.push(o); }
+    });
+  }
+  return { ok: true, doc: strip_(doc), alertas: alertas.map(strip_) };
+}
+
+function anularDoc_(b) {
+  const doc = findById_('DOCS_COMPRA', b.id);
+  if (!doc) throw new Error('No encontré ese documento.');
+  if (doc.estado === 'anulado') return { ok: true };
+  readAll_('DOCS_DET').filter(function (r) { return r.doc_id === doc.id && r.compra_id; }).forEach(function (r) { anularCompra_({ id: r.compra_id }); });
+  readAll_('PAGOS_PROV').filter(function (p) { return p.doc_id === doc.id && p.estado === 'activo'; }).forEach(function (p) { p.estado = 'anulado'; update_('PAGOS_PROV', p); });
+  doc.estado = 'anulado'; doc.actualizado = now_(); update_('DOCS_COMPRA', doc);
+  return { ok: true };
+}
+
+function pagoProv_(b) {
+  const doc = findById_('DOCS_COMPRA', b.doc_id);
+  if (!doc || doc.estado === 'anulado') throw new Error('No encontré ese documento.');
+  const pagado = readAll_('PAGOS_PROV').filter(function (p) { return p.doc_id === doc.id && p.estado === 'activo'; }).reduce(function (s, p) { return s + p.monto; }, 0);
+  const saldo = doc.total - pagado, monto = Math.round(num_(b.monto));
+  if (!(monto > 0)) throw new Error('Indica el monto pagado.');
+  if (monto > saldo + 1) throw new Error('El pago (' + monto + ') es mayor que el saldo (' + saldo + ').');
+  append_('PAGOS_PROV', [{ id: uid_('PP'), doc_id: doc.id, fecha: validDate_(b.fecha), monto: monto, medio: String(b.medio || ''), estado: 'activo', creado: now_() }]);
+  return { ok: true };
+}
+function anularPagoProv_(b) {
+  const p = findById_('PAGOS_PROV', b.id);
+  if (!p) throw new Error('No encontré ese pago.');
+  p.estado = 'anulado'; update_('PAGOS_PROV', p);
   return { ok: true };
 }
 

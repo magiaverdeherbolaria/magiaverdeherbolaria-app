@@ -63,9 +63,17 @@ h2{font-size:16px;font-weight:700;margin:0}
 .bars .br{display:grid;grid-template-columns:110px minmax(0,1fr) 110px;gap:8px;align-items:center;font-size:13px;margin-bottom:5px}
 .bars .bf{height:10px;border-radius:6px;background:var(--oliva);min-width:2px}
 .sugs li{margin-bottom:4px}
+.impd{border:1px solid var(--borde);border-radius:var(--r);padding:10px 12px;margin-bottom:8px;background:var(--tarjeta)}.impd.hecho{opacity:.6}
+.impt{display:flex;justify-content:space-between;gap:10px}.impb{display:flex;align-items:center;gap:8px;margin-top:6px}.impb .sp{flex:1}
+.del{border-bottom:1px solid var(--linea);padding:8px 0}.del1,.ohead.del-h{display:grid;grid-template-columns:minmax(0,1fr) 70px 120px 32px;gap:8px;align-items:center}
+.del2{display:grid;grid-template-columns:minmax(0,1.4fr) auto minmax(0,1fr);gap:8px;align-items:center;margin-top:6px}
+.deF{display:flex;align-items:center;gap:6px}.deF .in{width:90px}
+.bars .br.gab{grid-template-columns:minmax(0,190px) minmax(0,1fr) 130px}.bars .br.gab span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.apr{padding:12px 14px;border-left:5px solid var(--gris)}.apr.sube{border-left-color:var(--peligro)}.apr.baja{border-left-color:var(--oliva)}
+
 .calbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .calnav{display:flex;align-items:center;gap:8px}.calnav b{min-width:150px;text-align:center;font-size:17px}.calnav .btn{padding:0 14px}
-.t-feria{--c:#5d6623}.t-taller{--c:#b85a78}.t-licitacion{--c:#9a6418}.t-otro{--c:#6b6660}
+.t-pago{--c:#3f6a86}.t-feria{--c:#5d6623}.t-taller{--c:#b85a78}.t-licitacion{--c:#9a6418}.t-otro{--c:#6b6660}
 .cdot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c);margin-right:6px;vertical-align:-1px}
 #calTipos .chip{background:var(--tarjeta);border-color:var(--borde);color:var(--gris);display:inline-flex;align-items:center}
 #calTipos .chip.on{background:var(--oliva-tinte);border-color:var(--oliva-osc);color:var(--oliva-texto)}
@@ -293,6 +301,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
   .vrctx{min-width:0;flex:1 1 45%}
   .cald{min-height:64px;padding:2px}.ce{font-size:10px;padding:2px 3px}.ce .ch{display:none}.calnav b{min-width:120px}
   .agd{grid-template-columns:1fr;gap:4px}.agf{flex-direction:row;align-items:center;gap:8px}.age{grid-template-columns:1fr}.age .sub{grid-column:1}
+  .del1,.ohead.del-h{grid-template-columns:minmax(0,1fr) 54px 96px 28px}.del2{grid-template-columns:1fr}.bars .br.gab{grid-template-columns:minmax(0,1fr) 70px 110px}
   .calcrow{grid-template-columns:1fr}.calcrow2 .seg{min-width:0;width:100%}
   .fmat .cost,.fcos .cost,.fcos-h .cost{display:none}
   .rline .cost{display:none}
@@ -317,6 +326,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
     <button class="nav-i" data-go="produccion"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6"/><path d="M10 3v5l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/><path d="M7.5 14h9"/></svg></span><span class="tx">Producción</span></button>
     <button class="nav-i" data-go="inventario"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8l8-4 8 4-8 4z"/><path d="M4 8v8l8 4 8-4V8"/><path d="M12 12v8"/></svg></span><span class="tx">Inventario</span></button>
     <button class="nav-i" data-go="formacion"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h7a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H4z"/><path d="M20 5h-7a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h7z"/></svg></span><span class="tx">Formación</span></button>
+    <button class="nav-i" data-go="gastos"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/></svg></span><span class="tx">Gastos</span></button>
     <div class="grp">Maestros</div>
     <button class="nav-i" data-go="clientes"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/></svg></span><span class="tx">Clientes</span></button>
     <button class="nav-i" data-go="productos"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3h8v4H8z"/><path d="M6 7h12v14H6z"/><path d="M9 12h6"/></svg></span><span class="tx">Productos y recetas</span></button>
@@ -530,6 +540,31 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
       </div>
     </section>
 
+    <!-- GASTOS -->
+    <section class="sec" id="sec-gastos">
+      <div class="head"><h1>Gastos</h1><div class="acts"><label class="btn pri" style="cursor:pointer">Cargar XML del SII<input type="file" id="gaXml" accept=".xml,text/xml,application/xml" multiple hidden></label><button class="btn" id="gaManual">+ Ingresar a mano</button></div></div>
+      <p class="note" style="margin:0 0 10px">Carga uno o varios XML (facturas o el archivo de respaldo del SII). Cada línea se clasifica como insumo (entra a bodega y actualiza su costo), gasto (con su ítem y área) o despacho a repartir; la app recuerda cómo clasificaste cada producto de cada proveedor. <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Dónde bajar los XML: sii.cl → Factura electrónica → Sistema de facturación gratuito → Documentos tributarios recibidos → filtrar por fecha → Archivo de respaldo. También sirven los XML que los proveedores envían por correo.">i</button></p>
+      <div class="seg" id="gaTabs" style="max-width:560px;margin-bottom:14px"><button data-t="docs" class="on">Documentos</button><button data-t="pagar">Por pagar</button><button data-t="ana">Análisis</button><button data-t="prec">Precios</button></div>
+      <div id="ga_docs">
+        <div class="search"><input class="in" id="gaQ" type="search" placeholder="Buscar proveedor, RUT o folio"><div class="fld" style="margin:0"><input class="in" id="gaDesde" type="date" aria-label="Desde"></div><div class="fld" style="margin:0"><input class="in" id="gaHasta" type="date" aria-label="Hasta"></div></div>
+        <div class="tw"><table><thead><tr><th>Fecha</th><th>Proveedor · documento</th><th class="hide-m">Clasificación</th><th class="r">Total</th><th>Estado</th></tr></thead><tbody id="tGaDocs"></tbody></table></div>
+        <p class="note" id="gaDocsTot"></p>
+      </div>
+      <div id="ga_pagar" class="hidden">
+        <div class="tw"><table><thead><tr><th>Proveedor · documento</th><th>Vence</th><th class="r">Total</th><th class="r">Saldo</th></tr></thead><tbody id="tGaPagar"></tbody></table></div>
+        <p class="note" id="gaPagarTot"></p>
+      </div>
+      <div id="ga_ana" class="hidden">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"><input class="in" id="gaMes" type="month" style="max-width:190px" aria-label="Mes"><div class="seg" id="gaModo" style="width:300px"><button type="button" data-v="dev" class="on">Devengado</button><button type="button" data-v="caja">Flujo de caja</button></div><button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Devengado: por fecha del documento (lo que se gastó en el mes). Flujo de caja: por fecha de pago (lo que salió de la cuenta en el mes).">i</button></div>
+        <div id="gaAnaBody"></div>
+      </div>
+      <div id="ga_prec" class="hidden">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"><div class="chips" id="gaPrecChips"><button class="chip on" data-f="nuevas">Nuevas</button><button class="chip" data-f="todas">Todas</button></div><button class="btn sm" id="gaPrecVistas" type="button">Marcar todas como vistas</button></div>
+        <p class="note" style="margin-top:0">Cada compra de un insumo se compara con la compra anterior del mismo insumo (de cualquier proveedor). Se registran alzas y bajas, con el documento y la fecha, en la hoja ALERTAS_PRECIO.</p>
+        <div id="gaPrecList" style="display:grid;gap:10px"></div>
+      </div>
+    </section>
+
     <!-- CALENDARIO -->
     <section class="sec" id="sec-calendario">
       <div class="head"><h1>Calendario</h1><div class="acts"><button class="btn pri" id="calNuevo">+ Evento</button></div></div>
@@ -575,6 +610,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
         <button class="nav-i" data-go="ventas" style="padding:14px 0">Ventas y cobranza</button>
         <button class="nav-i" data-go="clientes" style="padding:14px 0">Clientes</button>
         <button class="nav-i" data-go="formacion" style="padding:14px 0">Formación</button>
+        <button class="nav-i" data-go="gastos" style="padding:14px 0">Gastos</button>
       </div>
       <div class="card" style="padding:6px 16px">
         <div class="small muted" style="padding:12px 0 4px">Producción</div>
@@ -631,8 +667,13 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
         <p class="note" id="gcNota" style="margin:10px 0 0">Antes de activar, una sola vez: en Apps Script elige la función <b>autorizarCalendario</b>, presiona ▶ Ejecutar y acepta el permiso de Calendar. Después crea una <b>Nueva versión</b> de la implementación (Implementar → Administrar implementaciones → ✏️).</p>
       </div>
       <div class="card" style="max-width:620px">
+        <h2 style="margin-bottom:10px">Ítems de gasto <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Cada gasto se clasifica en un ítem con su categoría (fijo/variable), tipo (directo/indirecto) y subtipo. Las áreas se editan en Listas → Áreas de gasto.">i</button></h2>
+        <div id="igList" style="max-height:340px;overflow:auto"></div>
+        <button class="btn sm" id="igNuevo" type="button" style="margin-top:10px">+ Ítem</button>
+      </div>
+      <div class="card" style="max-width:620px">
         <h2 style="margin-bottom:10px">Listas <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Las opciones que aparecen en los selectores de la app. Renombrar cambia también todos los registros que la usan. Eliminar borra si nadie la usa; si está en uso, la oculta de los selectores sin tocar los registros antiguos.">i</button></h2>
-        <div class="fld"><select class="in" id="lsSel" aria-label="Lista a editar"><option value="tipo_insumo">Tipos de insumo</option><option value="unidad">Unidades</option><option value="categoria">Categorías de producto</option><option value="motivo_ajuste">Motivos de ajuste de stock</option><option value="canal_venta">Canales de venta (venta rápida)</option><option value="formatos">Formatos de compra (por insumo)</option></select></div>
+        <div class="fld"><select class="in" id="lsSel" aria-label="Lista a editar"><option value="tipo_insumo">Tipos de insumo</option><option value="unidad">Unidades</option><option value="categoria">Categorías de producto</option><option value="motivo_ajuste">Motivos de ajuste de stock</option><option value="canal_venta">Canales de venta (venta rápida)</option><option value="area_gasto">Áreas de gasto</option><option value="formatos">Formatos de compra (por insumo)</option></select></div>
         <div id="lsItems"></div>
         <div class="search" style="margin-top:10px"><input class="in" id="lsNuevo" placeholder="Nuevo valor"><button class="btn" id="lsAdd">Agregar</button></div>
         <p class="note" id="lsNote" style="margin-top:10px"></p>
@@ -886,6 +927,64 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
 </div></div>
 
 <!-- MODAL PROYECTO DE FORMACIÓN -->
+<div class="ov" id="mImp"><div class="modal wide" role="dialog" aria-modal="true" aria-labelledby="mImpT">
+  <div class="mh"><h2 id="mImpT">Documentos del XML</h2><button class="closeb" data-close aria-label="Cerrar">×</button></div>
+  <p class="small" id="impRes" style="margin-top:0"></p>
+  <p class="note" style="margin-top:0">Los ya ingresados (mismo RUT, tipo y folio) se omiten. «Posible duplicado»: mismo proveedor y monto con fecha parecida pero otro folio; revísalo antes de guardarlo. Los que tienen todas sus líneas clasificadas (por lo aprendido antes) se pueden guardar juntos.</p>
+  <div id="impList"></div>
+  <div class="mf"><span class="sp"></span><button class="btn ghost" type="button" data-close>Cerrar</button><button class="btn pri" type="button" id="impTodas">Guardar las ya clasificadas</button></div>
+</div></div>
+
+<div class="ov" id="mDoc"><div class="modal wide" role="dialog" aria-modal="true" aria-labelledby="mDocT">
+  <div class="mh"><h2 id="mDocT">Documento</h2><button class="closeb" data-close aria-label="Cerrar">×</button></div>
+  <div class="row3">
+    <div class="fld"><label class="f" for="deTipo">Tipo de documento</label><select class="in" id="deTipo"></select></div>
+    <div class="fld"><label class="f" for="deRut">RUT proveedor</label><input class="in" id="deRut" placeholder="76.123.456-7"></div>
+    <div class="fld"><label class="f" for="deProv">Proveedor</label><input class="in" id="deProv" list="deProvs" autocomplete="off"><datalist id="deProvs"></datalist></div>
+  </div>
+  <div class="row3">
+    <div class="fld"><label class="f" for="deFolio">Folio</label><input class="in" id="deFolio" inputmode="numeric"></div>
+    <div class="fld"><label class="f" for="deFecha">Fecha del documento</label><input class="in" id="deFecha" type="date"></div>
+    <div class="fld"><label class="f">Pago <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Contado: queda pagado en la fecha del documento. Crédito: queda en «Por pagar» hasta que registres el pago; indica la fecha de vencimiento.">i</button></label><div class="seg" id="deFp"><button type="button" data-v="contado" class="on">Contado</button><button type="button" data-v="credito">Crédito</button></div></div>
+  </div>
+  <div class="row3"><div class="fld hidden" id="deVencBox"><label class="f" for="deVenc">Vence</label><input class="in" id="deVenc" type="date"></div></div>
+  <p class="note" id="deReqNote" style="margin-top:0">RUT, proveedor y folio son obligatorios: así la app reconoce la factura si después llega en un XML y no la cuenta dos veces.</p>
+  <div id="deDup" class="small" style="margin-bottom:8px"></div>
+  <div class="ohead del-h"><span>Descripción</span><span class="r">Cant.</span><span class="r" id="deLinH">Monto</span><span></span></div>
+  <div id="deLineas"></div>
+  <button class="btn sm ghost" id="deLinAdd" type="button" style="margin-bottom:12px">+ Línea</button>
+  <div class="grid g2" style="gap:14px;align-items:start">
+    <div><div class="fld"><label class="f" for="deTotal">Total del documento <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Se calcula desde las líneas (en facturas: neto + 19% IVA). Si el documento dice otro total (por redondeo o descuentos), escríbelo aquí.">i</button></label><input class="in r" id="deTotal" inputmode="numeric"></div>
+      <div class="fld"><label class="f" for="deNotas">Notas (opcional)</label><input class="in" id="deNotas"></div></div>
+    <div class="box" id="deTot"></div>
+  </div>
+  <p class="small warn-t" id="deFalta"></p>
+  <div class="mf"><span class="sp"></span><button class="btn ghost" type="button" data-close>Cancelar</button><button class="btn pri" type="button" id="deSave">Guardar documento</button></div>
+</div></div>
+
+<div class="ov" id="mDocV"><div class="modal mid" role="dialog" aria-modal="true" aria-labelledby="mDocVT">
+  <div class="mh"><h2 id="mDocVT">Documento</h2><button class="closeb" data-close aria-label="Cerrar">×</button></div>
+  <input type="hidden" id="dvId">
+  <div id="dvInfo"></div>
+  <div class="subsec" id="dvPagoBox"><h2 style="margin-bottom:8px">Registrar pago</h2>
+    <div class="row3"><div class="fld"><label class="f" for="dvMonto">Monto</label><input class="in r" id="dvMonto" inputmode="numeric"></div><div class="fld"><label class="f" for="dvFecha">Fecha</label><input class="in" id="dvFecha" type="date"></div><div class="fld"><label class="f" for="dvMedio">Medio</label><select class="in" id="dvMedio"><option>Transferencia</option><option>Débito</option><option>Crédito</option><option>Efectivo</option><option>Cheque</option></select></div></div>
+    <button class="btn pri" type="button" id="dvPagar">Registrar pago</button></div>
+  <div class="mf"><button class="btn danger" type="button" id="dvAnular">Anular documento</button><span class="sp"></span><button class="btn ghost" type="button" data-close>Cerrar</button></div>
+</div></div>
+
+<div class="ov" id="mIg"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mIgT">
+  <div class="mh"><h2 id="mIgT">Ítem de gasto</h2><button class="closeb" data-close aria-label="Cerrar">×</button></div>
+  <input type="hidden" id="igId">
+  <div class="fld"><label class="f" for="igNom">Nombre</label><input class="in" id="igNom" placeholder="Ej: Arriendo de puesto (ferias)"></div>
+  <div class="row3">
+    <div class="fld"><label class="f" for="igCat">Categoría <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Fijo: se paga igual todos los meses (arriendo, contador). Variable: depende de cuánto produces o vendes.">i</button></label><select class="in" id="igCat"><option value="FIJO">Fijo</option><option value="VARIABLE">Variable</option></select></div>
+    <div class="fld"><label class="f" for="igTipo">Tipo <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Directo: se usa para producir o dictar (materias primas, materiales de taller). Indirecto: sostiene el negocio en general.">i</button></label><select class="in" id="igTipo"><option value="DIRECTO">Directo</option><option value="INDIRECTO">Indirecto</option></select></div>
+    <div class="fld"><label class="f" for="igSub">Subtipo <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Operativo y comercial forman el costo operacional del mes. Inversión (equipos), financiero (intereses) y pasivo (impuestos) se muestran aparte.">i</button></label><select class="in" id="igSub"><option value="OPERATIVO">Operativo</option><option value="COMERCIAL">Comercial</option><option value="INVERSIÓN">Inversión</option><option value="FINANCIERO">Financiero</option><option value="PASIVO">Pasivo</option></select></div>
+  </div>
+  <div class="fld"><label class="f" for="igArea">Área habitual</label><select class="in" id="igArea"></select></div>
+  <div class="mf"><button class="btn danger" type="button" id="igDel">Eliminar</button><span class="sp"></span><button class="btn ghost" type="button" data-close>Cancelar</button><button class="btn pri" type="button" id="igSave">Guardar</button></div>
+</div></div>
+
 <div class="ov" id="mEv"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mEvT">
   <div class="mh"><h2 id="mEvT">Nuevo evento</h2><button class="closeb" data-close aria-label="Cerrar">×</button></div>
   <input type="hidden" id="evId">
@@ -1026,10 +1125,10 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
 
 <script>
 // ───────────── Estado ─────────────
-const APP_VERSION = '2.3.1';
+const APP_VERSION = '2.4.0';
 const LS = { url: 'mv_gs_url', key: 'mv_gs_key', cache: 'mv_cache_v1' };
 let GS = lsGet(LS.url), KEY = lsGet(LS.key);
-const DB0 = () => ({ insumos: [], productos: [], recetas: [], compras: [], produccion: [], movimientos: [], stock: {}, formatos: [], listas: [], costos_hist: [], config: {}, empresas: [], locales: [], precios_cliente: [], ventas: [], ventas_det: [], pagos: [], consignaciones: [], consig_det: [], liquidaciones: [], liq_det: [], proyectos: [], proy_mat: [], proy_costos: [], ferias: [], feria_dias: [], personas: [], proy_sesiones: [], eventos: [] });
+const DB0 = () => ({ insumos: [], productos: [], recetas: [], compras: [], produccion: [], movimientos: [], stock: {}, formatos: [], listas: [], costos_hist: [], config: {}, empresas: [], locales: [], precios_cliente: [], ventas: [], ventas_det: [], pagos: [], consignaciones: [], consig_det: [], liquidaciones: [], liq_det: [], proyectos: [], proy_mat: [], proy_costos: [], ferias: [], feria_dias: [], personas: [], proy_sesiones: [], eventos: [], docs_compra: [], docs_det: [], items_gasto: [], equiv: [], alertas_precio: [], pagos_prov: [] });
 let DB = DB0();
 let busy = false, lastSync = 0;
 const UI = { sec: 'inicio', invTab: 'productos', iFiltro: 'todos', prFiltro: 'act', comDocT: 'factura', insFmts: [] };
@@ -1066,7 +1165,7 @@ const esServ = p => p && p.tipo === 'servicio';
 const porMil = (i, cu) => i && (i.unidad === 'g' || i.unidad === 'ml') && cu > 0 ? clp(cu * 1000) + (i.unidad === 'g' ? ' / kg' : ' / L') : '';
 
 // ───────────── Listas editables ─────────────
-const LISTA_BASE = { tipo_insumo: ['Materia prima', 'Envase', 'Etiqueta', 'Otro'], unidad: ['g', 'ml', 'u', 'gotas', 'cm'], categoria: [], motivo_ajuste: ['Carga inicial', 'Conteo físico', 'Merma o pérdida', 'Vencido', 'Uso interno o muestra', 'Otro'], canal_venta: ['Instagram', 'WhatsApp', 'Online', 'Venta directa'] };
+const LISTA_BASE = { tipo_insumo: ['Materia prima', 'Envase', 'Etiqueta', 'Otro'], unidad: ['g', 'ml', 'u', 'gotas', 'cm'], categoria: [], motivo_ajuste: ['Carga inicial', 'Conteo físico', 'Merma o pérdida', 'Vencido', 'Uso interno o muestra', 'Otro'], canal_venta: ['Instagram', 'WhatsApp', 'Online', 'Venta directa'], area_gasto: ['Producción · uso interno (infusiones, suplementos)', 'Producción · uso externo (cosmética natural)', 'Formación', 'Reventa de insumos', 'Ventas y ferias', 'Administración'] };
 function lista(nombre, conOcultos) {
   const rows = (DB.listas || []).filter(r => r.lista === nombre && (conOcultos || r.estado === 'activo')).sort((a, b) => (Number(a.orden) || 0) - (Number(b.orden) || 0));
   return rows.length || (DB.listas || []).some(r => r.lista === nombre) ? rows.map(r => r.valor) : LISTA_BASE[nombre];
@@ -1217,7 +1316,7 @@ function preguntar(titulo, valor, nota) {
 function go(sec) {
   UI.sec = sec;
   document.querySelectorAll('.sec').forEach(s => s.classList.toggle('on', s.id === 'sec-' + sec));
-  const enMas = ['calendario', 'ferias', 'consig', 'ventas', 'clientes', 'formacion', 'produccion', 'productos', 'insumos', 'config'].includes(sec);
+  const enMas = ['gastos', 'calendario', 'ferias', 'consig', 'ventas', 'clientes', 'formacion', 'produccion', 'productos', 'insumos', 'config'].includes(sec);
   document.querySelectorAll('.bottom [data-go]').forEach(b => b.classList.toggle('on', b.dataset.go === sec || (enMas && b.dataset.go === 'mas')));
   document.querySelectorAll('.side [data-go]').forEach(b => b.classList.toggle('on', b.dataset.go === sec));
   window.scrollTo(0, 0);
@@ -1256,7 +1355,7 @@ const metodoTxt = () => (DB.config && DB.config.metodo_costo) === 'promedio' ? '
 // ───────────── Render general ─────────────
 function renderAll() {
   renderVersion(); renderInicio(); renderProdSelect(); renderPrev(); renderLotes(); renderInv(); renderInsumos(); renderHcFiltros(); renderCompras(); renderProductos();
-  renderVR(); renderOrdenes(); renderConsig(); renderVFiltros(); renderVentas(); renderClientes(); renderPersonas(); renderFerias(); renderFormacion(); renderCalendario();
+  renderVR(); renderOrdenes(); renderConsig(); renderVFiltros(); renderVentas(); renderClientes(); renderPersonas(); renderFerias(); renderFormacion(); renderCalendario(); renderGastos();
   if (UI.sec === 'config') renderConfig();
 }
 
@@ -1313,6 +1412,9 @@ function renderInicio() {
     if (k >= 0) pend.push({ t: 'Feria hoy', d: f.nombre + ' · Día ' + (k + 1), r: horario(ds[k]) || 'Hoy', f: `feVender('${f.id}')` });
     else if (prox && ds[0].fecha > hoy() && diasEntre(hoy(), prox.fecha) <= 7) pend.push({ t: 'Feria próxima', d: f.nombre, r: diaSem(prox.fecha) + ' ' + fechaCorta(prox.fecha), f: `abrirFeria('${f.id}')`, c: 'warn-t' }); });
   DB.eventos.filter(e => e.estado === 'activo' && e.fecha >= hoy() && diasEntre(hoy(), e.fecha) <= 3).forEach(e => pend.push({ t: e.fecha === hoy() ? 'Evento hoy' : 'Evento próximo', d: e.titulo, r: (e.fecha === hoy() ? '' : diaSem(e.fecha) + ' ') + (e.fecha === hoy() ? (e.hora_inicio || 'Hoy') : fechaCorta(e.fecha)), f: `abrirEvento('${e.id}')`, c: e.fecha === hoy() ? '' : 'warn-t' }));
+  docsPorPagar().filter(d => (d.fecha_venc || d.fecha) <= fechaMas(hoy(), 3)).forEach(d => { const v = d.fecha_venc || d.fecha; pend.push({ t: v < hoy() ? 'Pago a proveedor vencido' : 'Pago a proveedor', d: d.proveedor + ' · ' + docCorto(d), r: clp(saldoDoc(d)) + ' · ' + (v === hoy() ? 'hoy' : fechaCorta(v)), f: `abrirDocV('${d.id}')`, c: v < hoy() ? 'bad-t' : 'warn-t' }); });
+  const nAl = DB.alertas_precio.filter(a => a.estado === 'nueva').length;
+  if (nAl) pend.push({ t: 'Cambios de precio en insumos', d: DB.alertas_precio.filter(a => a.estado === 'nueva').slice(0, 2).map(a => (insumo(a.insumo_id) || {}).nombre + (a.variacion > 0 ? ' ▲' : ' ▼')).join(', ') + (nAl > 2 ? '…' : ''), r: nAl + ' nuevo(s)', f: "go('gastos');GA.tab='prec';renderGastos()" });
   const cont = DB.personas.filter(p => p.estado === 'activo' && statsPersona(p.id).toca).length;
   if (cont) pend.push({ t: 'Clientes para contactar', d: 'Ya pasó su tiempo habitual de recompra', r: cont + ' persona' + (cont === 1 ? '' : 's'), f: "go('clientes');cliTab('per');PE.f='contactar';[...$('perChips').children].forEach(c=>c.classList.toggle('on',c.dataset.f==='contactar'));renderPersonas()" });
   DB.ventas.filter(v => v.estado === 'borrador').forEach(v => pend.push({ t: 'Orden en borrador', d: v.id + ' · ' + quien(v), r: clp(v.total), f: `abrirVenta('${v.id}')` }));
@@ -1860,6 +1962,7 @@ function renderConfig() {
   const met = (DB.config && DB.config.metodo_costo) || 'ultima';
   [...$('cfgMetodo').children].forEach(b => b.classList.toggle('on', b.dataset.v === met));
   renderListas();
+  renderItemsGasto();
   $('segUna').value = segUna(); $('segMin').value = segMin();
   const C = DB.config || {}, on = !!DB.gcal_activo;
   $('gcEstado').innerHTML = on ? `<span class="ok-t">Activado</span> · calendario «${esc(C.gcal_nombre || 'Magia Verde')}»${C.gcal_ultimo ? ' · última copia ' + esc(C.gcal_ultimo.slice(0, 16)) : ''}${C.gcal_error ? `<div class="bad-t" style="margin-top:4px">Último error: ${esc(C.gcal_error)}</div>` : ''}` : '<span class="muted">Desactivado</span>';
@@ -1897,9 +2000,10 @@ const USO_LISTA = {
   unidad: v => DB.insumos.filter(i => i.unidad === v).length,
   categoria: v => DB.productos.filter(p => p.categoria === v).length,
   motivo_ajuste: v => DB.movimientos.filter(m => m.tipo === 'ajuste' && m.nota === v).length,
-  canal_venta: v => DB.ventas.filter(x => x.medio_venta === v).length
+  canal_venta: v => DB.ventas.filter(x => x.medio_venta === v).length,
+  area_gasto: v => DB.docs_det.filter(x => x.area === v).length + DB.items_gasto.filter(x => x.area === v).length
 };
-const USO_TXT = { tipo_insumo: 'insumo(s)', unidad: 'insumo(s)', categoria: 'producto(s)', motivo_ajuste: 'ajuste(s)', canal_venta: 'venta(s)' };
+const USO_TXT = { tipo_insumo: 'insumo(s)', unidad: 'insumo(s)', categoria: 'producto(s)', motivo_ajuste: 'ajuste(s)', canal_venta: 'venta(s)', area_gasto: 'registro(s)' };
 function renderListas() {
   const L = $('lsSel').value;
   const esFmt = L === 'formatos';
@@ -2117,8 +2221,8 @@ $('vrGo').addEventListener('click', async () => {
 
 // ───────────── Calendario ─────────────
 // Junta ferias (cada día), sesiones de proyectos de Formación y eventos libres. Los proyectos postulados se ven como tentativos.
-const CAL = { vista: '', mes: '', tipos: { feria: true, taller: true, licitacion: true, otro: true } };
-const TIPO_CAL = { feria: 'Ferias', taller: 'Talleres y cursos', licitacion: 'Licitaciones', otro: 'Otros' };
+const CAL = { vista: '', mes: '', tipos: { feria: true, taller: true, licitacion: true, pago: true, otro: true } };
+const TIPO_CAL = { feria: 'Ferias', taller: 'Talleres y cursos', licitacion: 'Licitaciones', pago: 'Pagos', otro: 'Otros' };
 const evento = id => DB.eventos.find(e => e.id === id);
 function rangoFechas(a, b) { const out = []; let f = a; while (f <= b && out.length < 400) { out.push(f); f = fechaMas(f, 1); } return out; }
 /** Eventos entre dos fechas (inclusive), uno por día. */
@@ -2133,6 +2237,7 @@ function calEventos(desde, hasta) {
     else if (p.fecha_inicio) rangoFechas(p.fecha_inicio, p.fecha_fin && p.fecha_fin > p.fecha_inicio ? p.fecha_fin : p.fecha_inicio).filter(en).forEach(f => out.push({ fecha: f, hi: '', hf: '', titulo: p.nombre, tipo, tent, lugar: p.institucion, abrir: `abrirFP('${p.id}')` }));
   });
   DB.eventos.filter(e => e.estado === 'activo').forEach(e => rangoFechas(e.fecha, e.fecha_fin || e.fecha).filter(en).forEach(f => out.push({ fecha: f, hi: e.hora_inicio, hf: e.hora_fin, titulo: e.titulo, tipo: 'otro', lugar: e.lugar, abrir: `abrirEvento('${e.id}')` })));
+  docsPorPagar().filter(d => d.fecha_venc && en(d.fecha_venc)).forEach(d => out.push({ fecha: d.fecha_venc, hi: '', hf: '', titulo: `Pagar ${d.proveedor} · ${clp(saldoDoc(d))}`, tipo: 'pago', lugar: docCorto(d), abrir: `abrirDocV('${d.id}')` }));
   return out.filter(e => CAL.tipos[e.tipo]).sort((a, b) => (a.fecha + (a.hi || '00:00')).localeCompare(b.fecha + (b.hi || '00:00')));
 }
 const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
@@ -2193,6 +2298,343 @@ $('evDel').addEventListener('click', async () => {
   if (!await confirmar('Eliminar evento', `«${e.titulo}» se eliminará del calendario${DB.gcal_activo ? ' (y de Google Calendar)' : ''}.`, 'Eliminar', true)) return;
   if (await write('deleteEvento', { id: e.id }, 'Evento eliminado')) closeM('mEv');
 });
+
+// ═════════════════════════════ GASTOS ═════════════════════════════
+// Documentos de compra desde XML del SII (en lote) o a mano. Cada línea: insumo (entra a stock y actualiza costo),
+// gasto (ítem con categoría y área) o despacho a repartir entre los insumos. Cuentas por pagar, análisis y alertas de precio.
+const TIPOS_DTE = { '33': 'Factura', '34': 'Factura exenta', '46': 'Factura de compra', '56': 'Nota de débito', '61': 'Nota de crédito', '39': 'Boleta', '41': 'Boleta exenta', 'B': 'Boleta (papel)', 'SD': 'Sin documento' };
+const DTE_CREDITO = ['33', '46', '56', '61'];
+const famDte = t => ['33', '34', '46'].includes(String(t)) ? 'F' : ['39', '41', 'B'].includes(String(t)) ? 'B' : String(t);
+const docCorto = d => (famDte(d.tipo_dte) === 'F' ? 'Factura' : famDte(d.tipo_dte) === 'B' ? 'Boleta' : d.tipo_dte === '61' ? 'N. crédito' : d.tipo_dte === '56' ? 'N. débito' : 'Sin doc.') + (d.folio ? ' ' + d.folio : '');
+const claveEq = s => norm(s).replace(/\s+/g, ' ').slice(0, 120);
+const itemGasto = id => DB.items_gasto.find(i => i.id === id);
+const docCompra = id => DB.docs_compra.find(d => d.id === id);
+const detDoc = id => DB.docs_det.filter(r => r.doc_id === id).sort((a, b) => a.linea - b.linea);
+const pagadoDoc = d => DB.pagos_prov.filter(p => p.doc_id === d.id && p.estado === 'activo').reduce((s, p) => s + (Number(p.monto) || 0), 0);
+const saldoDoc = d => d.estado === 'anulado' || d.total <= 0 ? 0 : Math.max(0, d.total - pagadoDoc(d));
+const docsPorPagar = () => DB.docs_compra.filter(d => d.estado === 'activo' && saldoDoc(d) > 0).sort((a, b) => (a.fecha_venc || a.fecha).localeCompare(b.fecha_venc || b.fecha));
+const areasGasto = () => lista('area_gasto');
+const GA = { tab: 'docs', imp: [], ed: null, anaModo: 'dev', precF: 'nuevas' };
+
+// ── Lectura de XML del SII (factura electrónica o archivo de respaldo con muchos documentos)
+async function leerArchivoXml(file) {
+  const buf = await file.arrayBuffer();
+  const cab = new TextDecoder('ascii').decode(buf.slice(0, 300));
+  const enc = (cab.match(/encoding=["']([^"']+)["']/i) || [])[1] || 'utf-8';
+  let txt; try { txt = new TextDecoder(enc.toLowerCase()).decode(buf); } catch (e) { txt = new TextDecoder('iso-8859-1').decode(buf); }
+  const xml = new DOMParser().parseFromString(txt, 'application/xml');
+  if (xml.getElementsByTagName('parsererror').length) throw new Error(`«${file.name}» no es un XML válido`);
+  const T = (el, tag) => { const x = el && el.getElementsByTagNameNS('*', tag)[0]; return x ? x.textContent.trim() : ''; };
+  const N = v => Number(String(v || '').replace(',', '.')) || 0;
+  return [...xml.getElementsByTagNameNS('*', 'Documento')].map(el => {
+    const id = el.getElementsByTagNameNS('*', 'IdDoc')[0], em = el.getElementsByTagNameNS('*', 'Emisor')[0], rc = el.getElementsByTagNameNS('*', 'Receptor')[0], to = el.getElementsByTagNameNS('*', 'Totales')[0];
+    const otros = [...(to ? to.getElementsByTagNameNS('*', 'ImptoReten') : [])].reduce((s, x) => s + N(T(x, 'MontoImp')), 0);
+    const lineas = [...el.getElementsByTagNameNS('*', 'Detalle')].map(dt => ({ descripcion: T(dt, 'NmbItem') || T(dt, 'DscItem'), cantidad: N(T(dt, 'QtyItem')) || 1, unidad: T(dt, 'UnmdItem'), precio_unit: N(T(dt, 'PrcItem')), monto: N(T(dt, 'MontoItem')), exento: T(dt, 'IndExe') === '1' }));
+    const d = { tipo_dte: T(id, 'TipoDTE'), folio: T(id, 'Folio').replace(/^0+/, ''), fecha: T(id, 'FchEmis'), fecha_venc: T(id, 'FchVenc'), fma: T(id, 'FmaPago'),
+      rut: rutNorm(T(em, 'RUTEmisor')), proveedor: T(em, 'RznSoc') || T(em, 'RznSocEmisor'), receptor: rutNorm(T(rc, 'RUTRecep')),
+      neto: N(T(to, 'MntNeto')), exento: N(T(to, 'MntExe')), iva: N(T(to, 'IVA')), otros_imp: otros, total: N(T(to, 'MntTotal')), lineas, archivo: file.name };
+    d.forma_pago = d.fma === '2' || (d.fecha_venc && d.fecha_venc > d.fecha) ? 'credito' : 'contado';
+    return d;
+  });
+}
+/** Estado de un documento frente a lo ya registrado: nuevo, ya ingresado, posible duplicado, etc. */
+function estadoDocImp(d) {
+  const miRut = rutNorm((DB.config || {}).emp_rut || ''), act = DB.docs_compra.filter(x => x.estado === 'activo');
+  if (miRut && d.rut === miRut) return { k: 'venta', t: 'Emitido por Magia Verde (es una venta)', c: '' };
+  if (!TIPOS_DTE[d.tipo_dte]) return { k: 'otro', t: 'Tipo de documento ' + d.tipo_dte + ' (no es compra)', c: '' };
+  const ya = act.find(x => x.rut === d.rut && x.folio === d.folio && famDte(x.tipo_dte) === famDte(d.tipo_dte));
+  if (ya) return { k: 'ya', t: `Ya ingresado (${ya.origen === 'xml' ? 'XML' : 'a mano'}, ${fechaCorta(ya.fecha)})`, c: '', doc: ya };
+  const pos = act.find(x => x.rut === d.rut && Math.abs(Math.abs(x.total) - d.total) <= 1 && Math.abs(diasEntre(x.fecha, d.fecha)) <= 7);
+  const r = pos ? { k: 'posible', t: `Posible duplicado de ${docCorto(pos)} (${fechaCorta(pos.fecha)}, ${clp(pos.total)}): revisa el folio`, c: 'warn', doc: pos } : { k: 'nuevo', t: 'Nuevo', c: 'ok' };
+  if (miRut && d.receptor && d.receptor !== miRut) { r.t += ' · receptor distinto a Magia Verde'; r.c = 'warn'; }
+  if (d.neto + d.exento + d.iva + d.otros_imp && Math.abs(d.neto + d.exento + d.iva + d.otros_imp - d.total) > 1) { r.t += ' · totales no cuadran'; r.c = 'warn'; }
+  return r;
+}
+/** Propone la clasificación de cada línea con lo aprendido de ese proveedor (o de cualquiera si no hay). */
+function sugerirLinea(rut, l) {
+  const k = claveEq(l.descripcion), eq = DB.equiv.find(e => e.rut === rut && e.clave === k) || DB.equiv.find(e => e.clave === k);
+  if (eq && (eq.destino !== 'insumo' || insumo(eq.insumo_id)) && (eq.destino !== 'gasto' || itemGasto(eq.item_id))) return { destino: eq.destino, insumo_id: eq.insumo_id, factor: eq.factor, item_id: eq.item_id, area: eq.area, aprendida: true };
+  if (/despacho|flete|envio|envío|transporte/i.test(l.descripcion)) return { destino: 'prorratear', aprendida: false };
+  return { destino: '', aprendida: false };
+}
+/** Tras guardar un documento, las líneas aún sin clasificar de los demás aprovechan lo recién aprendido. */
+function impActualizar() {
+  GA.imp.forEach(x => { if (x.guardado) return; x.est = estadoDocImp(x); x.lineas.forEach(l => { if (!l.destino) Object.assign(l, sugerirLinea(x.rut, l)); }); });
+}
+const lineaLista = l => l.destino === 'prorratear' || (l.destino === 'gasto' && l.item_id) || (l.destino === 'insumo' && l.insumo_id && Number(l.factor) > 0);
+
+$('gaXml').addEventListener('change', async e => {
+  const files = [...e.target.files]; e.target.value = '';
+  if (!files.length) return;
+  toast('Leyendo XML…', 'load');
+  const docs = [];
+  for (const f of files) { try { docs.push(...await leerArchivoXml(f)); } catch (x) { toast(x.message, 'err', 5000); } }
+  if (!docs.length) return toast('No encontré documentos en esos archivos', 'err');
+  const vistos = new Set();
+  GA.imp = docs.filter(d => { const k = d.rut + '|' + famDte(d.tipo_dte) + '|' + d.folio; if (vistos.has(k)) return false; vistos.add(k); return true; })
+    .map(d => { d.lineas = d.lineas.length ? d.lineas : [{ descripcion: 'Total del documento', cantidad: 1, monto: DTE_CREDITO.includes(d.tipo_dte) ? d.neto + d.exento : d.total }];
+      d.lineas.forEach(l => Object.assign(l, sugerirLinea(d.rut, l))); d.est = estadoDocImp(d); d.guardado = false; return d; })
+    .sort((a, b) => a.fecha.localeCompare(b.fecha));
+  toast(`${GA.imp.length} documento(s) leídos`, 'ok');
+  renderImp(); openM('mImp');
+});
+function renderImp() {
+  const n = GA.imp.filter(d => d.est.k === 'nuevo' || d.est.k === 'posible').length, listos = GA.imp.filter(d => !d.guardado && d.est.k === 'nuevo' && d.lineas.every(lineaLista));
+  $('impRes').innerHTML = `${GA.imp.length} documento(s) · ${n} por registrar · ${GA.imp.filter(d => d.est.k === 'ya').length} ya ingresados · ${GA.imp.filter(d => d.guardado).length} guardados ahora`;
+  $('impTodas').disabled = !listos.length; $('impTodas').textContent = listos.length ? `Guardar las ${listos.length} ya clasificadas` : 'Guardar las ya clasificadas';
+  $('impList').innerHTML = GA.imp.map((d, k) => {
+    const cls = d.lineas.filter(lineaLista).length, fuera = ['ya', 'venta', 'otro'].includes(d.est.k);
+    return `<div class="impd ${d.guardado || fuera ? 'hecho' : ''}"><div class="impt"><div><b>${esc(d.proveedor || '—')}</b> <span class="muted small">${esc(fmtRut(d.rut))}</span><div class="sub">${esc(TIPOS_DTE[d.tipo_dte] || d.tipo_dte)} ${esc(d.folio)} · ${fechaCorta(d.fecha)} · ${d.forma_pago === 'credito' ? 'crédito' + (d.fecha_venc ? ', vence ' + fechaCorta(d.fecha_venc) : '') : 'contado'}</div></div>
+      <div class="r"><b>${clp(d.total)}</b><div class="sub">${d.lineas.length} línea(s) · ${cls} clasificada(s)</div></div></div>
+      <div class="impb"><span class="tag ${d.guardado ? 'ok' : d.est.c}">${d.guardado ? 'Guardado' : esc(d.est.t)}</span><span class="sp"></span>${d.guardado || fuera ? '' : `<button class="btn sm" type="button" onclick="abrirDocEd(${k})">${cls === d.lineas.length ? 'Revisar' : 'Clasificar'}</button>`}</div></div>`; }).join('');
+}
+$('impTodas').addEventListener('click', async () => {
+  const listos = GA.imp.filter(d => !d.guardado && d.est.k === 'nuevo' && d.lineas.every(lineaLista));
+  let ok = 0, alz = 0;
+  for (const d of listos) {
+    try { const r = await gsCall('saveDoc', payloadDoc(d, 'xml')); d.guardado = true; ok++; alz += (r.alertas || []).length; } catch (x) { toast(`${d.proveedor} ${d.folio}: ${x.message}`, 'err', 6000); break; }
+  }
+  await sync(true); impActualizar(); renderImp(); renderGastos();
+  toast(`${ok} documento(s) guardados${alz ? ` · ${alz} cambio(s) de precio (ver Precios)` : ''}`, 'ok', 5000);
+});
+function payloadDoc(d, origen) {
+  return { origen, doc: { tipo_dte: d.tipo_dte, rut: d.rut, proveedor: d.proveedor, folio: d.folio, fecha: d.fecha, fecha_venc: d.forma_pago === 'credito' ? d.fecha_venc : '', forma_pago: d.forma_pago, neto: d.neto, exento: d.exento, iva: d.iva, otros_imp: d.otros_imp, total: d.total, notas: d.notas || '', medio: d.medio || '' },
+    lineas: d.lineas.map(l => ({ descripcion: l.descripcion, cantidad: l.cantidad, unidad: l.unidad, precio_unit: l.precio_unit, monto: l.monto, destino: l.destino, insumo_id: l.insumo_id, factor: l.factor, item_id: l.item_id, area: l.area })) };
+}
+
+// ── Editor de documento (a mano o revisión de un XML)
+function abrirDocEd(impIdx) {
+  const base = impIdx === undefined ? { tipo_dte: '33', rut: '', proveedor: '', folio: '', fecha: hoy(), fecha_venc: '', forma_pago: 'contado', neto: 0, exento: 0, iva: 0, otros_imp: 0, total: 0, lineas: [{ descripcion: '', cantidad: 1, monto: '', destino: '' }] } : GA.imp[impIdx];
+  GA.ed = { imp: impIdx, d: JSON.parse(JSON.stringify(base)), totalManual: false };
+  const d = GA.ed.d, xml = impIdx !== undefined;
+  $('mDocT').textContent = xml ? `${TIPOS_DTE[d.tipo_dte] || 'Documento'} ${d.folio} · ${d.proveedor}` : 'Ingresar documento a mano';
+  $('deTipo').innerHTML = Object.entries(TIPOS_DTE).map(([k, t]) => `<option value="${k}">${t}</option>`).join(''); $('deTipo').value = d.tipo_dte;
+  $('deRut').value = d.rut ? fmtRut(d.rut) : ''; $('deProv').value = d.proveedor; $('deFolio').value = d.folio; $('deFecha').value = d.fecha; $('deVenc').value = d.fecha_venc || '';
+  $('deProvs').innerHTML = [...new Map(DB.docs_compra.filter(x => x.rut).map(x => [x.rut, x.proveedor])).entries()].map(([r, n]) => `<option value="${esc(n)}">${esc(fmtRut(r))}</option>`).join('');
+  ['deTipo', 'deRut', 'deProv', 'deFolio', 'deFecha'].forEach(id => $(id).disabled = xml);
+  $('deTotal').value = d.total ? Math.round(d.total).toLocaleString('es-CL') : ''; $('deTotal').disabled = xml;
+  $('deNotas').value = d.notas || '';
+  deFormaPago(d.forma_pago); renderDeLineas(); deCheck();
+  openM('mDoc');
+}
+function deFormaPago(v) { GA.ed.d.forma_pago = v; [...$('deFp').children].forEach(b => b.classList.toggle('on', b.dataset.v === v)); $('deVencBox').classList.toggle('hidden', v !== 'credito'); }
+$('deFp').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { deFormaPago(b.dataset.v); deCheck(); } });
+$('deTipo').addEventListener('change', () => { GA.ed.d.tipo_dte = $('deTipo').value; renderDeLineas(); deCheck(); });
+['deRut', 'deProv', 'deFolio', 'deFecha', 'deVenc'].forEach(id => $(id).addEventListener('input', deCheck));
+$('deProv').addEventListener('change', () => { const x = DB.docs_compra.find(y => y.proveedor === $('deProv').value.trim() && y.rut); if (x && !$('deRut').value) { $('deRut').value = fmtRut(x.rut); deCheck(); } });
+$('deTotal').addEventListener('input', () => { GA.ed.totalManual = !!$('deTotal').value; deCheck(); });
+function opcionesDestino(l, nc) {
+  const ins = DB.insumos.filter(i => i.estado === 'activo').sort((a, b) => a.nombre.localeCompare(b.nombre)), its = DB.items_gasto.filter(i => i.estado === 'activo' || i.id === l.item_id).sort((a, b) => (Number(a.orden) || 0) - (Number(b.orden) || 0));
+  const v = l.destino === 'insumo' ? 'i:' + l.insumo_id : l.destino === 'gasto' ? 'g:' + l.item_id : l.destino === 'prorratear' ? 'p:' : '';
+  return `<option value="">¿Qué es?</option>${nc ? '' : `<optgroup label="Insumo (entra a bodega)">${ins.map(i => `<option value="i:${i.id}" ${v === 'i:' + i.id ? 'selected' : ''}>${esc(i.nombre)}</option>`).join('')}</optgroup>`}
+    <optgroup label="Gasto">${its.map(i => `<option value="g:${i.id}" ${v === 'g:' + i.id ? 'selected' : ''}>${esc(i.nombre)}</option>`).join('')}</optgroup>${nc ? '' : `<option value="p:" ${v === 'p:' ? 'selected' : ''}>Despacho: repartir entre los insumos</option>`}`;
+}
+function renderDeLineas() {
+  const d = GA.ed.d, xml = GA.ed.imp !== undefined, nc = d.tipo_dte === '61', neta = DTE_CREDITO.includes(d.tipo_dte);
+  $('deLinH').textContent = neta ? 'Monto neto' : 'Monto';
+  $('deLineas').innerHTML = d.lineas.map((l, k) => { const ins = l.destino === 'insumo' ? insumo(l.insumo_id) : null;
+    return `<div class="del">
+      <div class="del1"><input class="in" aria-label="Descripción" placeholder="Descripción" value="${esc(l.descripcion)}" ${xml ? 'disabled' : ''} oninput="deSet(${k},'descripcion',this.value)">
+        <input class="in r" aria-label="Cantidad" inputmode="decimal" value="${l.cantidad === '' ? '' : numIn(l.cantidad)}" ${xml ? 'disabled' : ''} oninput="deSet(${k},'cantidad',this.value)">
+        <input class="in r" aria-label="Monto" inputmode="numeric" placeholder="$0" value="${l.monto === '' ? '' : Math.round(l.monto).toLocaleString('es-CL')}" ${xml ? 'disabled' : ''} oninput="deSet(${k},'monto',this.value)">
+        ${xml ? '<span></span>' : `<button class="xbtn" type="button" aria-label="Quitar línea" onclick="deDel(${k})">×</button>`}</div>
+      <div class="del2"><select class="in" aria-label="Clasificación" onchange="deDest(${k},this.value)">${opcionesDestino(l, nc)}</select>
+        ${l.destino === 'insumo' ? `<div class="deF"><span class="small muted">Cada unidad trae</span><input class="in r" aria-label="Contenido por unidad" inputmode="decimal" value="${l.factor ? numIn(l.factor) : ''}" oninput="deSet(${k},'factor',this.value)"><span class="small">${esc(ins ? ins.unidad : '')}</span></div>` : ''}
+        ${l.destino === 'gasto' || l.destino === 'insumo' ? `<select class="in" aria-label="Área" onchange="deSet(${k},'area',this.value)"><option value="">Área…</option>${areasGasto().map(a => `<option ${l.area === a ? 'selected' : ''}>${esc(a)}</option>`).join('')}</select>` : ''}</div>
+      <div class="sub" id="deN${k}">${lineaNota(l)}</div></div>`; }).join('');
+  $('deLinAdd').classList.toggle('hidden', xml);
+}
+function lineaNota(l) {
+  const ins = l.destino === 'insumo' ? insumo(l.insumo_id) : null, q = (Number(l.cantidad) || 0) * (Number(l.factor) || 0);
+  return (l.aprendida ? '<span class="ok-t">✓ clasificación aprendida de este proveedor</span> ' : '') + (ins && q ? `Entra a bodega: ${qty(q)} ${esc(ins.unidad)} de ${esc(ins.nombre)}` : l.destino === 'prorratear' ? 'Se suma al costo de los insumos de este documento, en proporción a su monto.' : '');
+}
+function deSet(k, c, v) { const l = GA.ed.d.lineas[k]; l[c] = ['cantidad', 'monto', 'factor'].includes(c) ? parseNum(v) : v; if (c !== 'area') l.aprendida = false; const n = $('deN' + k); if (n) n.innerHTML = lineaNota(l); deCheck(); }
+function deDest(k, v) {
+  const l = GA.ed.d.lineas[k], [t, id] = v.split(':'); l.aprendida = false;
+  if (t === 'i') { l.destino = 'insumo'; l.insumo_id = id; l.item_id = ''; if (!l.factor) { const f = (fmtsDe(id).find(x => x.principal === 'si') || fmtsDe(id)[0]); l.factor = f ? Number(f.cantidad) : 1; } }
+  else if (t === 'g') { l.destino = 'gasto'; l.item_id = id; l.insumo_id = ''; if (!l.area) l.area = (itemGasto(id) || {}).area || ''; }
+  else if (t === 'p') { l.destino = 'prorratear'; l.insumo_id = ''; l.item_id = ''; }
+  else l.destino = '';
+  renderDeLineas(); deCheck();
+}
+function deDel(k) { GA.ed.d.lineas.splice(k, 1); if (!GA.ed.d.lineas.length) GA.ed.d.lineas.push({ descripcion: '', cantidad: 1, monto: '', destino: '' }); renderDeLineas(); deCheck(); }
+$('deLinAdd').addEventListener('click', () => { GA.ed.d.lineas.push({ descripcion: '', cantidad: 1, monto: '', destino: '' }); renderDeLineas(); });
+/** Totales en vivo, campos obligatorios y aviso de duplicado. */
+function deCheck() {
+  const d = GA.ed.d, xml = GA.ed.imp !== undefined, neta = DTE_CREDITO.includes(d.tipo_dte), exenta = ['34', '41'].includes(d.tipo_dte), sd = d.tipo_dte === 'SD';
+  if (!xml) {
+    d.rut = rutNorm($('deRut').value); d.proveedor = $('deProv').value.trim(); d.folio = $('deFolio').value.trim().replace(/^0+/, ''); d.fecha = $('deFecha').value;
+    const suma = d.lineas.reduce((s, l) => s + (Number(l.monto) || 0), 0);
+    if (neta) { d.neto = suma; d.exento = 0; d.iva = Math.round(suma * 0.19); d.total = d.neto + d.iva; }
+    else if (exenta) { d.neto = 0; d.exento = suma; d.iva = 0; d.total = suma; }
+    else { d.neto = 0; d.exento = 0; d.iva = 0; d.total = suma; }
+    if (GA.ed.totalManual) { d.total = parseNum($('deTotal').value); if (neta) { d.iva = d.total - d.neto; } }
+    else $('deTotal').value = d.total ? Math.round(d.total).toLocaleString('es-CL') : '';
+  }
+  d.fecha_venc = $('deVenc').value; d.notas = $('deNotas').value.trim();
+  const falta = [];
+  if (!sd) { if (!d.rut || !rutOk(d.rut)) falta.push('RUT válido'); if (!d.proveedor) falta.push('proveedor'); if (!d.folio) falta.push('folio'); }
+  if (!d.fecha) falta.push('fecha');
+  if (d.forma_pago === 'credito' && !(d.fecha_venc > d.fecha)) falta.push('fecha de vencimiento');
+  const sinClas = d.lineas.filter(l => (Number(l.monto) || 0) && !lineaLista(l)).length;
+  if (!d.lineas.some(l => Number(l.monto))) falta.push('al menos una línea con monto'); else if (sinClas) falta.push(`clasificar ${sinClas} línea(s)`);
+  if (d.lineas.some(l => l.destino === 'prorratear') && !d.lineas.some(l => l.destino === 'insumo')) falta.push('una línea de insumo para repartir el despacho');
+  const est = !sd && d.rut && d.folio ? estadoDocImp(d) : null;
+  $('deDup').innerHTML = est && (est.k === 'ya' || est.k === 'posible') ? `<span class="${est.k === 'ya' ? 'bad-t' : 'warn-t'}">${esc(est.t)}</span>` : '';
+  $('deTot').innerHTML = `${neta ? `<div class="ln"><span>Neto</span><span>${clp(d.neto)}</span></div>${d.exento ? `<div class="ln"><span>Exento</span><span>${clp(d.exento)}</span></div>` : ''}<div class="ln"><span>IVA (crédito fiscal)</span><span>${clp(d.iva)}</span></div>${d.otros_imp ? `<div class="ln"><span>Otros impuestos</span><span>${clp(d.otros_imp)}</span></div>` : ''}` : ''}<div class="ln bold"><span>Total</span><span>${clp(d.total)}</span></div>`;
+  $('deFalta').textContent = falta.length ? 'Falta: ' + falta.join(', ') + '.' : '';
+  $('deSave').disabled = !!falta.length || (est && est.k === 'ya');
+  $('deReqNote').classList.toggle('hidden', sd);
+}
+$('deNotas').addEventListener('input', deCheck);
+$('deSave').addEventListener('click', async () => {
+  deCheck(); if ($('deSave').disabled) return;
+  const d = GA.ed.d, xml = GA.ed.imp !== undefined;
+  const r = await write('saveDoc', payloadDoc(d, xml ? 'xml' : 'manual'), 'Documento guardado');
+  if (!r) return;
+  closeM('mDoc');
+  if (xml) { Object.assign(GA.imp[GA.ed.imp], d, { guardado: true }); impActualizar(); renderImp(); }
+  if (r.alertas && r.alertas.length) toast(`${r.alertas.length} cambio(s) de precio registrados: ver Gastos → Precios`, 'ok', 5000);
+});
+$('gaManual').addEventListener('click', () => abrirDocEd());
+
+// ── Vista de un documento: líneas, pagos, anular
+function abrirDocV(id) {
+  const d = docCompra(id); if (!d) return;
+  const sal = saldoDoc(d), ps = DB.pagos_prov.filter(p => p.doc_id === id);
+  $('mDocVT').textContent = `${docCorto(d)} · ${d.proveedor}`;
+  $('dvInfo').innerHTML = `<div class="box" style="margin-bottom:12px"><div class="ln"><span>Proveedor</span><span>${esc(d.proveedor)}${d.rut ? ' · ' + esc(fmtRut(d.rut)) : ''}</span></div><div class="ln"><span>Documento</span><span>${esc(TIPOS_DTE[d.tipo_dte] || d.tipo_dte)} ${esc(d.folio)} · ${fechaCorta(d.fecha)} · ${d.origen === 'xml' ? 'desde XML' : 'ingresado a mano'}</span></div>
+    <div class="ln"><span>Pago</span><span>${d.forma_pago === 'credito' ? 'Crédito' + (d.fecha_venc ? ', vence ' + fechaCorta(d.fecha_venc) : '') : 'Contado'}</span></div>${d.iva ? `<div class="ln"><span>Neto · IVA crédito</span><span>${clp(d.neto + d.exento)} · ${clp(d.iva)}</span></div>` : ''}
+    <div class="ln bold"><span>Total</span><span>${clp(d.total)}</span></div>${d.estado === 'anulado' ? '<div class="ln"><span class="tag bad">Anulado</span></div>' : sal > 0 ? `<div class="ln"><span>Saldo por pagar</span><b class="warn-t">${clp(sal)}</b></div>` : ''}${d.notas ? `<div class="ln"><span>Notas</span><span>${esc(d.notas)}</span></div>` : ''}</div>
+    <div class="small bold" style="margin-bottom:6px">Líneas</div>${detDoc(id).map(r => `<div class="ln"><span>${esc(r.descripcion || '—')}<div class="sub">${r.destino === 'insumo' ? `Insumo: ${esc(nombreItem(r.insumo_id))} · ${qty(r.cantidad * r.factor)} ${esc((insumo(r.insumo_id) || {}).unidad || '')}` : r.destino === 'gasto' ? 'Gasto: ' + esc((itemGasto(r.item_id) || {}).nombre || '—') : 'Despacho repartido entre los insumos'}${r.area ? ' · ' + esc(r.area) : ''}</div></span><span>${clp(r.monto)}${r.costo !== r.monto && r.destino === 'insumo' ? `<div class="sub">costo ${clp(r.costo)}</div>` : ''}</span></div>`).join('')}
+    <div class="small bold" style="margin:12px 0 6px">Pagos</div>${ps.length ? ps.map(p => `<div class="ln" style="${p.estado !== 'activo' ? 'opacity:.5;text-decoration:line-through' : ''}"><span>${fechaCorta(p.fecha)}${p.medio ? ' · ' + esc(p.medio) : ''}</span><span>${clp(p.monto)} ${p.estado === 'activo' && d.estado === 'activo' ? `<button class="lnk danger" onclick="anularPagoProv('${p.id}','${id}')">Anular</button>` : ''}</span></div>`).join('') : '<div class="sub">Sin pagos registrados.</div>'}`;
+  $('dvPagoBox').classList.toggle('hidden', !(sal > 0));
+  $('dvMonto').value = Math.round(sal).toLocaleString('es-CL'); $('dvFecha').value = hoy();
+  $('dvAnular').classList.toggle('hidden', d.estado === 'anulado');
+  $('dvId').value = id;
+  openM('mDocV');
+}
+$('dvPagar').addEventListener('click', async () => {
+  const id = $('dvId').value;
+  if (await write('pagoProv', { doc_id: id, monto: parseNum($('dvMonto').value), fecha: $('dvFecha').value, medio: $('dvMedio').value }, 'Pago registrado')) abrirDocV(id);
+});
+async function anularPagoProv(pid, did) { if (await confirmar('Anular pago', 'El monto vuelve a quedar por pagar.', 'Anular', true) && await write('anularPagoProv', { id: pid }, 'Pago anulado')) abrirDocV(did); }
+$('dvAnular').addEventListener('click', async () => {
+  const d = docCompra($('dvId').value), ci = detDoc(d.id).filter(r => r.compra_id).length;
+  if (!await confirmar('Anular documento', `${docCorto(d)} de ${d.proveedor} queda anulado${ci ? `; sus ${ci} compra(s) de insumos salen de bodega y los costos se recalculan` : ''}. Sus pagos también se anulan. Para corregirlo, vuelve a ingresarlo.`, 'Anular', true)) return;
+  if (await write('anularDoc', { id: d.id }, 'Documento anulado')) closeM('mDocV');
+});
+
+// ── Listas y análisis
+$('gaTabs').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; GA.tab = b.dataset.t; renderGastos(); });
+['gaQ', 'gaDesde', 'gaHasta'].forEach(id => $(id).addEventListener('input', renderGastos));
+$('gaMes').addEventListener('change', renderGastos);
+$('gaModo').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { GA.anaModo = b.dataset.v; renderGastos(); } });
+$('gaPrecChips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (b) { GA.precF = b.dataset.f; renderGastos(); } });
+function renderGastos() {
+  if (!$('gaDesde').value) { $('gaDesde').value = mesActual() + '-01'; }
+  if (!$('gaMes').value) $('gaMes').value = mesActual();
+  [...$('gaTabs').children].forEach(b => b.classList.toggle('on', b.dataset.t === GA.tab));
+  ['docs', 'pagar', 'ana', 'prec'].forEach(t => $('ga_' + t).classList.toggle('hidden', GA.tab !== t));
+  const nNuevas = DB.alertas_precio.filter(a => a.estado === 'nueva').length, nPag = docsPorPagar().length;
+  $('gaTabs').querySelector('[data-t=prec]').textContent = 'Precios' + (nNuevas ? ` (${nNuevas})` : '');
+  $('gaTabs').querySelector('[data-t=pagar]').textContent = 'Por pagar' + (nPag ? ` (${nPag})` : '');
+  if (GA.tab === 'docs') {
+    const q = norm($('gaQ').value), de = $('gaDesde').value, ha = $('gaHasta').value;
+    const ds = DB.docs_compra.filter(d => (!de || d.fecha >= de) && (!ha || d.fecha <= ha) && (!q || norm(d.proveedor + ' ' + d.folio + ' ' + d.rut + ' ' + fmtRut(d.rut)).includes(q)))
+      .sort((a, b) => (b.fecha + b.creado).localeCompare(a.fecha + a.creado));
+    $('tGaDocs').innerHTML = ds.length ? ds.slice(0, 300).map(d => `<tr class="click" onclick="abrirDocV('${d.id}')" style="${d.estado === 'anulado' ? 'opacity:.5' : ''}"><td class="nw">${fechaCorta(d.fecha)}</td><td>${esc(d.proveedor)}<div class="sub">${esc(docCorto(d))}${d.origen === 'xml' ? ' · XML' : ''}</div></td>
+      <td class="hide-m">${esc([...new Set(detDoc(d.id).map(r => r.destino === 'insumo' ? 'Insumos' : r.destino === 'gasto' ? (itemGasto(r.item_id) || {}).nombre : ''))].filter(Boolean).join(', '))}</td><td class="r">${clp(d.total)}</td>
+      <td>${d.estado === 'anulado' ? '<span class="tag bad">Anulado</span>' : saldoDoc(d) > 0 ? `<span class="tag ${d.fecha_venc && d.fecha_venc < hoy() ? 'bad' : 'warn'}">${d.fecha_venc && d.fecha_venc < hoy() ? 'Vencido' : 'Por pagar'}</span>` : '<span class="tag ok">Pagado</span>'}</td></tr>`).join('')
+      : `<tr><td colspan="5" class="empty">${DB.docs_compra.length ? 'Nada en este período.' : 'Carga las facturas en XML del SII o ingresa un documento a mano.'}</td></tr>`;
+    $('gaDocsTot').textContent = ds.length ? `${ds.filter(d => d.estado === 'activo').length} documento(s) · ${clp(ds.filter(d => d.estado === 'activo').reduce((s, d) => s + d.total, 0))}` : '';
+  }
+  if (GA.tab === 'pagar') {
+    const ds = docsPorPagar(), h = hoy();
+    $('tGaPagar').innerHTML = ds.length ? ds.map(d => { const v = d.fecha_venc || d.fecha, venc = v < h, dias = diasEntre(h, v);
+      return `<tr class="click" onclick="abrirDocV('${d.id}')"><td>${esc(d.proveedor)}<div class="sub">${esc(docCorto(d))} · ${fechaCorta(d.fecha)}</div></td><td class="nw">${fechaCorta(v)}<div class="sub ${venc ? 'bad-t' : dias <= 3 ? 'warn-t' : ''}">${venc ? `vencido hace ${-dias} d` : dias === 0 ? 'vence hoy' : `en ${dias} d`}</div></td><td class="r">${clp(d.total)}</td><td class="r bold">${clp(saldoDoc(d))}</td></tr>`; }).join('')
+      : '<tr><td colspan="4" class="empty">No hay facturas por pagar.</td></tr>';
+    $('gaPagarTot').textContent = ds.length ? `Total por pagar: ${clp(ds.reduce((s, d) => s + saldoDoc(d), 0))}` : '';
+  }
+  if (GA.tab === 'ana') renderGaAna();
+  if (GA.tab === 'prec') renderGaPrec();
+}
+/** Movimientos de gasto para el análisis: líneas de gasto de los documentos + compras de insumos, en fecha de compra (devengado) o de pago (caja). */
+function gastosMov(modo) {
+  const out = [], insItem = { nombre: 'Insumos y materias primas', categoria: 'VARIABLE', tipo: 'DIRECTO', subtipo: 'OPERATIVO' };
+  const fechasPago = d => { if (modo !== 'caja' || d.total <= 0) return [[d.fecha, 1]]; const ps = DB.pagos_prov.filter(p => p.doc_id === d.id && p.estado === 'activo'); return ps.map(p => [p.fecha, (Number(p.monto) || 0) / d.total]); };
+  DB.docs_compra.filter(d => d.estado === 'activo').forEach(d => { const fp = fechasPago(d);
+    detDoc(d.id).filter(r => r.destino === 'gasto').forEach(r => { const it = itemGasto(r.item_id) || { nombre: '—', categoria: 'VARIABLE', tipo: 'INDIRECTO', subtipo: 'OPERATIVO' };
+      fp.forEach(([f, k]) => out.push({ fecha: f, monto: (Number(r.costo) || 0) * k, item: it.nombre, categoria: it.categoria, tipo: it.tipo, subtipo: it.subtipo, area: r.area || '' })); }); });
+  DB.compras.filter(c => c.estado === 'activa').forEach(c => { const d = c.doc_id ? docCompra(c.doc_id) : null, fp = d ? fechasPago(d) : [[c.fecha, 1]];
+    fp.forEach(([f, k]) => out.push({ fecha: f, monto: (Number(c.total_neto) || 0) * k, item: insItem.nombre, categoria: insItem.categoria, tipo: insItem.tipo, subtipo: insItem.subtipo, area: c.area || '' })); });
+  return out;
+}
+function barras(obj, total) {
+  const arr = Object.entries(obj).filter(([, v]) => Math.round(v)).sort((a, b) => b[1] - a[1]), max = Math.max(1, ...arr.map(x => Math.abs(x[1])));
+  return arr.length ? `<div class="bars">${arr.map(([k, v]) => `<div class="br gab"><span title="${esc(k)}">${esc(k)}</span><div><div class="bf" style="width:${Math.round(Math.abs(v) / max * 100)}%"></div></div><span class="r">${clp(v)}${total ? ` · ${pct(v / total)}` : ''}</span></div>`).join('')}</div>` : '<div class="sub">Sin datos.</div>';
+}
+function renderGaAna() {
+  [...$('gaModo').children].forEach(b => b.classList.toggle('on', b.dataset.v === GA.anaModo));
+  const mes = $('gaMes').value, todos = gastosMov(GA.anaModo), mv = todos.filter(x => x.fecha.slice(0, 7) === mes);
+  const OPER = ['OPERATIVO', 'COMERCIAL'], op = mv.filter(x => OPER.includes(x.subtipo)), fuera = mv.filter(x => !OPER.includes(x.subtipo));
+  const suma = arr => arr.reduce((s, x) => s + x.monto, 0), agr = (arr, f) => arr.reduce((o, x) => { const k = f(x) || 'Sin asignar'; o[k] = (o[k] || 0) + x.monto; return o; }, {});
+  const tot = suma(op);
+  const ivaCred = DB.docs_compra.filter(d => d.estado === 'activo' && DTE_CREDITO.includes(d.tipo_dte) && d.fecha.slice(0, 7) === mes).reduce((s, d) => s + (Number(d.iva) || 0), 0)
+    + DB.compras.filter(c => c.estado === 'activa' && !c.doc_id && c.tipo_doc === 'factura' && c.fecha.slice(0, 7) === mes).reduce((s, c) => s + (Number(c.total_pagado) - Number(c.total_neto) || 0), 0);
+  const meses = []; { let [y, m] = mes.split('-').map(Number); for (let i = 0; i < 6; i++) { meses.unshift(`${y}-${String(m).padStart(2, '0')}`); m--; if (!m) { m = 12; y--; } } }
+  const evo = {}; meses.forEach(m => { evo[MESES[Number(m.slice(5)) - 1].slice(0, 3) + ' ' + m.slice(2, 4)] = suma(todos.filter(x => x.fecha.slice(0, 7) === m && OPER.includes(x.subtipo))); });
+  const kpi = (a, b, t) => `<div class="card kpi" style="padding:12px"><div class="lbl">${a}${t ? ` <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="${t}">i</button>` : ''}</div><div class="val" style="font-size:18px">${b}</div></div>`;
+  $('gaAnaBody').innerHTML = `<div class="grid g4 kpis" style="margin-bottom:14px">${kpi('Costo operacional', clp(tot), 'Gastos operativos y comerciales del mes, sin IVA recuperable. No incluye inversión, deudas ni impuestos.')}${kpi('Fijos · Variables', `${clp(suma(op.filter(x => x.categoria === 'FIJO')))} · ${clp(suma(op.filter(x => x.categoria === 'VARIABLE')))}`)}${kpi('Fuera del costo operacional', clp(suma(fuera)), 'Inversión (equipos), financiero (intereses, comisiones bancarias) y pasivos (impuestos como el IVA a pagar). Se muestran aparte para no inflar el costo del mes.')}${kpi('IVA crédito fiscal', clp(ivaCred), 'IVA de las facturas de compra del mes (menos notas de crédito). Se descuenta del IVA de tus ventas en el F29. Siempre por fecha del documento.')}</div>
+    <div class="grid g2" style="gap:14px;align-items:start">
+      <div class="box"><div class="small bold" style="margin-bottom:8px">Por ítem</div>${barras(agr(op, x => x.item), tot)}</div>
+      <div class="box"><div class="small bold" style="margin-bottom:8px">Por área</div>${barras(agr(op, x => x.area), tot)}</div>
+      <div class="box"><div class="small bold" style="margin-bottom:8px">Directo · Indirecto · Comercial</div>${barras(agr(op, x => x.subtipo === 'COMERCIAL' ? 'Comercial' : x.tipo === 'DIRECTO' ? 'Directo' : 'Indirecto'), tot)}</div>
+      <div class="box"><div class="small bold" style="margin-bottom:8px">Últimos 6 meses (costo operacional)</div>${barras(evo)}</div>
+      ${fuera.length ? `<div class="box"><div class="small bold" style="margin-bottom:8px">Fuera del costo operacional</div>${barras(agr(fuera, x => ({ 'INVERSIÓN': 'Inversión', FINANCIERO: 'Financiero', PASIVO: 'Pasivos e impuestos' })[x.subtipo] + ' · ' + x.item))}</div>` : ''}
+    </div>`;
+}
+/** Productos que usan un insumo (directo o dentro de un insumo elaborado). */
+function productosDeInsumo(iid) {
+  const elab = DB.insumos.filter(i => esElab(i) && recetaDe(i.id).some(r => r.tipo === 'insumo' && r.ref === iid)).map(i => i.id);
+  return DB.productos.filter(p => p.estado === 'activo' && recetaDe(p.id).some(r => r.tipo === 'insumo' && (r.ref === iid || elab.includes(r.ref))));
+}
+function renderGaPrec() {
+  [...$('gaPrecChips').children].forEach(c => c.classList.toggle('on', c.dataset.f === GA.precF));
+  const as = DB.alertas_precio.filter(a => a.estado !== 'anulada' && (GA.precF !== 'nuevas' || a.estado === 'nueva')).sort((a, b) => (b.fecha + b.creado).localeCompare(a.fecha + a.creado));
+  $('gaPrecVistas').classList.toggle('hidden', !DB.alertas_precio.some(a => a.estado === 'nueva'));
+  $('gaPrecList').innerHTML = as.length ? as.map(a => { const i = insumo(a.insumo_id) || {}, sube = a.variacion > 0, ps = productosDeInsumo(a.insumo_id);
+    return `<div class="card apr ${sube ? 'sube' : 'baja'}" style="${a.estado === 'vista' ? 'opacity:.75' : ''}"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div><b>${esc(i.nombre || '—')}</b> <span class="tag ${sube ? 'bad' : 'ok'}">${sube ? '▲ subió' : '▼ bajó'} ${Math.abs(Math.round(a.variacion * 1000) / 10).toString().replace('.', ',')}%</span>${a.estado === 'nueva' ? ' <span class="tag warn">nueva</span>' : ''}
+      <div class="sub">${esc(a.proveedor || '—')} · ${esc(a.documento || a.compra_id)} · ${fechaCorta(a.fecha)}</div></div>
+      <div class="r"><b>${clpU(a.costo_nuevo)}</b> / ${esc(i.unidad || '')}<div class="sub">antes ${clpU(a.costo_ant)}${porMil(i, a.costo_nuevo) ? ' · ahora ' + porMil(i, a.costo_nuevo) : ''}</div></div></div>
+      <div class="sub" style="margin-top:6px">Compra anterior: ${esc(a.proveedor_ant || '—')} · ${esc(a.documento_ant || a.compra_ant_id)} · ${fechaCorta(a.fecha_ant)}${a.proveedor_ant && a.proveedor_ant !== a.proveedor ? ` · <b>${sube ? 'el proveedor anterior era más barato' : 'este proveedor es más barato'}</b>` : ''}</div>
+      ${ps.length ? `<div class="sub" style="margin-top:4px">Afecta a: ${ps.map(p => { const c = costoProducto(p).unit, m = margenes(p, c)[0][1]; return `${esc(p.nombre)} (costo ${clp(c)}${isFinite(m) ? ' · margen B2C ' + pct(m) : ''})`; }).join(', ')}</div>` : ''}
+      ${a.estado === 'nueva' ? `<div style="margin-top:8px"><button class="btn sm" type="button" onclick="alertaVista(['${a.id}'])">Marcar como vista</button></div>` : ''}</div>`; }).join('')
+    : `<div class="card empty">${GA.precF === 'nuevas' ? 'No hay cambios de precio nuevos.' : 'Aún no hay cambios de precio registrados. Aparecen al registrar compras de un insumo con un costo distinto al de la compra anterior.'}</div>`;
+}
+async function alertaVista(ids) { await write('alertaVista', { ids }, ids.length > 1 ? 'Marcadas como vistas' : 'Marcada como vista'); }
+$('gaPrecVistas').addEventListener('click', () => alertaVista(DB.alertas_precio.filter(a => a.estado === 'nueva').map(a => a.id)));
+
+// ── Ítems de gasto (Configuración)
+function renderItemsGasto() {
+  $('igList').innerHTML = DB.items_gasto.slice().sort((a, b) => (Number(a.orden) || 0) - (Number(b.orden) || 0)).map(i => `<div class="lrow" style="${i.estado !== 'activo' ? 'opacity:.55' : ''}"><div class="v"><b>${esc(i.nombre)}</b>${i.estado !== 'activo' ? ' <span class="tag">archivado</span>' : ''}<div class="sub">${esc([i.categoria, i.tipo, i.subtipo].map(x => x.charAt(0) + x.slice(1).toLowerCase()).join(' · '))}${i.area ? ' · ' + esc(i.area) : ''}</div></div><button class="lnk" onclick="abrirItemGasto('${i.id}')">Editar</button></div>`).join('');
+}
+function abrirItemGasto(id) {
+  const it = id ? itemGasto(id) : null;
+  $('igId').value = it ? it.id : ''; $('mIgT').textContent = it ? 'Editar ítem de gasto' : 'Nuevo ítem de gasto';
+  $('igNom').value = it ? it.nombre : ''; $('igCat').value = it ? it.categoria : 'VARIABLE'; $('igTipo').value = it ? it.tipo : 'INDIRECTO'; $('igSub').value = it ? it.subtipo : 'OPERATIVO';
+  $('igArea').innerHTML = '<option value="">Sin área fija (se elige en cada gasto)</option>' + areasGasto().map(a => `<option>${esc(a)}</option>`).join(''); $('igArea').value = it ? it.area : '';
+  const usado = it && DB.docs_det.some(r => r.item_id === it.id);
+  $('igDel').classList.toggle('hidden', !it); $('igDel').textContent = it && it.estado !== 'activo' ? 'Restaurar' : usado ? 'Archivar' : 'Eliminar';
+  openM('mIg');
+}
+$('igNuevo').addEventListener('click', () => abrirItemGasto());
+$('igSave').addEventListener('click', async () => {
+  const d = { id: $('igId').value, nombre: $('igNom').value.trim(), categoria: $('igCat').value, tipo: $('igTipo').value, subtipo: $('igSub').value, area: $('igArea').value };
+  if (!d.nombre) return toast('Falta el nombre', 'err');
+  if (await write('saveItemGasto', d, 'Ítem guardado')) { closeM('mIg'); renderItemsGasto(); }
+});
+$('igDel').addEventListener('click', async () => { if (await write('deleteItemGasto', { id: $('igId').value }, 'Listo')) { closeM('mIg'); renderItemsGasto(); } });
 
 // ───────────── Ferias ─────────────
 const FE = { f: 'prox', dias: [] };
