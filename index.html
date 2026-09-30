@@ -63,6 +63,28 @@ h2{font-size:16px;font-weight:700;margin:0}
 .bars .br{display:grid;grid-template-columns:110px minmax(0,1fr) 110px;gap:8px;align-items:center;font-size:13px;margin-bottom:5px}
 .bars .bf{height:10px;border-radius:6px;background:var(--oliva);min-width:2px}
 .sugs li{margin-bottom:4px}
+.calbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.calnav{display:flex;align-items:center;gap:8px}.calnav b{min-width:150px;text-align:center;font-size:17px}.calnav .btn{padding:0 14px}
+.t-feria{--c:#5d6623}.t-taller{--c:#b85a78}.t-licitacion{--c:#9a6418}.t-otro{--c:#6b6660}
+.cdot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c);margin-right:6px;vertical-align:-1px}
+.chip:not(.on) .cdot{opacity:.35}
+.cal{background:var(--tarjeta);border:1px solid var(--borde);border-radius:var(--r);overflow:hidden}
+.calh,.calg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.calh span{font-size:12px;font-weight:600;color:var(--gris);padding:8px;text-align:center;border-bottom:1px solid var(--borde)}
+.cald{min-height:104px;padding:4px;border-right:1px solid var(--linea);border-bottom:1px solid var(--linea);cursor:pointer;display:flex;flex-direction:column;gap:2px;min-width:0}
+.cald:nth-child(7n){border-right:0}.cald.otro{background:var(--suave)}.cald.otro .caln{opacity:.45}
+.caln{font-size:12px;font-weight:600;color:var(--gris-osc);padding:2px 4px}
+.cald.today .caln{background:var(--oliva);color:#fff;border-radius:10px;align-self:flex-start;padding:2px 8px}
+.ce{display:block;width:100%;text-align:left;border:0;border-radius:5px;padding:3px 6px;font-size:12px;background:var(--c);color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.ce.tent,.age.tent{opacity:.6;background-image:repeating-linear-gradient(45deg,transparent 0 6px,rgba(255,255,255,.18) 6px 12px)}
+.ce .ch{font-weight:700}.cmas{border:0;background:none;font-size:11px;color:var(--gris);text-align:left;padding:0 6px;cursor:pointer}
+.agd{display:grid;grid-template-columns:90px minmax(0,1fr);gap:12px;padding:10px 0;border-bottom:1px solid var(--linea)}
+.agd.past{opacity:.55}.agf{display:flex;flex-direction:column;gap:4px;font-size:14px}
+.age{display:grid;grid-template-columns:110px minmax(0,1fr);gap:2px 10px;width:100%;text-align:left;background:var(--tarjeta);border:1px solid var(--borde);border-left:5px solid var(--c);border-radius:8px;padding:9px 12px;margin-bottom:6px;cursor:pointer;font:inherit;color:inherit}
+.age .agh{font-size:13px;color:var(--gris-osc);font-weight:600}.age .agt{font-weight:600}.age .sub{grid-column:2}
+.ses{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 32px;gap:6px;padding:8px 0 10px;border-bottom:1px solid var(--linea);margin-bottom:6px}
+.ses .sn{grid-column:1/3;font-size:13px;font-weight:600;color:var(--oliva-texto);align-self:center}
+.ses input[type=date]{grid-column:1/-1}.ses input:last-child{grid-column:1/-1}
 .calcbox{background:var(--suave);border:1px solid var(--linea);border-radius:var(--r);padding:12px 12px 10px;margin:0 0 14px}
 .calcbox .fld{margin-bottom:8px}
 .calcrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:10px}
@@ -266,6 +288,8 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
   .ohead.fed-h{display:none}.fed{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 32px;row-gap:6px;padding-bottom:10px;border-bottom:1px solid var(--linea)}.fed .dn{grid-column:1/-1;font-size:13px}.fed .dn .m{display:inline}.fed input[type=date]{grid-column:1/-1}
   .bars .br{grid-template-columns:84px minmax(0,1fr) 96px}
   .vrctx{min-width:0;flex:1 1 45%}
+  .cald{min-height:64px;padding:2px}.ce{font-size:10px;padding:2px 3px}.ce .ch{display:none}.calnav b{min-width:120px}
+  .agd{grid-template-columns:1fr;gap:4px}.agf{flex-direction:row;align-items:center;gap:8px}.age{grid-template-columns:1fr}.age .sub{grid-column:1}
   .calcrow{grid-template-columns:1fr}.calcrow2 .seg{min-width:0;width:100%}
   .fmat .cost,.fcos .cost,.fcos-h .cost{display:none}
   .rline .cost{display:none}
@@ -281,6 +305,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
     <img src="logo.png" alt="Magia Verde Herbolaria">
     <div class="grp">Operación</div>
     <button class="nav-i" data-go="inicio"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg></span><span class="tx">Inicio</span></button>
+    <button class="nav-i" data-go="calendario"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span><span class="tx">Calendario</span></button>
     <button class="nav-i" data-go="vrapida"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7h14l-1.5 12h-11z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg></span><span class="tx">Venta rápida</span></button>
     <button class="nav-i" data-go="ferias"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l2-5h14l2 5"/><path d="M3 10a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/><path d="M5 12.5V20h14v-7.5"/><path d="M10 20v-5h4v5"/></svg></span><span class="tx">Ferias</span></button>
     <button class="nav-i" data-go="ordenes"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h8l4 4v14H7z"/><path d="M10 12h6M10 16h6"/></svg></span><span class="tx">Órdenes de venta</span></button>
@@ -502,6 +527,18 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
       </div>
     </section>
 
+    <!-- CALENDARIO -->
+    <section class="sec" id="sec-calendario">
+      <div class="head"><h1>Calendario</h1><div class="acts"><button class="btn pri" id="calNuevo">+ Evento</button></div></div>
+      <div class="calbar">
+        <div class="calnav"><button class="btn ghost" id="calPrev" aria-label="Mes anterior">‹</button><b id="calTit"></b><button class="btn ghost" id="calNext" aria-label="Mes siguiente">›</button><button class="btn ghost sm" id="calHoy">Hoy</button></div>
+        <div class="seg" id="calVista" style="width:220px"><button type="button" data-v="mes">Mes</button><button type="button" data-v="agenda">Agenda</button></div>
+      </div>
+      <div class="chips" id="calTipos" style="margin:10px 0 12px"></div>
+      <div id="calBody"></div>
+      <p class="note">Ferias (cada día), sesiones de talleres y licitaciones (los postulados aparecen como tentativos) y eventos libres. Toca un evento para abrirlo; en la vista Mes, toca un día vacío para crear un evento.</p>
+    </section>
+
     <!-- FERIAS -->
     <section class="sec" id="sec-ferias">
       <div class="head"><h1>Ferias</h1><div class="acts"><button class="btn pri" id="feNueva">+ Nueva feria</button></div></div>
@@ -529,6 +566,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
       <div class="head"><h1>Más</h1></div>
       <div class="card" style="padding:6px 16px">
         <div class="small muted" style="padding:12px 0 4px">Ventas</div>
+        <button class="nav-i" data-go="calendario" style="padding:14px 0">Calendario</button>
         <button class="nav-i" data-go="ferias" style="padding:14px 0">Ferias</button>
         <button class="nav-i" data-go="consig" style="padding:14px 0">Consignaciones</button>
         <button class="nav-i" data-go="ventas" style="padding:14px 0">Ventas y cobranza</button>
@@ -574,6 +612,20 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
       <div class="card" style="max-width:620px">
         <h2 style="margin-bottom:10px">Método de costo <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Cómo se calcula el costo de cada insumo cuando entra una compra (o un lote de un insumo elaborado).&#10;Última entrada: el costo es el de la compra más reciente. Simple, pero salta si alternas proveedores con precios distintos.&#10;Costo promedio: mezcla lo que queda en bodega con lo que entra. Ej: 500 g a $25 + 500 g a $32 → $28,50. Más estable.&#10;Al cambiarlo, se recalculan todos los costos.">i</button></h2>
         <div class="seg" id="cfgMetodo" style="max-width:420px"><button type="button" data-v="ultima">Última entrada</button><button type="button" data-v="promedio">Costo promedio</button></div>
+      </div>
+      <div class="card" style="max-width:620px">
+        <h2 style="margin-bottom:10px">Seguimiento de clientes habituales <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Cuándo sugerir contactar a una clienta (lista «Para contactar» e Inicio). Con varias compras se usa su intervalo promedio entre compras, pero nunca menos que el mínimo.">i</button></h2>
+        <div class="row2">
+          <div class="fld"><label class="f" for="segUna">Con una sola compra: contactar a los (días)</label><input class="in r" id="segUna" inputmode="numeric"></div>
+          <div class="fld"><label class="f" for="segMin">Con varias compras: mínimo (días)</label><input class="in r" id="segMin" inputmode="numeric"></div>
+        </div>
+        <button class="btn" id="segSave">Guardar</button>
+      </div>
+      <div class="card" style="max-width:620px">
+        <h2 style="margin-bottom:10px">Google Calendar <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Copia al calendario «Magia Verde» de Google las ferias (cada día), las sesiones de talleres y licitaciones adjudicados y los eventos libres, con recordatorio el día anterior y una hora antes. Se actualiza sola cada vez que guardas algo con fecha.">i</button></h2>
+        <div id="gcEstado" class="small" style="margin-bottom:10px"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn pri" id="gcAct">Activar Google Calendar</button><button class="btn" id="gcSync">Sincronizar ahora</button><button class="btn danger" id="gcOff">Desactivar</button></div>
+        <p class="note" id="gcNota" style="margin:10px 0 0">Antes de activar, una sola vez: en Apps Script elige la función <b>autorizarCalendario</b>, presiona ▶ Ejecutar y acepta el permiso de Calendar. Después crea una <b>Nueva versión</b> de la implementación (Implementar → Administrar implementaciones → ✏️).</p>
       </div>
       <div class="card" style="max-width:620px">
         <h2 style="margin-bottom:10px">Listas <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Las opciones que aparecen en los selectores de la app. Renombrar cambia también todos los registros que la usan. Eliminar borra si nadie la usa; si está en uso, la oculta de los selectores sin tocar los registros antiguos.">i</button></h2>
@@ -831,6 +883,24 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
 </div></div>
 
 <!-- MODAL PROYECTO DE FORMACIÓN -->
+<div class="ov" id="mEv"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mEvT">
+  <div class="mh"><h2 id="mEvT">Nuevo evento</h2><button class="closeb" data-close aria-label="Cerrar">×</button></div>
+  <input type="hidden" id="evId">
+  <div class="fld"><label class="f" for="evTit">Título</label><input class="in" id="evTit" placeholder="Ej: Reunión con proveedor, retiro de frascos"></div>
+  <div class="row2">
+    <div class="fld"><label class="f" for="evFecha">Fecha</label><input class="in" id="evFecha" type="date"></div>
+    <div class="fld" id="evFinBox"><label class="f" for="evFin">Hasta</label><input class="in" id="evFin" type="date"></div>
+  </div>
+  <label class="check" style="margin:-4px 0 12px"><input type="checkbox" id="evVarios"> Dura varios días (todo el día)</label>
+  <div class="row2" id="evHoras">
+    <div class="fld"><label class="f" for="evHi">Inicio (opcional)</label><input class="in" id="evHi" type="time"></div>
+    <div class="fld"><label class="f" for="evHf">Término (opcional)</label><input class="in" id="evHf" type="time"></div>
+  </div>
+  <div class="fld"><label class="f" for="evLugar">Lugar (opcional)</label><input class="in" id="evLugar"></div>
+  <div class="fld"><label class="f" for="evNotas">Notas (opcional)</label><textarea class="in" id="evNotas" rows="2"></textarea></div>
+  <div class="mf"><button class="btn danger" type="button" id="evDel">Eliminar</button><span class="sp"></span><button class="btn ghost" type="button" data-close>Cerrar</button><button class="btn pri" type="button" id="evSave">Guardar</button></div>
+</div></div>
+
 <div class="ov" id="mFe"><div class="modal wide" role="dialog" aria-modal="true" aria-labelledby="mFeT">
   <div class="mh"><h2 id="mFeT">Nueva feria</h2><button class="closeb" data-close aria-label="Cerrar">×</button></div>
   <input type="hidden" id="feId">
@@ -894,6 +964,10 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
         <div class="fld"><label class="f" for="fpSes">Sesiones</label><input class="in r" id="fpSes" inputmode="numeric"></div>
         <div class="fld"><label class="f" for="fpHrs">Horas totales</label><input class="in r" id="fpHrs" inputmode="decimal"></div>
       </div>
+      <div class="small bold" style="margin:4px 0 8px">Sesiones: fecha, horario y lugar <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Cada clase del taller con su fecha y horario. Con esto el inicio, el término y la cantidad de sesiones se llenan solos, y cada sesión aparece en el Calendario (y en Google Calendar si está activado) cuando el proyecto está adjudicado. En una licitación, anota aquí cuándo se debe ejecutar.">i</button></div>
+      <div id="fpSesList"></div>
+      <p class="note" id="fpSesNote" style="margin:0 0 6px"></p>
+      <button class="btn sm ghost" id="fpSesAdd" type="button" style="margin-bottom:12px">+ Sesión</button>
       <div class="row2">
         <div class="fld"><label class="f" for="fpPres">Presupuesto máximo <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="El monto máximo disponible que publica la licitación (presupuesto excluyente). Se compara con el total de tu oferta, impuestos incluidos: si lo supera, la oferta queda fuera.">i</button></label><input class="in r" id="fpPres" inputmode="numeric" placeholder="$0"></div>
         <div class="fld"><label class="f">IVA <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Afecto: se suma 19% de IVA al precio neto. Exento: solo si el servicio de capacitación tiene reconocimiento formal (por ejemplo OTEC/SENCE); el giro por sí solo no basta. Conviene confirmarlo con el contador antes de postular.">i</button></label><div class="seg" id="fpIva"><button type="button" data-v="si" class="on">Afecto</button><button type="button" data-v="no">Exento</button></div></div>
@@ -922,6 +996,15 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
 </div></div>
 
 <!-- MODAL PREGUNTA -->
+<div class="ov" id="mFV"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mFVT">
+  <div class="mh"><h2 id="mFVT">Generar venta</h2><button class="closeb" data-close aria-label="Cerrar">×</button></div>
+  <p id="fvTxt" style="margin-top:0"></p>
+  <div class="fld"><label class="f">Documento <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Licitaciones y ventas a instituciones: factura. Talleres privados pagados por una persona: boleta o sin documento, según cómo lo cobres.">i</button></label><div class="seg" id="fvDoc"><button type="button" data-v="factura" class="on">Factura</button><button type="button" data-v="boleta">Boleta</button><button type="button" data-v="ninguno">Sin documento</button></div></div>
+  <div class="fld hidden" id="fvNumBox"><label class="f" for="fvNum">N° de boleta (opcional)</label><input class="in" id="fvNum" inputmode="numeric"></div>
+  <p class="note" id="fvNota"></p>
+  <div class="mf"><span class="sp"></span><button class="btn ghost" type="button" data-close>Cancelar</button><button class="btn pri" type="button" id="fvSi">Generar venta</button></div>
+</div></div>
+
 <div class="ov" id="mPrompt"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="prT" style="max-width:440px">
   <h2 id="prT" style="margin-bottom:12px"></h2>
   <input class="in" id="prIn">
@@ -940,10 +1023,10 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
 
 <script>
 // ───────────── Estado ─────────────
-const APP_VERSION = '2.2.0';
+const APP_VERSION = '2.3.0';
 const LS = { url: 'mv_gs_url', key: 'mv_gs_key', cache: 'mv_cache_v1' };
 let GS = lsGet(LS.url), KEY = lsGet(LS.key);
-const DB0 = () => ({ insumos: [], productos: [], recetas: [], compras: [], produccion: [], movimientos: [], stock: {}, formatos: [], listas: [], costos_hist: [], config: {}, empresas: [], locales: [], precios_cliente: [], ventas: [], ventas_det: [], pagos: [], consignaciones: [], consig_det: [], liquidaciones: [], liq_det: [], proyectos: [], proy_mat: [], proy_costos: [], ferias: [], feria_dias: [], personas: [] });
+const DB0 = () => ({ insumos: [], productos: [], recetas: [], compras: [], produccion: [], movimientos: [], stock: {}, formatos: [], listas: [], costos_hist: [], config: {}, empresas: [], locales: [], precios_cliente: [], ventas: [], ventas_det: [], pagos: [], consignaciones: [], consig_det: [], liquidaciones: [], liq_det: [], proyectos: [], proy_mat: [], proy_costos: [], ferias: [], feria_dias: [], personas: [], proy_sesiones: [], eventos: [] });
 let DB = DB0();
 let busy = false, lastSync = 0;
 const UI = { sec: 'inicio', invTab: 'productos', iFiltro: 'todos', prFiltro: 'act', comDocT: 'factura', insFmts: [] };
@@ -1131,12 +1214,13 @@ function preguntar(titulo, valor, nota) {
 function go(sec) {
   UI.sec = sec;
   document.querySelectorAll('.sec').forEach(s => s.classList.toggle('on', s.id === 'sec-' + sec));
-  const enMas = ['ferias', 'consig', 'ventas', 'clientes', 'formacion', 'produccion', 'productos', 'insumos', 'config'].includes(sec);
+  const enMas = ['calendario', 'ferias', 'consig', 'ventas', 'clientes', 'formacion', 'produccion', 'productos', 'insumos', 'config'].includes(sec);
   document.querySelectorAll('.bottom [data-go]').forEach(b => b.classList.toggle('on', b.dataset.go === sec || (enMas && b.dataset.go === 'mas')));
   document.querySelectorAll('.side [data-go]').forEach(b => b.classList.toggle('on', b.dataset.go === sec));
   window.scrollTo(0, 0);
   if (sec === 'config') { $('cUrl').value = GS; $('cKey').value = KEY; renderConfig(); }
   if (sec === 'vrapida') renderVR();
+  if (sec === 'calendario') renderCalendario();
 }
 document.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b && !b.disabled) go(b.dataset.go); });
 
@@ -1169,7 +1253,7 @@ const metodoTxt = () => (DB.config && DB.config.metodo_costo) === 'promedio' ? '
 // ───────────── Render general ─────────────
 function renderAll() {
   renderVersion(); renderInicio(); renderProdSelect(); renderPrev(); renderLotes(); renderInv(); renderInsumos(); renderHcFiltros(); renderCompras(); renderProductos();
-  renderVR(); renderOrdenes(); renderConsig(); renderVFiltros(); renderVentas(); renderClientes(); renderPersonas(); renderFerias(); renderFormacion();
+  renderVR(); renderOrdenes(); renderConsig(); renderVFiltros(); renderVentas(); renderClientes(); renderPersonas(); renderFerias(); renderFormacion(); renderCalendario();
   if (UI.sec === 'config') renderConfig();
 }
 
@@ -1218,13 +1302,14 @@ function renderInicio() {
   // Pendientes con negocios
   const pend = [];
   consigPorLocal().filter(x => x.dias >= 30).forEach(x => pend.push({ t: 'Liquidar consignación', d: x.local.nombre, r: x.dias + ' días', f: `abrirLiq('${x.local.id}')`, c: 'warn-t' }));
-  DB.ventas.filter(v => v.estado === 'entregada' && v.canal !== 'publico' && !v.folio).forEach(v => pend.push({ t: 'Asignar folio SII', d: v.id + ' · ' + quien(v), r: clp(v.total), f: `abrirVenta('${v.id}')` }));
-  venc.forEach(v => pend.push({ t: 'Pago vencido', d: (v.folio ? 'Factura ' + v.folio : v.id) + ' · ' + quien(v), r: clp(saldoDe(v)), f: `abrirVenta('${v.id}')`, c: 'bad-t' }));
+  DB.ventas.filter(faltaFolio).forEach(v => pend.push({ t: 'Asignar folio SII', d: v.id + ' · ' + quien(v), r: clp(v.total), f: `abrirVenta('${v.id}')` }));
+  venc.forEach(v => pend.push({ t: 'Pago vencido', d: (v.folio ? docTxt(v) + ' ' + v.folio : v.id) + ' · ' + quien(v), r: clp(saldoDe(v)), f: `abrirVenta('${v.id}')`, c: 'bad-t' }));
   DB.proyectos.filter(p => p.estado === 'adjudicado' && p.fecha_inicio && diasEntre(hoy(), p.fecha_inicio) <= 14).forEach(p => pend.push({ t: 'Taller próximo', d: p.nombre, r: fechaCorta(p.fecha_inicio), f: `abrirFP('${p.id}')`, c: 'warn-t' }));
   DB.proyectos.filter(p => (p.estado === 'ejecutado' || p.estado === 'cerrado') && !ventaFP(p)).forEach(p => pend.push({ t: 'Generar venta del taller', d: p.nombre, r: clp(p.precio_ofertado), f: `abrirFP('${p.id}')` }));
   DB.ferias.filter(f => f.estado === 'activa').forEach(f => { const ds = diasFeria(f.id), k = ds.findIndex(d => d.fecha === hoy()), prox = ds.find(d => d.fecha > hoy());
     if (k >= 0) pend.push({ t: 'Feria hoy', d: f.nombre + ' · Día ' + (k + 1), r: horario(ds[k]) || 'Hoy', f: `feVender('${f.id}')` });
     else if (prox && ds[0].fecha > hoy() && diasEntre(hoy(), prox.fecha) <= 7) pend.push({ t: 'Feria próxima', d: f.nombre, r: diaSem(prox.fecha) + ' ' + fechaCorta(prox.fecha), f: `abrirFeria('${f.id}')`, c: 'warn-t' }); });
+  DB.eventos.filter(e => e.estado === 'activo' && e.fecha >= hoy() && diasEntre(hoy(), e.fecha) <= 3).forEach(e => pend.push({ t: e.fecha === hoy() ? 'Evento hoy' : 'Evento próximo', d: e.titulo, r: (e.fecha === hoy() ? '' : diaSem(e.fecha) + ' ') + (e.fecha === hoy() ? (e.hora_inicio || 'Hoy') : fechaCorta(e.fecha)), f: `abrirEvento('${e.id}')`, c: e.fecha === hoy() ? '' : 'warn-t' }));
   const cont = DB.personas.filter(p => p.estado === 'activo' && statsPersona(p.id).toca).length;
   if (cont) pend.push({ t: 'Clientes para contactar', d: 'Ya pasó su tiempo habitual de recompra', r: cont + ' persona' + (cont === 1 ? '' : 's'), f: "go('clientes');cliTab('per');PE.f='contactar';[...$('perChips').children].forEach(c=>c.classList.toggle('on',c.dataset.f==='contactar'));renderPersonas()" });
   DB.ventas.filter(v => v.estado === 'borrador').forEach(v => pend.push({ t: 'Orden en borrador', d: v.id + ' · ' + quien(v), r: clp(v.total), f: `abrirVenta('${v.id}')` }));
@@ -1398,7 +1483,7 @@ function abrirInsumo(id) {
   $('insUni').disabled = !!tieneMov;
   const conEntradas = i && i.ultima_compra;
   $('insCosto').disabled = !!conEntradas;
-  $('insCalc').classList.toggle('hidden', !!conEntradas);
+  UI.insConEnt = !!conEntradas; $('insCalc').classList.toggle('hidden', !!conEntradas);
   $('icPrecio').value = ''; $('icCant').value = ''; icDocSet('boleta', false); $('icRes').textContent = '';
   $('insNota').textContent = conEntradas ? `Costo calculado por el sistema (${(DB.config.metodo_costo === 'promedio') ? 'costo promedio' : 'última entrada'}, ${fechaCorta(i.ultima_compra)}). Cambia solo con compras o producción.` : 'El costo se calcula solo al registrar la primera compra. Llénalo aquí solo si quieres dar un costo inicial.';
   $('insElab').checked = esElab(i);
@@ -1458,7 +1543,13 @@ function fmtSet(k, campo, v) { UI.insFmts[k][campo] = campo === 'cantidad' ? par
 function fmtPr(k) { UI.insFmts.forEach((f, j) => f.principal = j === k); insUniSync(); }
 function fmtDel(k) { const era = UI.insFmts[k].principal; UI.insFmts.splice(k, 1); if (era && UI.insFmts[0]) UI.insFmts[0].principal = true; renderInsFmts(); insUniSync(); }
 $('insFmtAdd').addEventListener('click', () => { UI.insFmts.push({ nombre: '', cantidad: '', principal: !UI.insFmts.length }); renderInsFmts(); insUniSync(); });
-function insElabSync() { $('insElabBox').classList.toggle('hidden', !$('insElab').checked); if ($('insElab').checked) renderReceta('ins'); }
+function insElabSync() {
+  const elab = $('insElab').checked;
+  $('insElabBox').classList.toggle('hidden', !elab); if (elab) renderReceta('ins');
+  // Un insumo elaborado toma su costo de la receta: sin costo manual ni calculadora (para no tener dos costos compitiendo).
+  $('insCosto').closest('.fld').classList.toggle('hidden', elab);
+  $('insCalc').classList.toggle('hidden', elab || !!UI.insConEnt);
+}
 $('insElab').addEventListener('change', insElabSync);
 $('insRinde').addEventListener('input', () => recCalc('ins'));
 
@@ -1480,7 +1571,7 @@ function renderInsHist(i) {
 
 $('insSave').addEventListener('click', async () => {
   const elab = $('insElab').checked;
-  const d = { id: $('insId').value, nombre: $('insNom').value.trim(), tipo: $('insTipo').value, unidad: $('insUni').value, stock_min: parseNum($('insMin').value) * (Number($('insMinU').value) || 1), costo_unit: parseNum($('insCosto').value), proveedor: $('insProv').value.trim(), elaborado: elab ? 'si' : '', rinde_lote: elab ? parseNum($('insRinde').value) : '' };
+  const d = { id: $('insId').value, nombre: $('insNom').value.trim(), tipo: $('insTipo').value, unidad: $('insUni').value, stock_min: parseNum($('insMin').value) * (Number($('insMinU').value) || 1), costo_unit: $('insElab').checked ? 0 : parseNum($('insCosto').value), proveedor: $('insProv').value.trim(), elaborado: elab ? 'si' : '', rinde_lote: elab ? parseNum($('insRinde').value) : '' };
   if (!d.nombre) return toast('Falta el nombre', 'err');
   // Leer los formatos desde los campos en pantalla (algunos teclados del celular no avisan el último cambio).
   document.querySelectorAll('#insFmts .fmtrow').forEach((r, k) => { const [n, c, pr] = r.querySelectorAll('input'); if (UI.insFmts[k]) { UI.insFmts[k].nombre = n.value; UI.insFmts[k].cantidad = parseNum(c.value); UI.insFmts[k].principal = pr.checked; } });
@@ -1766,7 +1857,28 @@ function renderConfig() {
   const met = (DB.config && DB.config.metodo_costo) || 'ultima';
   [...$('cfgMetodo').children].forEach(b => b.classList.toggle('on', b.dataset.v === met));
   renderListas();
+  $('segUna').value = segUna(); $('segMin').value = segMin();
+  const C = DB.config || {}, on = !!DB.gcal_activo;
+  $('gcEstado').innerHTML = on ? `<span class="ok-t">Activado</span> · calendario «${esc(C.gcal_nombre || 'Magia Verde')}»${C.gcal_ultimo ? ' · última copia ' + esc(C.gcal_ultimo.slice(0, 16)) : ''}${C.gcal_error ? `<div class="bad-t" style="margin-top:4px">Último error: ${esc(C.gcal_error)}</div>` : ''}` : '<span class="muted">Desactivado</span>';
+  $('gcAct').classList.toggle('hidden', on); $('gcSync').classList.toggle('hidden', !on); $('gcOff').classList.toggle('hidden', !on); $('gcNota').classList.toggle('hidden', on);
 }
+const segUna = () => Number((DB.config || {}).seg_una) || 45, segMin = () => Number((DB.config || {}).seg_min) || 14;
+$('segSave').addEventListener('click', () => write('setSeguimiento', { seg_una: parseNum($('segUna').value), seg_min: parseNum($('segMin').value) }, 'Seguimiento actualizado'));
+const gcalAyuda = m => /permis|authoriz|autoriz|CalendarApp/i.test(m || '') ? ' Falta autorizar Calendar: en Apps Script ejecuta «autorizarCalendario» y crea una Nueva versión.' : '';
+$('gcAct').addEventListener('click', async () => {
+  toast('Creando el calendario…', 'load');
+  try { const r = await gsCall('gcalActivar', {}); await sync(true); renderConfig(); toast(`Calendario «${r.calendario}» listo · ${r.creados} evento(s) copiados`, 'ok', 5000); }
+  catch (e) { toast(e.message + gcalAyuda(e.message), 'err', 9000); }
+});
+$('gcSync').addEventListener('click', async () => {
+  toast('Sincronizando con Google…', 'load');
+  try { const r = await gsCall('gcalSync', {}); await sync(true); renderConfig(); toast(`Google Calendar al día · ${r.total} evento(s)`, 'ok'); }
+  catch (e) { toast(e.message + gcalAyuda(e.message), 'err', 9000); }
+});
+$('gcOff').addEventListener('click', async () => {
+  if (!await confirmar('Desactivar Google Calendar', 'La app deja de actualizar el calendario «Magia Verde». Los eventos que ya están en Google se quedan ahí (puedes borrar ese calendario desde Google si ya no lo usas).', 'Desactivar')) return;
+  if (await write('gcalDesactivar', {}, 'Google Calendar desactivado')) renderConfig();
+});
 $('cfgMetodo').addEventListener('click', async e => {
   const b = e.target.closest('button'); if (!b) return;
   const v = b.dataset.v, act = (DB.config && DB.config.metodo_costo) || 'ultima';
@@ -1850,13 +1962,17 @@ function precioPara(rut, pid) {
   if (esp > 0) return { precio: esp, negociado: true };
   return { precio: precioB2B(producto(pid)), negociado: false };
 }
+/** Ventas de talleres pueden ir con boleta o sin documento: esas no esperan folio de factura. */
+const sinFactura = v => v.documento === 'boleta' || v.documento === 'ninguno';
+const faltaFolio = v => v.estado === 'entregada' && v.canal !== 'publico' && !v.folio && !sinFactura(v);
+const docTxt = v => v.documento === 'boleta' ? 'Boleta' : 'Factura';
 function estadoVenta(v) {
   if (v.estado === 'anulada') return ['Anulada', 'bad'];
   if (v.estado === 'borrador') return ['Borrador', ''];
   if (v.canal === 'publico') return ['Pagada', 'ok'];
   const s = saldoDe(v);
-  if (!v.folio && s > 0) return ['Por facturar', 'warn'];
-  if (s <= 0) return [v.folio ? 'Pagada' : 'Pagada · sin folio', v.folio ? 'ok' : 'warn'];
+  if (!v.folio && !sinFactura(v) && s > 0) return ['Por facturar', 'warn'];
+  if (s <= 0) return [v.folio || sinFactura(v) ? 'Pagada' : 'Pagada · sin folio', v.folio || sinFactura(v) ? 'ok' : 'warn'];
   return [vencida(v) ? 'Vencida' : 'Por cobrar', vencida(v) ? 'bad' : 'warn'];
 }
 const tagEstado = v => { const [t, c] = estadoVenta(v); return `<span class="tag ${c}">${t}</span>`; };
@@ -1996,6 +2112,85 @@ $('vrGo').addEventListener('click', async () => {
   if (r) { VR.carro = {}; VR.medio = ''; $('vrCli').value = ''; $('vrCliTel').value = ''; renderVR(); }
 });
 
+// ───────────── Calendario ─────────────
+// Junta ferias (cada día), sesiones de proyectos de Formación y eventos libres. Los proyectos postulados se ven como tentativos.
+const CAL = { vista: '', mes: '', tipos: { feria: true, taller: true, licitacion: true, otro: true } };
+const TIPO_CAL = { feria: 'Ferias', taller: 'Talleres y cursos', licitacion: 'Licitaciones', otro: 'Otros' };
+const evento = id => DB.eventos.find(e => e.id === id);
+function rangoFechas(a, b) { const out = []; let f = a; while (f <= b && out.length < 400) { out.push(f); f = fechaMas(f, 1); } return out; }
+/** Eventos entre dos fechas (inclusive), uno por día. */
+function calEventos(desde, hasta) {
+  const out = [], en = f => f >= desde && f <= hasta;
+  DB.ferias.filter(f => f.estado === 'activa').forEach(f => { const ds = diasFeria(f.id);
+    ds.forEach((d, k) => { if (en(d.fecha)) out.push({ fecha: d.fecha, hi: d.hora_inicio, hf: d.hora_fin, titulo: f.nombre + (ds.length > 1 ? ` · día ${k + 1}/${ds.length}` : ''), tipo: 'feria', lugar: f.lugar, abrir: `abrirFeria('${f.id}')` }); }); });
+  DB.proyectos.filter(p => ['postulado', 'adjudicado', 'ejecutado', 'cerrado'].includes(p.estado)).forEach(p => {
+    const tipo = p.origen === 'Licitación' || p.origen === 'Compra Ágil' ? 'licitacion' : 'taller', tent = p.estado === 'postulado';
+    const ses = DB.proy_sesiones.filter(x => x.proyecto_id === p.id).sort((a, b) => a.fecha.localeCompare(b.fecha));
+    if (ses.length) ses.forEach((x, k) => { if (en(x.fecha)) out.push({ fecha: x.fecha, hi: x.hora_inicio, hf: x.hora_fin, titulo: p.nombre + (ses.length > 1 ? ` · sesión ${k + 1}/${ses.length}` : ''), tipo, tent, lugar: x.lugar || p.institucion, abrir: `abrirFP('${p.id}')` }); });
+    else if (p.fecha_inicio) rangoFechas(p.fecha_inicio, p.fecha_fin && p.fecha_fin > p.fecha_inicio ? p.fecha_fin : p.fecha_inicio).filter(en).forEach(f => out.push({ fecha: f, hi: '', hf: '', titulo: p.nombre, tipo, tent, lugar: p.institucion, abrir: `abrirFP('${p.id}')` }));
+  });
+  DB.eventos.filter(e => e.estado === 'activo').forEach(e => rangoFechas(e.fecha, e.fecha_fin || e.fecha).filter(en).forEach(f => out.push({ fecha: f, hi: e.hora_inicio, hf: e.hora_fin, titulo: e.titulo, tipo: 'otro', lugar: e.lugar, abrir: `abrirEvento('${e.id}')` })));
+  return out.filter(e => CAL.tipos[e.tipo]).sort((a, b) => (a.fecha + (a.hi || '00:00')).localeCompare(b.fecha + (b.hi || '00:00')));
+}
+const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+function renderCalendario() {
+  if (!CAL.mes) CAL.mes = hoy().slice(0, 7);
+  if (!CAL.vista) CAL.vista = window.innerWidth < 760 ? 'agenda' : 'mes';
+  [...$('calVista').children].forEach(b => b.classList.toggle('on', b.dataset.v === CAL.vista));
+  const [y, m] = CAL.mes.split('-').map(Number);
+  $('calTit').textContent = MESES[m - 1] + ' ' + y;
+  $('calTipos').innerHTML = Object.entries(TIPO_CAL).map(([k, t]) => `<button class="chip ${CAL.tipos[k] ? 'on' : ''}" data-t="${k}"><span class="cdot t-${k}"></span>${t}</button>`).join('');
+  const ini = CAL.mes + '-01', fin = fechaMas(new Date(y, m, 1, 12).toISOString().slice(0, 10), -1), h = hoy();
+  if (CAL.vista === 'agenda') {
+    const evs = calEventos(ini, fin), dias = [...new Set(evs.map(e => e.fecha))];
+    $('calBody').innerHTML = dias.length ? dias.map(f => `<div class="agd ${f < h ? 'past' : ''} ${f === h ? 'today' : ''}"><div class="agf"><b>${diaSem(f)} ${Number(f.slice(8))}</b>${f === h ? '<span class="tag ok">Hoy</span>' : ''}</div>
+      <div>${evs.filter(e => e.fecha === f).map(e => `<button class="age t-${e.tipo} ${e.tent ? 'tent' : ''}" onclick="${e.abrir}"><span class="agh">${e.hi ? e.hi + (e.hf ? '–' + e.hf : '') : 'Todo el día'}</span><span class="agt">${esc(e.titulo)}${e.tent ? ' <span class="tag warn">postulado</span>' : ''}</span>${e.lugar ? `<span class="sub">${esc(e.lugar)}</span>` : ''}</button>`).join('')}</div></div>`).join('')
+      : `<div class="card empty">Nada en ${MESES[m - 1].toLowerCase()}. Crea ferias en Ferias, agrega sesiones a los talleres en Formación, o un evento con «+ Evento».</div>`;
+    return;
+  }
+  // Vista mes: semanas de lunes a domingo
+  const d0 = new Date(y, m - 1, 1, 12), off = (d0.getDay() + 6) % 7, primero = fechaMas(ini, -off);
+  const celdas = 42 - (new Date(y, m, 0).getDate() + off <= 35 ? 7 : 0), ultimo = fechaMas(primero, celdas - 1);
+  const evs = calEventos(primero, ultimo);
+  $('calBody').innerHTML = `<div class="cal"><div class="calh">${['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'].map(x => `<span>${x}</span>`).join('')}</div><div class="calg">${rangoFechas(primero, ultimo).map(f => { const es = evs.filter(e => e.fecha === f);
+    return `<div class="cald ${f.slice(0, 7) !== CAL.mes ? 'otro' : ''} ${f === h ? 'today' : ''}" data-f="${f}"><div class="caln">${Number(f.slice(8))}</div>${es.slice(0, 3).map(e => `<button class="ce t-${e.tipo} ${e.tent ? 'tent' : ''}" title="${esc(e.titulo)}" onclick="event.stopPropagation();${e.abrir}">${e.hi ? `<span class="ch">${e.hi}</span> ` : ''}${esc(e.titulo)}</button>`).join('')}${es.length > 3 ? `<button class="cmas" onclick="event.stopPropagation();calDia('${f}')">+${es.length - 3} más</button>` : ''}</div>`; }).join('')}</div></div>`;
+}
+function calDia(f) { CAL.vista = 'agenda'; CAL.mes = f.slice(0, 7); renderCalendario(); setTimeout(() => { const el = [...document.querySelectorAll('.agd')].find(x => x.querySelector('.agf b').textContent.endsWith(' ' + Number(f.slice(8)))); if (el) el.scrollIntoView({ block: 'center' }); }, 30); }
+$('calVista').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { CAL.vista = b.dataset.v; renderCalendario(); } });
+$('calPrev').addEventListener('click', () => { const [y, m] = CAL.mes.split('-').map(Number); CAL.mes = new Date(y, m - 2, 15).toISOString().slice(0, 7); renderCalendario(); });
+$('calNext').addEventListener('click', () => { const [y, m] = CAL.mes.split('-').map(Number); CAL.mes = new Date(y, m, 15).toISOString().slice(0, 7); renderCalendario(); });
+$('calHoy').addEventListener('click', () => { CAL.mes = hoy().slice(0, 7); renderCalendario(); });
+$('calTipos').addEventListener('click', e => { const b = e.target.closest('.chip'); if (b) { CAL.tipos[b.dataset.t] = !CAL.tipos[b.dataset.t]; renderCalendario(); } });
+$('calBody').addEventListener('click', e => { const c = e.target.closest('.cald'); if (c && !e.target.closest('button')) abrirEvento(null, c.dataset.f); });
+$('calNuevo').addEventListener('click', () => abrirEvento());
+
+// Eventos libres
+function abrirEvento(id, fecha) {
+  const e = id ? evento(id) : null;
+  $('evId').value = e ? e.id : ''; $('mEvT').textContent = e ? 'Editar evento' : 'Nuevo evento';
+  $('evTit').value = e ? e.titulo : ''; $('evFecha').value = e ? e.fecha : (fecha || hoy());
+  $('evVarios').checked = !!(e && e.fecha_fin); $('evFin').value = e ? e.fecha_fin : '';
+  $('evHi').value = e ? e.hora_inicio : ''; $('evHf').value = e ? e.hora_fin : ''; $('evLugar').value = e ? e.lugar : ''; $('evNotas').value = e ? e.notas : '';
+  $('evDel').classList.toggle('hidden', !e); evVariosSync();
+  openM('mEv'); setTimeout(() => $('evTit').focus(), 50);
+}
+function evVariosSync() { const v = $('evVarios').checked; $('evFinBox').classList.toggle('hidden', !v); $('evHoras').classList.toggle('hidden', v); }
+$('evVarios').addEventListener('change', evVariosSync);
+$('evSave').addEventListener('click', async () => {
+  const v = $('evVarios').checked;
+  const d = { id: $('evId').value, titulo: $('evTit').value.trim(), fecha: $('evFecha').value, fecha_fin: v ? $('evFin').value : '', hora_inicio: v ? '' : $('evHi').value, hora_fin: v ? '' : $('evHf').value, lugar: $('evLugar').value.trim(), notas: $('evNotas').value.trim() };
+  if (!d.titulo) return toast('Falta el título', 'err');
+  if (!d.fecha) return toast('Falta la fecha', 'err');
+  if (v && !(d.fecha_fin > d.fecha)) return toast('La fecha de término debe ser después del inicio', 'err');
+  if (d.hora_inicio && d.hora_fin && d.hora_fin <= d.hora_inicio) return toast('La hora de término debe ser después del inicio', 'err');
+  if (await write('saveEvento', d, 'Evento guardado')) { closeM('mEv'); CAL.mes = d.fecha.slice(0, 7); renderCalendario(); }
+});
+$('evDel').addEventListener('click', async () => {
+  const e = evento($('evId').value); if (!e) return;
+  if (!await confirmar('Eliminar evento', `«${e.titulo}» se eliminará del calendario${DB.gcal_activo ? ' (y de Google Calendar)' : ''}.`, 'Eliminar', true)) return;
+  if (await write('deleteEvento', { id: e.id }, 'Evento eliminado')) closeM('mEv');
+});
+
 // ───────────── Ferias ─────────────
 const FE = { f: 'prox', dias: [] };
 function statsFeria(f) {
@@ -2104,7 +2299,7 @@ function statsPersona(id) {
   const total = vs.reduce((s, v) => s + (Number(v.total) || 0), 0), ultima = fechas[fechas.length - 1] || '';
   const intervalo = fechas.length >= 2 ? diasEntre(fechas[0], ultima) / (fechas.length - 1) : null;
   const dias = ultima ? diasEntre(ultima, hoy()) : null;
-  const espera = intervalo ? Math.max(14, Math.round(intervalo)) : 45; // con una sola compra: sugerir contacto a los 45 días
+  const espera = intervalo ? Math.max(segMin(), Math.round(intervalo)) : segUna(); // reglas editables en Configuración
   const prods = {};
   vs.forEach(v => { const vistos = {}; detDe(v.id).forEach(d => { const o = prods[d.producto_id] = prods[d.producto_id] || { q: 0, veces: 0, ultima: '' }; o.q += Number(d.cantidad) || 0; if (!vistos[d.producto_id]) { o.veces++; vistos[d.producto_id] = 1; } o.ultima = v.fecha; }); });
   return { vs, n: vs.length, total, ultima, intervalo, dias, espera, toca: dias !== null && dias >= espera, prods, proxima: ultima ? fechaMas(ultima, espera) : '' };
@@ -2161,7 +2356,7 @@ function abrirPersona(id) {
     const sg = sugerenciasPersona(st), prods = Object.entries(st.prods).sort((a, b) => b[1].q - a[1].q);
     const kpi = (a, b) => `<div class="card kpi" style="padding:12px"><div class="lbl">${a}</div><div class="val" style="font-size:17px">${b}</div></div>`;
     const tel = telWa(p.telefono), msg = mensajePersona(p, sg);
-    $('perRes').innerHTML = `<div class="grid g4 kpis" style="margin-bottom:14px">${kpi('Compras', `${st.n} · ${clp(st.total)}`)}${kpi('Ticket promedio', clp(st.total / st.n))}${kpi('Última compra', `${fechaCorta(st.ultima)} <span class="small muted">hace ${st.dias} d</span>`)}${kpi('Vuelve cada <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Promedio de días entre sus compras. Con una sola compra se sugiere contactarla a los 45 días.">i</button>', st.intervalo ? '~' + Math.round(st.intervalo) + ' días' : 'aún sin patrón')}</div>
+    $('perRes').innerHTML = `<div class="grid g4 kpis" style="margin-bottom:14px">${kpi('Compras', `${st.n} · ${clp(st.total)}`)}${kpi('Ticket promedio', clp(st.total / st.n))}${kpi('Última compra', `${fechaCorta(st.ultima)} <span class="small muted">hace ${st.dias} d</span>`)}${kpi('Vuelve cada <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Promedio de días entre sus compras. Con una sola compra se sugiere contactarla a los días fijados en Configuración (45 por defecto).">i</button>', st.intervalo ? '~' + Math.round(st.intervalo) + ' días' : 'aún sin patrón')}</div>
       <div class="box" style="margin-bottom:14px;${st.toca ? 'border-color:var(--alerta)' : ''}">
         <div class="small bold ${st.toca ? 'warn-t' : 'ok-t'}" style="margin-bottom:6px">${st.toca ? 'Toca contactarla: ya pasó su tiempo habitual de recompra' : 'Próximo contacto sugerido: ' + fechaCorta(st.proxima)}</div>
         <div class="grid g2" style="gap:12px">
@@ -2310,10 +2505,10 @@ $('oChips').addEventListener('click', e => { const b = e.target.closest('.chip')
 $('oQ').addEventListener('input', renderOrdenes);
 function renderOrdenes() {
   const q = norm($('oQ').value);
-  const f = { abiertas: v => v.estado === 'borrador' || (v.estado === 'entregada' && (!v.folio || saldoDe(v) > 0)), borrador: v => v.estado === 'borrador', facturar: v => v.estado === 'entregada' && !v.folio,
+  const f = { abiertas: v => v.estado === 'borrador' || (v.estado === 'entregada' && (faltaFolio(v) || saldoDe(v) > 0)), borrador: v => v.estado === 'borrador', facturar: faltaFolio,
     cobrar: v => v.estado === 'entregada' && saldoDe(v) > 0, todas: () => true }[O.f];
   const vs = DB.ventas.filter(v => v.canal !== 'publico' && f(v) && (!q || norm(v.id + ' ' + nombreLocal(v.local_id) + ' ' + ((empresaDe(v.rut) || {}).razon_social || '') + ' ' + v.folio).includes(q)));
-  $('tOrd').innerHTML = vs.length ? vs.slice(0, 200).map(v => `<tr class="click" onclick="abrirVenta('${v.id}')" style="${v.estado === 'anulada' ? 'opacity:.55' : ''}"><td class="bold nw">${esc(v.id)}${v.origen ? '<div class="sub">' + esc(v.origen) + '</div>' : ''}</td><td class="nw">${fechaCorta(v.fecha)}</td><td>${esc(quien(v))}<div class="sub">${esc(v.canal === 'formacion' ? v.notas : ((empresaDe(v.rut) || {}).razon_social || ''))}${v.folio ? ' · Factura ' + esc(v.folio) : ''}</div></td><td class="r">${clp(v.total)}${saldoDe(v) > 0 && pagado(v) > 0 ? `<div class="sub">saldo ${clp(saldoDe(v))}</div>` : ''}</td><td>${tagEstado(v)}</td></tr>`).join('')
+  $('tOrd').innerHTML = vs.length ? vs.slice(0, 200).map(v => `<tr class="click" onclick="abrirVenta('${v.id}')" style="${v.estado === 'anulada' ? 'opacity:.55' : ''}"><td class="bold nw">${esc(v.id)}${v.origen ? '<div class="sub">' + esc(v.origen) + '</div>' : ''}</td><td class="nw">${fechaCorta(v.fecha)}</td><td>${esc(quien(v))}<div class="sub">${esc(v.canal === 'formacion' ? v.notas : ((empresaDe(v.rut) || {}).razon_social || ''))}${v.folio ? ' · ' + docTxt(v) + ' ' + esc(v.folio) : v.documento === 'ninguno' ? ' · sin documento' : ''}</div></td><td class="r">${clp(v.total)}${saldoDe(v) > 0 && pagado(v) > 0 ? `<div class="sub">saldo ${clp(saldoDe(v))}</div>` : ''}</td><td>${tagEstado(v)}</td></tr>`).join('')
     : `<tr><td colspan="5"><div class="empty">${DB.ventas.some(v => v.canal !== 'publico') ? 'Nada en este filtro.' : 'Aún no hay órdenes. Crea la primera con «+ Nueva orden».'}</div></td></tr>`;
 }
 
@@ -2324,10 +2519,10 @@ function abrirVenta(id) {
   $('mVD').dataset.id = id;
   $('mVDT').textContent = (pub ? 'Venta rápida ' : v.canal === 'formacion' ? 'Venta de formación ' : 'Orden de venta ') + v.id;
   const st = [['borrador', 'Borrador'], ['entregada', 'Entregada'], ['folio', 'Facturada'], ['pagada', 'Pagada']];
-  const hecho = { borrador: true, entregada: v.estado === 'entregada', folio: !!v.folio, pagada: v.estado === 'entregada' && saldoDe(v) <= 0 };
+  const hecho = { borrador: true, entregada: v.estado === 'entregada', folio: !!v.folio || sinFactura(v), pagada: v.estado === 'entregada' && saldoDe(v) <= 0 };
   $('vdSteps').innerHTML = v.estado === 'anulada' ? '<span class="tag bad">Anulada</span>' : pub ? '' : st.map(([k, t]) => `<span class="${hecho[k] ? 'on' : ''}">${t}</span>`).join('');
   $('vdInfo').innerHTML = `<div class="box" style="margin-bottom:10px">${pub ? `<div class="ln"><span>Fecha</span><span>${fechaCorta(v.fecha)}</span></div><div class="ln"><span>Canal</span><span>${esc(v.medio_venta || v.lugar || '—')}</span></div>${v.feria_id ? `<div class="ln"><span>Feria</span><span><button class="lnk" onclick="closeM('mVD');abrirFeria('${v.feria_id}')">${esc(v.lugar)}</button>${v.feria_dia ? ' · Día ' + v.feria_dia : ''}</span></div>` : ''}<div class="ln"><span>Medio de pago</span><span>${esc(v.medio_pago)}</span></div><div class="ln"><span>Cliente habitual</span><span>${v.persona_id && persona(v.persona_id) ? `<button class="lnk" onclick="closeM('mVD');abrirPersona('${v.persona_id}')">${esc(persona(v.persona_id).nombre)}</button> · ` : ''}${v.estado === 'entregada' ? `<button class="lnk" onclick="asignarPersona('${v.id}')">${v.persona_id ? 'Cambiar' : 'Asignar'}</button>` : '—'}</span></div>${v.notas ? `<div class="ln"><span>Comprador</span><span>${esc(v.notas)}</span></div>` : ''}`
-      : v.canal === 'formacion' ? `<div class="ln"><span>Institución</span><b>${esc(v.lugar)}</b></div>${v.rut ? `<div class="ln"><span>RUT</span><span>${esc(fmtRut(v.rut))}</span></div>` : ''}<div class="ln"><span>Proyecto</span><span><button class="lnk" onclick="closeM('mVD');abrirFP('${v.origen}')">${esc(v.origen)}</button> ${esc(v.notas)}</span></div><div class="ln"><span>Fecha</span><span>${fechaCorta(v.fecha)}</span></div>`
+      : v.canal === 'formacion' ? `<div class="ln"><span>Institución</span><b>${esc(v.lugar)}</b></div>${v.rut ? `<div class="ln"><span>RUT</span><span>${esc(fmtRut(v.rut))}</span></div>` : ''}<div class="ln"><span>Proyecto</span><span><button class="lnk" onclick="closeM('mVD');abrirFP('${v.origen}')">${esc(v.origen)}</button> ${esc(v.notas)}</span></div>${sinFactura(v) ? `<div class="ln"><span>Documento</span><span>${v.documento === 'boleta' ? 'Boleta' + (v.folio ? ' N° ' + esc(v.folio) : '') : 'Sin documento'}</span></div>` : ''}<div class="ln"><span>Fecha</span><span>${fechaCorta(v.fecha)}</span></div>`
       : `<div class="ln"><span>Local</span><b>${esc(l ? l.nombre : '—')}</b></div><div class="ln"><span>Cliente</span><span>${esc(e ? e.razon_social : '')} · ${esc(fmtRut(v.rut))}</span></div><div class="ln"><span>Fecha${v.estado === 'borrador' ? '' : ' de entrega'}</span><span>${fechaCorta(v.fecha)}</span></div>${v.origen ? `<div class="ln"><span>Origen</span><span>Liquidación ${esc(v.origen)}</span></div>` : ''}${v.notas ? `<div class="ln"><span>Notas</span><span>${esc(v.notas)}</span></div>` : ''}`}</div>
     <div class="tw"><table><thead><tr><th>Producto</th><th class="r">Cant.</th><th class="r">Precio ${pub ? '' : 'neto'}</th><th class="r">Subtotal</th></tr></thead><tbody>${detDe(v.id).map(d => `<tr><td>${esc(nombreItem(d.producto_id))}</td><td class="r">${qty(d.cantidad)}</td><td class="r">${clp(d.precio)}</td><td class="r">${clp(d.subtotal)}</td></tr>`).join('')}</tbody></table></div>
     <div class="box" style="margin-top:10px"><div class="ln"><span>Neto</span><span>${clp(v.neto)}</span></div><div class="ln"><span>IVA</span><span>${clp(v.iva)}</span></div><div class="ln tot"><span>Total</span><span>${clp(v.total)}</span></div>
@@ -2336,7 +2531,7 @@ function abrirVenta(id) {
   $('vdShare').classList.toggle('hidden', pub || !activa || v.canal === 'formacion');
   $('vdShareNote').classList.toggle('hidden', pub || !activa || v.canal === 'formacion');
   $('vdShareNote').textContent = esMovil() ? '«WhatsApp con PDF» abre el menú de compartir: elige WhatsApp y el contacto. «Solo mensaje» abre directo el chat del cliente.' : '«WhatsApp con PDF» descarga el PDF y abre el chat del cliente: arrastra el PDF al chat. «Solo mensaje» abre el chat sin PDF.';
-  $('vdFolioBox').classList.toggle('hidden', pub || v.estado !== 'entregada');
+  $('vdFolioBox').classList.toggle('hidden', pub || v.estado !== 'entregada' || sinFactura(v));
   $('vdFolio').innerHTML = v.folio ? `<div class="lrow"><div class="v">Factura N° <b>${esc(v.folio)}</b> · ${fechaCorta(v.fecha_folio)}</div><button class="lnk" onclick="pedirFolio(['${v.id}'])">Cambiar</button><button class="lnk danger" onclick="quitarFolio('${v.id}')">Quitar</button></div>`
     : `<button class="btn sm pri" onclick="pedirFolio(['${v.id}'])">Asignar folio</button>`;
   $('vdPagosBox').classList.toggle('hidden', pub || v.estado !== 'entregada');
@@ -2395,7 +2590,7 @@ function fmtRut(r) { const m = String(r || '').match(/^(\d+)-([\dK])$/); return 
 function telWa(t) { let d = String(t || '').replace(/\D/g, ''); if (d.length === 9 && d[0] === '9') d = '56' + d; if (d.length === 8) d = '569' + d; return d; }
 function docDe(id) {
   const v = DB.ventas.find(x => x.id === id);
-  if (v) return { tipo: 'ov', id, titulo: 'Orden de venta', fecha: v.fecha, rut: v.rut, local_id: v.local_id, lineas: detDe(id).map(d => ({ nombre: nombreItem(d.producto_id), q: d.cantidad, p: d.precio })), neto: v.neto, iva: v.iva, total: v.total, notas: v.notas, folio: v.folio };
+  if (v) return { tipo: 'ov', id, titulo: 'Orden de venta', fecha: v.fecha, rut: v.rut, local_id: v.local_id, lineas: detDe(id).map(d => ({ nombre: nombreItem(d.producto_id), q: d.cantidad, p: d.precio })), neto: v.neto, iva: v.iva, total: v.total, notas: v.notas, folio: v.folio, documento: v.documento };
   const c = DB.consignaciones.find(x => x.id === id);
   const ls = DB.consig_det.filter(d => d.oc_id === id).map(d => ({ nombre: nombreItem(d.producto_id), q: d.cantidad, p: d.precio }));
   const neto = Math.round(ls.reduce((s, l) => s + l.q * l.p, 0)), iva = Math.round(neto * 0.19);
@@ -2439,7 +2634,7 @@ async function crearPdf(id) {
     doc.setTextColor(...oliva); doc.setFontSize(15); doc.setFont(undefined, 'bold'); doc.text(d.titulo, 195, 20, { align: 'right' });
     doc.setTextColor(...tinta); doc.setFontSize(11); doc.text(d.id, 195, 26, { align: 'right' });
     doc.setFont(undefined, 'normal'); doc.setFontSize(9); doc.text('Fecha: ' + d.fecha.split('-').reverse().join('-'), 195, 31, { align: 'right' });
-    if (d.folio) doc.text('Factura N° ' + d.folio, 195, 35, { align: 'right' });
+    if (d.folio) doc.text((d.documento === 'boleta' ? 'Boleta' : 'Factura') + ' N° ' + d.folio, 195, 35, { align: 'right' });
     if (d.guia) doc.text('Guía N° ' + d.guia, 195, 35, { align: 'right' });
     // Recuadro de cliente: razón social arriba (ancho completo) y local de entrega abajo, separados por una línea
     let y = 50;
@@ -2610,7 +2805,7 @@ function ventasFiltradas() {
   let vs = DB.ventas.filter(v => v.estado !== 'borrador');
   if (VT.tab === 'hist') vs = vs.filter(v => (!de || v.fecha >= de) && (!ha || v.fecha <= ha));
   if (VT.tab === 'cobrar') vs = porCobrar();
-  if (VT.tab === 'facturar') vs = DB.ventas.filter(v => v.estado === 'entregada' && v.canal !== 'publico' && !v.folio);
+  if (VT.tab === 'facturar') vs = DB.ventas.filter(faltaFolio);
   return vs.filter(v => (!ca || v.canal === ca) && (!cl || v.rut === cl) && (!lu || v.lugar === lu));
 }
 const CANAL = { publico: 'Público', directa: 'Directa', consignacion: 'Consignación', formacion: 'Formación' };
@@ -2631,7 +2826,7 @@ function renderVentas() {
   $('vHead').innerHTML = `<tr>${fac ? '<th></th>' : ''}<th>N°</th><th>Fecha</th><th>Canal</th><th>Cliente / lugar</th><th class="r">Total</th>${VT.tab === 'cobrar' ? '<th class="r">Saldo</th><th>Vence</th>' : ''}<th>Estado</th></tr>`;
   $('tVen').innerHTML = vs.length ? vs.slice(0, 300).map(v => `<tr class="click" style="${v.estado === 'anulada' ? 'opacity:.55' : ''}">${fac ? `<td onclick="event.stopPropagation()"><input type="checkbox" aria-label="Seleccionar ${v.id}" ${VT.sel.has(v.id) ? 'checked' : ''} onchange="vSel('${v.id}',this.checked)" style="width:18px;height:18px;accent-color:var(--oliva)"></td>` : ''}
     <td class="bold nw" onclick="abrirVenta('${v.id}')">${esc(v.id)}</td><td class="nw" onclick="abrirVenta('${v.id}')">${fechaCorta(v.fecha)}</td><td onclick="abrirVenta('${v.id}')">${CANAL[v.canal]}</td>
-    <td onclick="abrirVenta('${v.id}')">${v.canal === 'publico' ? esc(v.lugar || '—') + `<div class="sub">${esc(v.medio_pago)}${v.feria_dia ? ' · Día ' + v.feria_dia : ''}${v.persona_id && persona(v.persona_id) ? ' · ' + esc(persona(v.persona_id).nombre) : ''}</div>` : esc(quien(v)) + `<div class="sub">${esc(v.canal === 'formacion' ? v.notas : ((empresaDe(v.rut) || {}).razon_social || ''))}${v.folio ? ' · Factura ' + esc(v.folio) : ''}</div>`}</td>
+    <td onclick="abrirVenta('${v.id}')">${v.canal === 'publico' ? esc(v.lugar || '—') + `<div class="sub">${esc(v.medio_pago)}${v.feria_dia ? ' · Día ' + v.feria_dia : ''}${v.persona_id && persona(v.persona_id) ? ' · ' + esc(persona(v.persona_id).nombre) : ''}</div>` : esc(quien(v)) + `<div class="sub">${esc(v.canal === 'formacion' ? v.notas : ((empresaDe(v.rut) || {}).razon_social || ''))}${v.folio ? ' · ' + docTxt(v) + ' ' + esc(v.folio) : v.documento === 'ninguno' ? ' · sin documento' : ''}</div>`}</td>
     <td class="r" onclick="abrirVenta('${v.id}')">${clp(v.total)}</td>${VT.tab === 'cobrar' ? `<td class="r bold">${clp(saldoDe(v))}</td><td class="nw ${vencida(v) ? 'bad-t' : ''}">${fechaCorta(venceDe(v))}</td>` : ''}<td onclick="abrirVenta('${v.id}')">${tagEstado(v)}</td></tr>`).join('')
     : `<tr><td colspan="8"><div class="empty">Nada en este filtro.</div></td></tr>`;
   $('vMulti').classList.toggle('hidden', !fac || !vs.length);
@@ -2760,7 +2955,40 @@ function calcFP(alumnos, mats, costos, margen, precio, afecto, pres) {
 function ventaFP(pr) { const v = pr.venta_id ? DB.ventas.find(x => x.id === pr.venta_id) : null; return v && v.estado !== 'anulada' ? v : null; }
 
 // Lista
-const FP = { f: 'curso', mats: [], costos: [], iva: 'si' };
+const FP = { f: 'curso', mats: [], costos: [], iva: 'si', ses: [] };
+// Sesiones del taller (fecha, horario, lugar)
+function fpSesLeer() {
+  document.querySelectorAll('#fpSesList .ses').forEach((r, k) => { const [a, b, c, d] = r.querySelectorAll('input'); if (FP.ses[k]) Object.assign(FP.ses[k], { fecha: a.value, hora_inicio: b.value, hora_fin: c.value, lugar: d.value }); });
+}
+function renderFPSes() {
+  $('fpSesList').innerHTML = FP.ses.map((x, k) => `<div class="ses"><span class="sn">Sesión ${k + 1}</span><button class="xbtn" type="button" aria-label="Quitar sesión" onclick="fpSesDel(${k})">×</button>
+    <input class="in" type="date" aria-label="Fecha de la sesión ${k + 1}" value="${esc(x.fecha)}" onchange="fpSesSync()"><input class="in" type="time" aria-label="Hora de inicio" value="${esc(x.hora_inicio)}" onchange="fpSesSync()"><input class="in" type="time" aria-label="Hora de término" value="${esc(x.hora_fin)}" onchange="fpSesSync()">
+    <input class="in" aria-label="Lugar de la sesión" placeholder="Lugar (opcional)" value="${esc(x.lugar)}"></div>`).join('');
+  fpSesSync();
+}
+/** Con sesiones, inicio/término/cantidad salen de ellas; las horas se proponen si todas tienen horario. */
+function fpSesSync() {
+  fpSesLeer();
+  const ok = FP.ses.filter(x => x.fecha).sort((a, b) => a.fecha.localeCompare(b.fecha)), hay = ok.length > 0;
+  ['fpFIni', 'fpFFin', 'fpSes'].forEach(id => $(id).disabled = hay);
+  let nota = '';
+  if (hay) {
+    $('fpFIni').value = ok[0].fecha; $('fpFFin').value = ok[ok.length - 1].fecha; $('fpSes').value = ok.length;
+    const conH = ok.filter(x => x.hora_inicio && x.hora_fin && x.hora_fin > x.hora_inicio);
+    const min = conH.reduce((s, x) => { const [a, b] = x.hora_inicio.split(':').map(Number), [c, d] = x.hora_fin.split(':').map(Number); return s + (c * 60 + d) - (a * 60 + b); }, 0);
+    if (conH.length === ok.length) {
+      const h = String(Math.round(min / 6) / 10).replace('.', ','); nota = `Las sesiones suman ${h} horas.`;
+      if (!$('fpHrs').value || $('fpHrs').value === FP.hrsAuto) { $('fpHrs').value = h; FP.hrsAuto = h; } // se actualiza mientras no la escribas a mano
+    }
+  }
+  $('fpSesNote').textContent = nota;
+}
+function fpSesDel(k) { fpSesLeer(); FP.ses.splice(k, 1); renderFPSes(); }
+function fpSesAdd() {
+  fpSesLeer(); const u = FP.ses[FP.ses.length - 1];
+  FP.ses.push(u ? { fecha: u.fecha ? fechaMas(u.fecha, 7) : '', hora_inicio: u.hora_inicio, hora_fin: u.hora_fin, lugar: u.lugar } : { fecha: $('fpFIni').value || '', hora_inicio: '', hora_fin: '', lugar: '' });
+  renderFPSes();
+}
 $('fpChips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; FP.f = b.dataset.f; [...$('fpChips').children].forEach(x => x.classList.toggle('on', x === b)); renderFormacion(); });
 $('fpQ').addEventListener('input', renderFormacion);
 function renderFormacion() {
@@ -2787,6 +3015,8 @@ function abrirFP(id) {
   const val = (el, v) => $(el).value = v == null ? '' : v;
   val('fpNom', pr && pr.nombre); $('fpOrigen').value = pr ? pr.origen : 'Licitación'; val('fpLic', pr && pr.id_licitacion); val('fpInst', pr && pr.institucion); val('fpRut', pr && pr.rut ? fmtRut(pr.rut) : '');
   val('fpFPost', pr && pr.fecha_postulacion); val('fpFIni', pr && pr.fecha_inicio); val('fpFFin', pr && pr.fecha_fin);
+  FP.hrsAuto = null;
+  FP.ses = pr ? DB.proy_sesiones.filter(x => x.proyecto_id === pr.id).sort((a, b) => Number(a.n) - Number(b.n)).map(x => ({ fecha: x.fecha, hora_inicio: x.hora_inicio, hora_fin: x.hora_fin, lugar: x.lugar })) : [];
   val('fpAl', pr && pr.alumnos ? pr.alumnos : ''); val('fpSes', pr && pr.sesiones ? pr.sesiones : ''); val('fpHrs', pr && pr.horas ? numIn(pr.horas) : '');
   val('fpPres', pr && pr.presupuesto_max ? Math.round(pr.presupuesto_max).toLocaleString('es-CL') : ''); val('fpLink', pr && pr.link_doc); val('fpNotas', pr && pr.notas);
   val('fpMargen', pr && pr.margen_obj ? numIn(pr.margen_obj) : '30'); val('fpPrecio', pr && pr.precio_ofertado ? Math.round(pr.precio_ofertado).toLocaleString('es-CL') : '');
@@ -2798,7 +3028,7 @@ function abrirFP(id) {
   $('fpMatAdd').classList.toggle('hidden', !!bloq);
   const st = ['costeo', 'postulado', 'adjudicado', 'ejecutado', 'cerrado'], i = pr ? st.indexOf(pr.estado) : 0;
   $('fpSteps').innerHTML = pr && (pr.estado === 'no_adjudicado' || pr.estado === 'cancelado') ? tagFP(pr) : st.map((k, j) => `<span class="${j <= i ? 'on' : ''}">${EST_FP[k][0]}</span>`).join('');
-  renderFPMats(); renderFPCostos(); renderFPFoot(pr); renderFPRes(pr);
+  renderFPMats(); renderFPCostos(); renderFPFoot(pr); renderFPRes(pr); renderFPSes();
   openM('mFP');
 }
 function setFPIva(v) { FP.iva = v; [...$('fpIva').children].forEach(b => b.classList.toggle('on', b.dataset.v === v)); fpCalc(); }
@@ -2878,7 +3108,9 @@ function fpPayload() {
   if (d.rut && !rutOk(rutNorm(d.rut))) { toast('El RUT de la institución no es válido', 'err'); return null; }
   // Leer desde pantalla (algunos teclados no avisan el último cambio)
   document.querySelectorAll('#fpCostos .fcos').forEach((r, k) => { const [a, b, c] = r.querySelectorAll('input'); if (FP.costos[k]) { FP.costos[k].descripcion = a.value; FP.costos[k].cantidad = parseNum(b.value); FP.costos[k].valor = parseNum(c.value); } });
-  return { proyecto: d, materiales: FP.mats.filter(m => m.ref && Number(m.cantidad) > 0), costos: FP.costos.filter(c => String(c.descripcion).trim() && Number(c.valor) > 0) };
+  fpSesLeer();
+  if (FP.ses.some(x => x.hora_inicio && x.hora_fin && x.hora_fin <= x.hora_inicio)) { toast('Revisa el horario de las sesiones: el término debe ser después del inicio', 'err'); return null; }
+  return { sesiones_det: FP.ses.filter(x => x.fecha), proyecto: d, materiales: FP.mats.filter(m => m.ref && Number(m.cantidad) > 0), costos: FP.costos.filter(c => String(c.descripcion).trim() && Number(c.valor) > 0) };
 }
 async function fpGuardar(silencioso) {
   const b = fpPayload(); if (!b) return null;
@@ -2913,15 +3145,28 @@ async function fpVender() {
   const pr = proyecto(r.proyecto.id);
   if (!(pr.precio_ofertado > 0)) return toast('Primero ingresa el precio ofertado', 'err');
   const iva = pr.afecto_iva === 'no' ? 0 : Math.round(pr.precio_ofertado * 0.19);
-  if (!await confirmar('Generar venta', `Se crea una orden de venta por ${clp(pr.precio_ofertado)} neto${iva ? ' + IVA ' + clp(iva) : ' (exento)'} a ${pr.institucion || 'la institución'}, lista para asignarle folio y registrar el pago.`, 'Generar')) return;
-  if (await write('facturarProyecto', { id: pr.id, fecha: hoy() }, 'Venta generada')) abrirFP(pr.id);
+  $('fvTxt').textContent = `Orden de venta por ${clp(pr.precio_ofertado)} neto${iva ? ' + IVA ' + clp(iva) + ' = ' + clp(pr.precio_ofertado + iva) : ' (exento)'} a ${pr.institucion || 'la institución'}.`;
+  const lic = pr.origen === 'Licitación' || pr.origen === 'Compra Ágil';
+  fvDoc(lic ? 'factura' : (pr.rut ? 'factura' : 'boleta')); $('fvNum').value = '';
+  $('fvSi').onclick = async () => {
+    const doc = UI.fvDoc;
+    if (await write('facturarProyecto', { id: pr.id, fecha: hoy(), documento: doc, numero: doc === 'boleta' ? $('fvNum').value.trim() : '' }, 'Venta generada')) { closeM('mFV'); abrirFP(pr.id); }
+  };
+  openM('mFV');
 }
+function fvDoc(v) {
+  UI.fvDoc = v; [...$('fvDoc').children].forEach(b => b.classList.toggle('on', b.dataset.v === v));
+  $('fvNumBox').classList.toggle('hidden', v !== 'boleta');
+  $('fvNota').textContent = v === 'factura' ? 'Queda «Por facturar» hasta que anotes el folio de la factura del SII.' : v === 'boleta' ? 'No queda pendiente de folio. Puedes anotar el número de boleta (opcional).' : 'Queda solo como venta y cobro, sin documento tributario pendiente.';
+}
+$('fvDoc').addEventListener('click', e => { const b = e.target.closest('button'); if (b) fvDoc(b.dataset.v); });
 async function fpDel() {
   const pr = proyecto($('fpId').value);
   if (!await confirmar('Eliminar proyecto', `«${pr.nombre}» y su costeo se eliminarán.`, 'Eliminar', true)) return;
   if (await write('deleteProyecto', { id: pr.id }, 'Proyecto eliminado')) closeM('mFP');
 }
 $('fpNuevo').addEventListener('click', () => abrirFP());
+$('fpSesAdd').addEventListener('click', fpSesAdd);
 
 
 // ───────────── Inicio ─────────────

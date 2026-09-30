@@ -66,11 +66,26 @@ Nunca subas al repositorio la URL /exec ni la clave: van solo en Configuración 
 
 - Cambios en `Code.gs`: **Implementar → Administrar implementaciones → editar (lápiz) → Versión: Nueva versión → Implementar**.
   Así la URL no cambia. (Si creas una implementación nueva, cambia la URL y hay que pegarla otra vez en Configuración.)
-- Cambios en `index.html`: sube el archivo y cambia `VERSION` en `sw.js` (ej. `mv-v13`) para que los celulares tomen la versión nueva.
+- Cambios en `index.html`: sube el archivo y cambia `VERSION` en `sw.js` (ej. `mv-v14`) para que los celulares tomen la versión nueva.
 - Para comprobar: **Configuración → Versión** muestra la versión de la app y la de Apps Script. Los dos primeros
   números deben coincidir (ej. 2.0.x); si no, la app muestra un aviso arriba. El último número puede diferir cuando
   un arreglo toca solo una de las partes.
 - Las actualizaciones crean solas las hojas y columnas nuevas. No hace falta volver a ejecutar `setup`.
+
+## Google Calendar (opcional)
+
+La app puede copiar el calendario a un calendario de Google llamado «Magia Verde» (en la cuenta dueña del Apps Script).
+
+1. En Apps Script, elige la función `autorizarCalendario` en la barra de arriba y presiona ▶ **Ejecutar**.
+   Acepta el permiso de Google Calendar (Revisar permisos → cuenta → Avanzado → Ir a… → Permitir).
+2. **Implementar → Administrar implementaciones → ✏️ → Nueva versión → Implementar** (la URL no cambia).
+3. En la app: **Configuración → Google Calendar → Activar**. Se crea el calendario y se copian los eventos.
+4. Para verlo desde otra cuenta de Google: en Google Calendar, Configuración del calendario «Magia Verde» →
+   Compartir con determinadas personas.
+
+Van a Google: cada día de las ferias activas, las sesiones de proyectos adjudicados, ejecutados o cerrados (los
+postulados solo se ven en la app) y los eventos libres. Recordatorios: 1 día y 1 hora antes (todo el día: 15:00 del
+día anterior). Se actualiza solo al guardar; si Google falla, el guardado igual funciona y el error se ve en Configuración.
 
 ## Reglas del sistema
 
@@ -104,11 +119,20 @@ Nunca subas al repositorio la URL /exec ni la clave: van solo en Configuración 
 - **Clientes habituales**: personas (no empresas) que se asocian a ventas rápidas de cualquier canal. Su ficha muestra
   compras, cada cuánto vuelve y qué ofrecerle; «Para contactar» lista a quienes ya pasaron su tiempo de recompra
   (con una sola compra: 45 días).
+- **Sesiones de talleres**: cada proyecto de Formación puede tener sus sesiones (fecha, horario y lugar); con ellas
+  el inicio, el término y la cantidad de sesiones se calculan solos. Al generar la venta de un taller se elige
+  factura (queda «Por facturar»), boleta (número opcional) o sin documento (no queda pendiente de folio).
+- **Calendario**: vista mes y agenda con ferias, sesiones de talleres/licitaciones y eventos libres, por colores.
 - **Servicios o cursos** (ej. el curso online): son productos de tipo servicio, sin receta ni stock. Se venden en
   venta rápida (lugar «Online» y, opcional, el nombre del comprador) y quedan en el historial de ventas.
 
 ## Versiones
 
+- **2.3** — **Calendario** (mes y agenda) con ferias, sesiones y eventos libres; **sesiones** en los proyectos de
+  Formación; copia opcional a **Google Calendar** con recordatorios; documento al generar la venta de un taller
+  (factura, boleta o sin documento); días de seguimiento de clientes editables en Configuración; los insumos
+  elaborados ya no muestran costo manual ni calculadora (su costo sale de la receta).
+  Cambian las dos partes. Para Google Calendar, ver la sección «Google Calendar».
 - **2.2** — Canal en venta rápida (lista editable + Feria fija, se recuerda en el dispositivo). Sección **Ferias**:
   calendario con días y horario, costo del puesto, resumen por día, por hora, medios de pago y productos, y resultado.
   **Clientes habituales** (Clientes → Clientes habituales): ficha con compras, frecuencia, sugerencias y WhatsApp con

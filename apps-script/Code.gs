@@ -15,7 +15,7 @@
  *  - Al actualizar la app, las hojas y columnas nuevas se crean solas; los datos no se tocan.
  */
 
-const VERSION_BACKEND = '2.2.0';
+const VERSION_BACKEND = '2.3.0';
 const IVA = 0.19;
 const BODEGA = 'BODEGA';
 
@@ -34,7 +34,7 @@ const SCHEMA = {
   LOCALES: ['id', 'rut', 'nombre', 'direccion', 'comuna', 'contacto', 'telefono', 'email', 'estado', 'creado'],
   PRECIOS_CLIENTE: ['rut', 'producto_id', 'precio_directo', 'precio_consig', 'precio'],
   VENTAS: ['id', 'fecha', 'canal', 'rut', 'local_id', 'estado', 'neto', 'iva', 'total', 'folio', 'fecha_folio', 'medio_pago', 'lugar', 'origen', 'notas', 'creado', 'actualizado',
-    'medio_venta', 'feria_id', 'feria_dia', 'persona_id'],
+    'medio_venta', 'feria_id', 'feria_dia', 'persona_id', 'documento'],
   VENTAS_DET: ['venta_id', 'producto_id', 'cantidad', 'precio', 'subtotal', 'costo_unit'],
   PAGOS: ['id', 'venta_id', 'fecha', 'monto', 'medio', 'estado', 'creado'],
   CONSIGNACIONES: ['id', 'fecha', 'rut', 'local_id', 'guia', 'notas', 'estado', 'creado'],
@@ -48,14 +48,17 @@ const SCHEMA = {
   PROY_COSTOS: ['proyecto_id', 'descripcion', 'cantidad', 'valor_unit'],
   FERIAS: ['id', 'nombre', 'lugar', 'costo_puesto', 'notas', 'estado', 'creado', 'actualizado'],
   FERIA_DIAS: ['feria_id', 'dia', 'fecha', 'hora_inicio', 'hora_fin'],
-  PERSONAS: ['id', 'nombre', 'telefono', 'instagram', 'email', 'notas', 'estado', 'creado', 'actualizado']
+  PERSONAS: ['id', 'nombre', 'telefono', 'instagram', 'email', 'notas', 'estado', 'creado', 'actualizado'],
+  PROY_SESIONES: ['proyecto_id', 'n', 'fecha', 'hora_inicio', 'hora_fin', 'lugar'],
+  EVENTOS: ['id', 'titulo', 'fecha', 'fecha_fin', 'hora_inicio', 'hora_fin', 'lugar', 'notas', 'estado', 'creado', 'actualizado'],
+  GCAL: ['clave', 'event_id', 'hash', 'actualizado']
 };
 
 // Columnas numéricas; todas las demás se guardan como texto plano (evita que Sheets convierta fechas o IDs).
 const NUMERIC = ['stock_min', 'costo_unit', 'rinde_lote', 'precio_publico', 'precio_directo', 'precio_consig', 'precio_b2b',
   'cantidad', 'costo', 'total_neto', 'lotes', 'unidades', 'costo_total', 'formato_cant', 'total_pagado', 'formatos', 'orden',
   'cond_pago_dias', 'neto', 'iva', 'total', 'precio', 'subtotal', 'monto', 'en_local', 'contado', 'vendido', 'devuelto',
-  'alumnos', 'sesiones', 'horas', 'presupuesto_max', 'margen_obj', 'precio_ofertado', 'alumnos_reales', 'costo_mat_real', 'valor_unit', 'costo_puesto', 'dia', 'feria_dia'];
+  'alumnos', 'sesiones', 'horas', 'presupuesto_max', 'margen_obj', 'precio_ofertado', 'alumnos_reales', 'costo_mat_real', 'valor_unit', 'costo_puesto', 'dia', 'feria_dia', 'n'];
 
 const LISTAS_BASE = {
   tipo_insumo: ['Materia prima', 'Envase', 'Etiqueta', 'Otro'],
@@ -121,14 +124,18 @@ function doPost(e) {
       saveProyecto: saveProyecto_, estadoProyecto: estadoProyecto_, ejecutarProyecto: ejecutarProyecto_,
       anularEjecucion: anularEjecucion_, facturarProyecto: facturarProyecto_, deleteProyecto: deleteProyecto_,
       saveFeria: saveFeria_, deleteFeria: deleteFeria_, restoreFeria: restoreFeria_,
-      savePersona: savePersona_, deletePersona: deletePersona_, restorePersona: restorePersona_, setPersonaVenta: setPersonaVenta_
+      savePersona: savePersona_, deletePersona: deletePersona_, restorePersona: restorePersona_, setPersonaVenta: setPersonaVenta_,
+      saveEvento: saveEvento_, deleteEvento: deleteEvento_, setSeguimiento: setSeguimiento_,
+      gcalActivar: gcalActivar_, gcalDesactivar: gcalDesactivar_, gcalSync: gcalSync_
     };
+    // Acciones que cambian fechas del calendario: después se copia a Google Calendar (si está activado).
+    const tocaCal = ['saveFeria', 'deleteFeria', 'restoreFeria', 'saveProyecto', 'estadoProyecto', 'deleteProyecto', 'saveEvento', 'deleteEvento'];
     if (action === 'getAll') {
       const hay = {}; readAll_('LISTAS').forEach(function (r) { hay[r.lista] = true; });
       if (Object.keys(LISTAS_BASE).some(function (l) { return !hay[l]; })) conLock_(sembrarListas_); // primera vez o lista nueva tras actualizar
       return json_(getAll_());
     }
-    if (writes[action]) return json_(conLock_(function () { return writes[action](body); }));
+    if (writes[action]) return json_(conLock_(function () { const r = writes[action](body); if (tocaCal.indexOf(action) >= 0) gcalIntentar_(); return r; }));
     throw new Error('Acción desconocida: ' + action);
   } catch (err) {
     return json_({ error: err.message || String(err) });
@@ -302,6 +309,17 @@ function setConfig_(b) {
     readAll_('INSUMOS').forEach(function (i) { recalcularCostoInsumo_(i.id); });
     snapshotCostos_('Cambio de método de costo a ' + (b.valor === 'promedio' ? 'costo promedio' : 'última entrada'));
   }
+  return { ok: true };
+}
+
+/** Reglas de seguimiento de clientes habituales (días). */
+function setSeguimiento_(b) {
+  const una = Math.round(num_(b.seg_una)), min = Math.round(num_(b.seg_min));
+  if (!(una >= 7 && una <= 365) || !(min >= 1 && min <= 180)) throw new Error('Usa entre 7 y 365 días (una compra) y entre 1 y 180 días (mínimo).');
+  [['seg_una', una], ['seg_min', min]].forEach(function (kv) {
+    const row = readAll_('CONFIG').filter(function (r) { return r.clave === kv[0]; })[0];
+    if (row) { row.valor = String(kv[1]); update_('CONFIG', row); } else append_('CONFIG', [{ clave: kv[0], valor: String(kv[1]) }]);
+  });
   return { ok: true };
 }
 
@@ -549,6 +567,9 @@ function getAll_() {
     ferias: readAll_('FERIAS').map(strip_),
     feria_dias: readAll_('FERIA_DIAS').map(strip_),
     personas: readAll_('PERSONAS').map(strip_),
+    proy_sesiones: readAll_('PROY_SESIONES').map(strip_),
+    eventos: readAll_('EVENTOS').map(strip_),
+    gcal_activo: !!PropertiesService.getScriptProperties().getProperty('GCAL_ID'),
     serverTime: now_()
   };
 }
@@ -1128,6 +1149,148 @@ function setPersonaVenta_(b) {
 }
 
 // ─────────────────────────────────────────────────────────────
+// Calendario: eventos libres + copia opcional a Google Calendar (calendario «Magia Verde»).
+// ─────────────────────────────────────────────────────────────
+function saveEvento_(b) {
+  const titulo = String(b.titulo || '').trim();
+  if (!titulo) throw new Error('Falta el título del evento.');
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(b.fecha || ''))) throw new Error('Falta la fecha.');
+  const fin = /^\d{4}-\d{2}-\d{2}$/.test(String(b.fecha_fin || '')) && b.fecha_fin > b.fecha ? b.fecha_fin : '';
+  let e;
+  if (b.id) { e = findById_('EVENTOS', b.id); if (!e) throw new Error('No encontré ese evento.'); }
+  else e = { id: nextSeq_('EVENTOS', 'EV'), estado: 'activo', creado: now_() };
+  e.titulo = titulo; e.fecha = b.fecha; e.fecha_fin = fin;
+  e.hora_inicio = fin ? '' : String(b.hora_inicio || ''); e.hora_fin = fin ? '' : String(b.hora_fin || '');
+  e.lugar = String(b.lugar || '').trim(); e.notas = String(b.notas || '').trim(); e.actualizado = now_();
+  if (e._row) update_('EVENTOS', e); else append_('EVENTOS', [e]);
+  return { ok: true, evento: strip_(e) };
+}
+
+function deleteEvento_(b) {
+  const e = findById_('EVENTOS', b.id);
+  if (!e) throw new Error('No encontré ese evento.');
+  deleteRows_('EVENTOS', [e]);
+  return { ok: true };
+}
+
+const ESTADOS_CAL = ['adjudicado', 'ejecutado', 'cerrado']; // proyectos que van a Google Calendar (los postulados solo se ven en la app)
+
+/** Todos los eventos del calendario (ferias, sesiones de proyectos adjudicados, eventos libres), con una clave estable. */
+function eventosCal_() {
+  const out = [];
+  const diasPorFeria = {};
+  readAll_('FERIA_DIAS').forEach(function (d) { (diasPorFeria[d.feria_id] = diasPorFeria[d.feria_id] || []).push(d); });
+  readAll_('FERIAS').filter(function (f) { return f.estado === 'activa'; }).forEach(function (f) {
+    const ds = (diasPorFeria[f.id] || []).sort(function (a, c) { return a.fecha.localeCompare(c.fecha); });
+    ds.forEach(function (d, k) {
+      out.push({ clave: 'FE:' + f.id + ':' + d.fecha, titulo: 'Feria: ' + f.nombre + (ds.length > 1 ? ' (día ' + (k + 1) + ' de ' + ds.length + ')' : ''),
+        fecha: d.fecha, fin: '', hi: d.hora_inicio, hf: d.hora_fin, lugar: f.lugar, notas: f.notas });
+    });
+  });
+  const sesPorProy = {};
+  readAll_('PROY_SESIONES').forEach(function (x) { (sesPorProy[x.proyecto_id] = sesPorProy[x.proyecto_id] || []).push(x); });
+  readAll_('PROYECTOS').filter(function (p) { return ESTADOS_CAL.indexOf(p.estado) >= 0; }).forEach(function (p) {
+    const pref = (p.origen === 'Licitación' || p.origen === 'Compra Ágil') ? 'Licitación: ' : 'Taller: ';
+    const ses = (sesPorProy[p.id] || []).sort(function (a, c) { return a.fecha.localeCompare(c.fecha); });
+    if (ses.length) ses.forEach(function (x, k) {
+      out.push({ clave: 'FP:' + p.id + ':' + x.fecha + ':' + k, titulo: pref + p.nombre + (ses.length > 1 ? ' (sesión ' + (k + 1) + ' de ' + ses.length + ')' : ''),
+        fecha: x.fecha, fin: '', hi: x.hora_inicio, hf: x.hora_fin, lugar: x.lugar || p.institucion, notas: p.institucion });
+    });
+    else if (p.fecha_inicio) out.push({ clave: 'FP:' + p.id, titulo: pref + p.nombre, fecha: p.fecha_inicio, fin: p.fecha_fin > p.fecha_inicio ? p.fecha_fin : '', hi: '', hf: '', lugar: p.institucion, notas: '' });
+  });
+  readAll_('EVENTOS').filter(function (e) { return e.estado === 'activo'; }).forEach(function (e) {
+    out.push({ clave: 'EV:' + e.id, titulo: e.titulo, fecha: e.fecha, fin: e.fecha_fin, hi: e.hora_inicio, hf: e.hora_fin, lugar: e.lugar, notas: e.notas });
+  });
+  return out;
+}
+
+function fechaHora_(f, h) {
+  const p = String(f).split('-').map(Number), t = String(h || '0:0').split(':').map(Number);
+  return new Date(p[0], p[1] - 1, p[2], t[0] || 0, t[1] || 0);
+}
+
+/** Deja el calendario de Google igual a los eventos de la app: crea, cambia (borra y crea) o borra solo lo necesario. */
+function gcalSync_() {
+  const calId = PropertiesService.getScriptProperties().getProperty('GCAL_ID');
+  if (!calId) return { ok: true, activo: false };
+  const cal = CalendarApp.getCalendarById(calId);
+  if (!cal) throw new Error('No encuentro el calendario de Google. Desactívalo y vuelve a activarlo en Configuración.');
+  const quiero = {};
+  eventosCal_().forEach(function (e) { quiero[e.clave] = e; });
+  const filas = readAll_('GCAL'), vistas = {};
+  let creados = 0, borrados = 0;
+  const borrar = function (id) { try { const ev = cal.getEventById(id); if (ev) ev.deleteEvent(); } catch (x) { } borrados++; };
+  const crear = function (e) {
+    let ev;
+    if (e.hi) {
+      const ini = fechaHora_(e.fecha, e.hi), fin = e.hf && e.hf > e.hi ? fechaHora_(e.fecha, e.hf) : new Date(ini.getTime() + 3600000);
+      ev = cal.createEvent(e.titulo, ini, fin, { location: e.lugar || '', description: e.notas || '' });
+      ev.addPopupReminder(60); ev.addPopupReminder(1440);
+    } else {
+      const ini = fechaHora_(e.fecha), fin = e.fin ? fechaHora_(e.fin) : null;
+      ev = fin ? cal.createAllDayEvent(e.titulo, ini, new Date(fin.getTime() + 86400000), { location: e.lugar || '', description: e.notas || '' })
+        : cal.createAllDayEvent(e.titulo, ini, { location: e.lugar || '', description: e.notas || '' });
+      ev.addPopupReminder(540); // 15:00 del día anterior
+    }
+    creados++;
+    return ev.getId();
+  };
+  const aBorrar = [];
+  filas.forEach(function (r) {
+    const e = quiero[r.clave];
+    if (!e || vistas[r.clave]) { borrar(r.event_id); aBorrar.push(r); return; }
+    vistas[r.clave] = true;
+    const h = JSON.stringify(e);
+    if (r.hash !== h) { borrar(r.event_id); r.event_id = crear(e); r.hash = h; r.actualizado = now_(); update_('GCAL', r); }
+  });
+  if (aBorrar.length) deleteRows_('GCAL', aBorrar);
+  const nuevas = [];
+  Object.keys(quiero).forEach(function (k) { if (!vistas[k]) { const e = quiero[k]; nuevas.push({ clave: k, event_id: crear(e), hash: JSON.stringify(e), actualizado: now_() }); } });
+  if (nuevas.length) append_('GCAL', nuevas);
+  setCfg_('gcal_ultimo', now_()); setCfg_('gcal_error', '');
+  return { ok: true, activo: true, creados: creados, borrados: borrados, total: Object.keys(quiero).length };
+}
+
+/** Sincroniza sin interrumpir el guardado si Google falla; el error queda visible en Configuración. */
+function gcalIntentar_() {
+  if (!PropertiesService.getScriptProperties().getProperty('GCAL_ID')) return;
+  try { gcalSync_(); } catch (err) { setCfg_('gcal_error', String(err.message || err)); }
+}
+
+function setCfg_(k, v) {
+  const row = readAll_('CONFIG').filter(function (r) { return r.clave === k; })[0];
+  if (row) { row.valor = v; update_('CONFIG', row); } else append_('CONFIG', [{ clave: k, valor: v }]);
+}
+
+function gcalActivar_() {
+  const props = PropertiesService.getScriptProperties();
+  let cal = props.getProperty('GCAL_ID') ? CalendarApp.getCalendarById(props.getProperty('GCAL_ID')) : null;
+  if (!cal) {
+    const ex = CalendarApp.getCalendarsByName('Magia Verde');
+    cal = ex && ex.length ? ex[0] : CalendarApp.createCalendar('Magia Verde', { timeZone: 'America/Santiago', summary: 'Ferias, talleres y eventos (lo mantiene la app de Magia Verde)' });
+    props.setProperty('GCAL_ID', cal.getId());
+    deleteRows_('GCAL', readAll_('GCAL')); // calendario nuevo: se vuelve a crear todo
+  }
+  setCfg_('gcal_nombre', cal.getName());
+  const r = gcalSync_();
+  return { ok: true, calendario: cal.getName(), creados: r.creados };
+}
+
+function gcalDesactivar_() {
+  PropertiesService.getScriptProperties().deleteProperty('GCAL_ID');
+  setCfg_('gcal_nombre', ''); setCfg_('gcal_error', '');
+  return { ok: true };
+}
+
+/**
+ * Ejecutar UNA vez desde el editor (▶ con «autorizarCalendario» seleccionado) para dar permiso de Google Calendar.
+ * Después: Implementar → Administrar implementaciones → editar → Nueva versión.
+ */
+function autorizarCalendario() {
+  Logger.log('Permiso de Calendar listo. Calendario principal: ' + CalendarApp.getDefaultCalendar().getName());
+}
+
+// ─────────────────────────────────────────────────────────────
 // Órdenes de venta a negocios (precios netos + IVA)
 // Estados: borrador → entregada (descuenta stock). La factura (folio) y los pagos se registran aparte.
 // ─────────────────────────────────────────────────────────────
@@ -1339,9 +1502,17 @@ function saveProyecto_(b) {
   if (pr.rut && !rutValido_(pr.rut)) throw new Error('El RUT de la institución no es válido.');
   ['fecha_postulacion', 'fecha_inicio', 'fecha_fin'].forEach(function (k) { pr[k] = /^\d{4}-\d{2}-\d{2}$/.test(String(d[k] || '')) ? d[k] : ''; });
   ['alumnos', 'sesiones', 'horas', 'presupuesto_max', 'margen_obj', 'precio_ofertado'].forEach(function (k) { pr[k] = num_(d[k]); });
+  // Sesiones (fecha, horario y lugar de cada clase): definen inicio, término y cantidad de sesiones.
+  const ses = Array.isArray(b.sesiones_det) ? b.sesiones_det.filter(function (x) { return x && /^\d{4}-\d{2}-\d{2}$/.test(String(x.fecha || '')); })
+    .sort(function (a, c) { return (a.fecha + (a.hora_inicio || '')).localeCompare(c.fecha + (c.hora_inicio || '')); }) : null;
+  if (ses && ses.length) { pr.fecha_inicio = ses[0].fecha; pr.fecha_fin = ses[ses.length - 1].fecha; pr.sesiones = ses.length; }
   pr.afecto_iva = d.afecto_iva === 'no' ? 'no' : 'si';
   pr.nombre = nombre; pr.actualizado = now_();
   if (pr._row) update_('PROYECTOS', pr); else append_('PROYECTOS', [pr]);
+  if (ses) {
+    deleteRows_('PROY_SESIONES', readAll_('PROY_SESIONES').filter(function (x) { return x.proyecto_id === pr.id; }));
+    append_('PROY_SESIONES', ses.map(function (x, k) { return { proyecto_id: pr.id, n: k + 1, fecha: x.fecha, hora_inicio: String(x.hora_inicio || ''), hora_fin: String(x.hora_fin || ''), lugar: String(x.lugar || '').trim() }; }));
+  }
   if (!ejecutado || b.forzarMateriales) {
     const ins = {}, prods = {};
     readAll_('INSUMOS').forEach(function (i) { ins[i.id] = 1; });
@@ -1417,8 +1588,10 @@ function facturarProyecto_(b) {
   const neto = Math.round(num_(b.neto) || pr.precio_ofertado);
   if (!(neto > 0)) throw new Error('Indica el monto a facturar (precio ofertado).');
   const iva = pr.afecto_iva === 'no' ? 0 : Math.round(neto * IVA);
+  // Documento: factura (queda por facturar hasta anotar el folio), boleta (número opcional) o sin documento.
+  const doc = ['factura', 'boleta', 'ninguno'].indexOf(b.documento) >= 0 ? b.documento : 'factura';
   const v = { id: nextSeq_('VENTAS', 'OV'), fecha: validDate_(b.fecha), canal: 'formacion', rut: pr.rut, local_id: '', estado: 'entregada', neto: neto, iva: iva, total: neto + iva,
-    folio: '', fecha_folio: '', medio_pago: '', lugar: pr.institucion || pr.nombre, origen: pr.id, notas: pr.nombre + (pr.id_licitacion ? ' · ' + pr.id_licitacion : ''), creado: now_(), actualizado: now_() };
+    documento: doc, folio: doc === 'boleta' ? String(b.numero || '').trim() : '', fecha_folio: doc === 'boleta' && b.numero ? validDate_(b.fecha) : '', medio_pago: '', lugar: pr.institucion || pr.nombre, origen: pr.id, notas: pr.nombre + (pr.id_licitacion ? ' · ' + pr.id_licitacion : ''), creado: now_(), actualizado: now_() };
   append_('VENTAS', [v]);
   pr.venta_id = v.id; pr.actualizado = now_(); update_('PROYECTOS', pr);
   return { ok: true, venta: v };
@@ -1432,6 +1605,7 @@ function deleteProyecto_(b) {
     if (pr.ejecutado_fecha) throw new Error('El proyecto tiene ejecución registrada. Anúlala primero, o márcalo como cerrado.');
     throw new Error('El proyecto tiene la orden ' + v.id + '. Anúlala primero.');
   }
+  deleteRows_('PROY_SESIONES', readAll_('PROY_SESIONES').filter(function (x) { return x.proyecto_id === pr.id; }));
   deleteRows_('PROY_MAT', readAll_('PROY_MAT').filter(function (m) { return m.proyecto_id === pr.id; }));
   deleteRows_('PROY_COSTOS', readAll_('PROY_COSTOS').filter(function (c) { return c.proyecto_id === pr.id; }));
   deleteRows_('PROYECTOS', [pr]);
