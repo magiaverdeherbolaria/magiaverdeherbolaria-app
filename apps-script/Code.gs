@@ -15,7 +15,7 @@
  *  - Al actualizar la app, las hojas y columnas nuevas se crean solas; los datos no se tocan.
  */
 
-const VERSION_BACKEND = '2.1.0';
+const VERSION_BACKEND = '2.2.0';
 const IVA = 0.19;
 const BODEGA = 'BODEGA';
 
@@ -33,7 +33,8 @@ const SCHEMA = {
   EMPRESAS: ['rut', 'razon_social', 'giro', 'direccion', 'comuna', 'email', 'telefono', 'contacto', 'cond_pago_dias', 'modalidades', 'modalidad_habitual', 'notas', 'estado', 'creado', 'actualizado'],
   LOCALES: ['id', 'rut', 'nombre', 'direccion', 'comuna', 'contacto', 'telefono', 'email', 'estado', 'creado'],
   PRECIOS_CLIENTE: ['rut', 'producto_id', 'precio_directo', 'precio_consig', 'precio'],
-  VENTAS: ['id', 'fecha', 'canal', 'rut', 'local_id', 'estado', 'neto', 'iva', 'total', 'folio', 'fecha_folio', 'medio_pago', 'lugar', 'origen', 'notas', 'creado', 'actualizado'],
+  VENTAS: ['id', 'fecha', 'canal', 'rut', 'local_id', 'estado', 'neto', 'iva', 'total', 'folio', 'fecha_folio', 'medio_pago', 'lugar', 'origen', 'notas', 'creado', 'actualizado',
+    'medio_venta', 'feria_id', 'feria_dia', 'persona_id'],
   VENTAS_DET: ['venta_id', 'producto_id', 'cantidad', 'precio', 'subtotal', 'costo_unit'],
   PAGOS: ['id', 'venta_id', 'fecha', 'monto', 'medio', 'estado', 'creado'],
   CONSIGNACIONES: ['id', 'fecha', 'rut', 'local_id', 'guia', 'notas', 'estado', 'creado'],
@@ -44,21 +45,26 @@ const SCHEMA = {
     'alumnos', 'sesiones', 'horas', 'presupuesto_max', 'margen_obj', 'precio_ofertado', 'afecto_iva', 'link_doc', 'notas',
     'venta_id', 'ejecutado_fecha', 'alumnos_reales', 'costo_mat_real', 'creado', 'actualizado'],
   PROY_MAT: ['proyecto_id', 'tipo', 'ref', 'cantidad'],
-  PROY_COSTOS: ['proyecto_id', 'descripcion', 'cantidad', 'valor_unit']
+  PROY_COSTOS: ['proyecto_id', 'descripcion', 'cantidad', 'valor_unit'],
+  FERIAS: ['id', 'nombre', 'lugar', 'costo_puesto', 'notas', 'estado', 'creado', 'actualizado'],
+  FERIA_DIAS: ['feria_id', 'dia', 'fecha', 'hora_inicio', 'hora_fin'],
+  PERSONAS: ['id', 'nombre', 'telefono', 'instagram', 'email', 'notas', 'estado', 'creado', 'actualizado']
 };
 
 // Columnas numéricas; todas las demás se guardan como texto plano (evita que Sheets convierta fechas o IDs).
 const NUMERIC = ['stock_min', 'costo_unit', 'rinde_lote', 'precio_publico', 'precio_directo', 'precio_consig', 'precio_b2b',
   'cantidad', 'costo', 'total_neto', 'lotes', 'unidades', 'costo_total', 'formato_cant', 'total_pagado', 'formatos', 'orden',
   'cond_pago_dias', 'neto', 'iva', 'total', 'precio', 'subtotal', 'monto', 'en_local', 'contado', 'vendido', 'devuelto',
-  'alumnos', 'sesiones', 'horas', 'presupuesto_max', 'margen_obj', 'precio_ofertado', 'alumnos_reales', 'costo_mat_real', 'valor_unit'];
+  'alumnos', 'sesiones', 'horas', 'presupuesto_max', 'margen_obj', 'precio_ofertado', 'alumnos_reales', 'costo_mat_real', 'valor_unit', 'costo_puesto', 'dia', 'feria_dia'];
 
 const LISTAS_BASE = {
   tipo_insumo: ['Materia prima', 'Envase', 'Etiqueta', 'Otro'],
   unidad: ['g', 'ml', 'u', 'gotas', 'cm'],
   categoria: [],
-  motivo_ajuste: ['Carga inicial', 'Conteo físico', 'Merma o pérdida', 'Vencido', 'Uso interno o muestra', 'Otro']
+  motivo_ajuste: ['Carga inicial', 'Conteo físico', 'Merma o pérdida', 'Vencido', 'Uso interno o muestra', 'Otro'],
+  canal_venta: ['Instagram', 'WhatsApp', 'Online', 'Venta directa'] // «Feria» es fijo (no está en la lista)
 };
+const CANAL_FERIA = 'Feria';
 
 // ─────────────────────────────────────────────────────────────
 // Instalación: ejecutar UNA vez desde el editor (botón ▶ con "setup" seleccionado)
@@ -113,10 +119,13 @@ function doPost(e) {
       entregarConsignacion: entregarConsignacion_, anularConsignacion: anularConsignacion_,
       liquidar: liquidar_, anularLiquidacion: anularLiquidacion_,
       saveProyecto: saveProyecto_, estadoProyecto: estadoProyecto_, ejecutarProyecto: ejecutarProyecto_,
-      anularEjecucion: anularEjecucion_, facturarProyecto: facturarProyecto_, deleteProyecto: deleteProyecto_
+      anularEjecucion: anularEjecucion_, facturarProyecto: facturarProyecto_, deleteProyecto: deleteProyecto_,
+      saveFeria: saveFeria_, deleteFeria: deleteFeria_, restoreFeria: restoreFeria_,
+      savePersona: savePersona_, deletePersona: deletePersona_, restorePersona: restorePersona_, setPersonaVenta: setPersonaVenta_
     };
     if (action === 'getAll') {
-      if (!readAll_('LISTAS').length) conLock_(sembrarListas_); // primera vez tras actualizar
+      const hay = {}; readAll_('LISTAS').forEach(function (r) { hay[r.lista] = true; });
+      if (Object.keys(LISTAS_BASE).some(function (l) { return !hay[l]; })) conLock_(sembrarListas_); // primera vez o lista nueva tras actualizar
       return json_(getAll_());
     }
     if (writes[action]) return json_(conLock_(function () { return writes[action](body); }));
@@ -296,10 +305,13 @@ function setConfig_(b) {
   return { ok: true };
 }
 
+/** Crea las listas que aún no existen (primera instalación o listas nuevas tras una actualización). */
 function sembrarListas_() {
-  if (readAll_('LISTAS').length) return;
+  const existentes = {};
+  readAll_('LISTAS').forEach(function (r) { existentes[r.lista] = true; });
   const filas = [];
   Object.keys(LISTAS_BASE).forEach(function (lista) {
+    if (existentes[lista]) return;
     let vals = LISTAS_BASE[lista].slice();
     // Conservar valores que ya se usan en los datos (versiones anteriores).
     if (lista === 'tipo_insumo') readAll_('INSUMOS').forEach(function (i) { if (i.tipo && vals.indexOf(i.tipo) === -1) vals.push(i.tipo); });
@@ -316,6 +328,7 @@ function usosLista_(lista, valor) {
   if (lista === 'tipo_insumo') return { hoja: 'INSUMOS', campo: 'tipo', filas: readAll_('INSUMOS').filter(function (i) { return norm_(i.tipo) === n; }) };
   if (lista === 'unidad') return { hoja: 'INSUMOS', campo: 'unidad', filas: readAll_('INSUMOS').filter(function (i) { return norm_(i.unidad) === n; }) };
   if (lista === 'categoria') return { hoja: 'PRODUCTOS', campo: 'categoria', filas: readAll_('PRODUCTOS').filter(function (p) { return norm_(p.categoria) === n; }) };
+  if (lista === 'canal_venta') return { hoja: 'VENTAS', campo: 'medio_venta', filas: readAll_('VENTAS').filter(function (v) { return norm_(v.medio_venta) === n; }) };
   if (lista === 'motivo_ajuste') return { hoja: 'MOVIMIENTOS', campo: 'nota', filas: readAll_('MOVIMIENTOS').filter(function (m) { return m.tipo === 'ajuste' && norm_(m.nota) === n; }) };
   throw new Error('Lista desconocida.');
 }
@@ -328,6 +341,7 @@ function listaAdd_(b) {
   const valor = String(b.valor || '').trim();
   if (!LISTAS_BASE.hasOwnProperty(b.lista)) throw new Error('Lista desconocida.');
   if (!valor) throw new Error('Escribe un valor.');
+  if (b.lista === 'canal_venta' && norm_(valor) === norm_(CANAL_FERIA)) throw new Error('«Feria» ya existe como canal fijo (con su calendario de ferias).');
   const ex = filaLista_(b.lista, valor);
   if (ex) {
     if (ex.estado === 'oculto') { ex.estado = 'activo'; update_('LISTAS', ex); return { ok: true, result: 'restaurado' }; }
@@ -346,7 +360,10 @@ function listaRename_(b) {
   const otro = filaLista_(b.lista, nuevo);
   if (otro && otro !== fila) throw new Error('«' + otro.valor + '» ya existe en la lista.');
   const u = usosLista_(b.lista, fila.valor);
-  u.filas.forEach(function (r) { r[u.campo] = nuevo; update_(u.hoja, r); });
+  u.filas.forEach(function (r) {
+    if (b.lista === 'canal_venta' && !r.feria_id && norm_(r.lugar) === norm_(r.medio_venta)) r.lugar = nuevo;
+    r[u.campo] = nuevo; update_(u.hoja, r);
+  });
   fila.valor = nuevo; update_('LISTAS', fila);
   return { ok: true, cambiados: u.filas.length };
 }
@@ -529,6 +546,9 @@ function getAll_() {
     proyectos: desc(readAll_('PROYECTOS'), 2000),
     proy_mat: readAll_('PROY_MAT').map(strip_),
     proy_costos: readAll_('PROY_COSTOS').map(strip_),
+    ferias: readAll_('FERIAS').map(strip_),
+    feria_dias: readAll_('FERIA_DIAS').map(strip_),
+    personas: readAll_('PERSONAS').map(strip_),
     serverTime: now_()
   };
 }
@@ -977,16 +997,134 @@ function ventaRapida_(b) {
   const total = Math.round(lineas.reduce(function (s, l) { return s + l.cantidad * l.precio; }, 0));
   const neto = Math.round(total / (1 + IVA));
   const fecha = validDate_(b.fecha);
+  // Canal: «Feria» (con su feria y día) o uno de la lista de canales. Ventas de apps antiguas traen solo «lugar».
+  const canalV = String(b.medio_venta || '').trim();
+  let feria = null, dia = '';
+  if (norm_(canalV) === norm_(CANAL_FERIA)) {
+    feria = findById_('FERIAS', b.feria_id);
+    if (!feria || feria.estado !== 'activa') throw new Error('Elige la feria (o créala en Ferias).');
+    const d = readAll_('FERIA_DIAS').filter(function (x) { return x.feria_id === feria.id && x.fecha === fecha; })[0];
+    dia = d ? d.dia : '';
+  }
+  const persona = personaVenta_(b);
   const v = {
     id: nextSeq_('VENTAS', 'V'), fecha: fecha, canal: 'publico', rut: '', local_id: '', estado: 'entregada',
     neto: neto, iva: total - neto, total: total, folio: '', fecha_folio: '', medio_pago: b.medio_pago,
-    lugar: String(b.lugar || '').trim(), origen: '', notas: String(b.comprador || '').trim(), creado: now_(), actualizado: now_()
+    lugar: feria ? feria.nombre : (canalV || String(b.lugar || '').trim()), origen: '', notas: String(b.comprador || '').trim(),
+    creado: now_(), actualizado: now_(),
+    medio_venta: feria ? CANAL_FERIA : canalV, feria_id: feria ? feria.id : '', feria_dia: dia, persona_id: persona ? persona.id : ''
   };
+  if (canalV && !feria) asegurarEnLista_('canal_venta', canalV);
   append_('VENTAS', [v]);
   guardarDetalle_(v.id, lineas);
   append_('MOVIMIENTOS', lineas.filter(function (l) { return !l.servicio; }).map(function (l) { return mov_(fecha, 'venta', 'producto', l.producto_id, -l.cantidad, v.id, v.lugar || 'Venta rápida'); }));
   append_('PAGOS', [{ id: uid_('PG'), venta_id: v.id, fecha: fecha, monto: total, medio: b.medio_pago, estado: 'activo', creado: now_() }]);
   return { ok: true, venta: v };
+}
+
+/** Cliente habitual de la venta: uno existente (persona_id) o uno nuevo creado en el momento (persona_nueva). */
+function personaVenta_(b) {
+  if (b.persona_id) {
+    const p = findById_('PERSONAS', b.persona_id);
+    if (!p) throw new Error('No encontré a ese cliente.');
+    return p;
+  }
+  const nv = b.persona_nueva;
+  if (!nv || !String(nv.nombre || '').trim()) return null;
+  const nombre = String(nv.nombre).trim();
+  const ex = readAll_('PERSONAS').filter(function (p) { return norm_(p.nombre) === norm_(nombre) && p.estado === 'activo'; })[0];
+  if (ex) return ex;
+  const p = { id: nextSeq_('PERSONAS', 'P'), nombre: nombre, telefono: String(nv.telefono || '').trim(), instagram: '', email: '', notas: '', estado: 'activo', creado: now_(), actualizado: now_() };
+  append_('PERSONAS', [p]);
+  return p;
+}
+
+// ─────────────────────────────────────────────────────────────
+// Ferias: calendario (varios días con horario) y costo del puesto. Las ventas rápidas quedan con feria y día.
+// ─────────────────────────────────────────────────────────────
+function saveFeria_(b) {
+  const f0 = b.feria || {};
+  const nombre = String(f0.nombre || '').trim();
+  if (!nombre) throw new Error('Falta el nombre de la feria.');
+  const dias = (b.dias || []).filter(function (d) { return d && /^\d{4}-\d{2}-\d{2}$/.test(String(d.fecha || '')); })
+    .sort(function (a, c) { return String(a.fecha).localeCompare(String(c.fecha)); });
+  if (!dias.length) throw new Error('Agrega al menos un día con su fecha.');
+  const vistos = {};
+  dias.forEach(function (d) { if (vistos[d.fecha]) throw new Error('El día ' + d.fecha + ' está repetido.'); vistos[d.fecha] = true; });
+  let f;
+  if (f0.id) { f = findById_('FERIAS', f0.id); if (!f) throw new Error('No encontré esa feria.'); }
+  else f = { id: nextSeq_('FERIAS', 'FE'), estado: 'activa', creado: now_() };
+  f.nombre = nombre; f.lugar = String(f0.lugar || '').trim(); f.costo_puesto = num_(f0.costo_puesto) || '';
+  f.notas = String(f0.notas || '').trim(); f.actualizado = now_();
+  if (f._row) update_('FERIAS', f); else append_('FERIAS', [f]);
+  deleteRows_('FERIA_DIAS', readAll_('FERIA_DIAS').filter(function (d) { return d.feria_id === f.id; }));
+  append_('FERIA_DIAS', dias.map(function (d, k) { return { feria_id: f.id, dia: k + 1, fecha: d.fecha, hora_inicio: String(d.hora_inicio || ''), hora_fin: String(d.hora_fin || '') }; }));
+  // Las ventas ya registradas se vuelven a asignar al día que corresponde a su fecha (y al nombre nuevo).
+  const porFecha = {};
+  dias.forEach(function (d, k) { porFecha[d.fecha] = k + 1; });
+  readAll_('VENTAS').filter(function (v) { return v.feria_id === f.id; }).forEach(function (v) {
+    const nd = porFecha[v.fecha] || '';
+    if ((Number(v.feria_dia) || 0) !== (nd || 0) || v.lugar !== f.nombre) { v.feria_dia = nd; v.lugar = f.nombre; update_('VENTAS', v); }
+  });
+  return { ok: true, feria: strip_(f) };
+}
+
+function deleteFeria_(b) {
+  const f = findById_('FERIAS', b.id);
+  if (!f) throw new Error('No encontré esa feria.');
+  const conVentas = readAll_('VENTAS').some(function (v) { return v.feria_id === f.id && v.estado !== 'anulada'; });
+  if (conVentas) { f.estado = 'archivada'; f.actualizado = now_(); update_('FERIAS', f); return { ok: true, result: 'archivada' }; }
+  deleteRows_('FERIA_DIAS', readAll_('FERIA_DIAS').filter(function (d) { return d.feria_id === f.id; }));
+  deleteRows_('FERIAS', [f]);
+  return { ok: true, result: 'eliminada' };
+}
+
+function restoreFeria_(b) {
+  const f = findById_('FERIAS', b.id);
+  if (!f) throw new Error('No encontré esa feria.');
+  f.estado = 'activa'; f.actualizado = now_(); update_('FERIAS', f);
+  return { ok: true };
+}
+
+// ─────────────────────────────────────────────────────────────
+// Clientes habituales (personas): ficha liviana para seguimiento y fidelización.
+// ─────────────────────────────────────────────────────────────
+function savePersona_(b) {
+  const nombre = String(b.nombre || '').trim();
+  if (!nombre) throw new Error('Falta el nombre.');
+  const otro = readAll_('PERSONAS').filter(function (p) { return p.id !== b.id && p.estado === 'activo' && norm_(p.nombre) === norm_(nombre); })[0];
+  if (otro) throw new Error('Ya existe un cliente llamado «' + otro.nombre + '». Agrega el apellido o una referencia para distinguirlos.');
+  let p;
+  if (b.id) { p = findById_('PERSONAS', b.id); if (!p) throw new Error('No encontré ese cliente.'); }
+  else p = { id: nextSeq_('PERSONAS', 'P'), estado: 'activo', creado: now_() };
+  p.nombre = nombre; p.telefono = String(b.telefono || '').trim(); p.instagram = String(b.instagram || '').trim().replace(/^@/, '');
+  p.email = String(b.email || '').trim(); p.notas = String(b.notas || '').trim(); p.actualizado = now_();
+  if (p._row) update_('PERSONAS', p); else append_('PERSONAS', [p]);
+  return { ok: true, persona: strip_(p) };
+}
+
+function deletePersona_(b) {
+  const p = findById_('PERSONAS', b.id);
+  if (!p) throw new Error('No encontré ese cliente.');
+  if (readAll_('VENTAS').some(function (v) { return v.persona_id === p.id; })) { p.estado = 'archivado'; p.actualizado = now_(); update_('PERSONAS', p); return { ok: true, result: 'archivado' }; }
+  deleteRows_('PERSONAS', [p]);
+  return { ok: true, result: 'eliminado' };
+}
+
+function restorePersona_(b) {
+  const p = findById_('PERSONAS', b.id);
+  if (!p) throw new Error('No encontré ese cliente.');
+  p.estado = 'activo'; p.actualizado = now_(); update_('PERSONAS', p);
+  return { ok: true };
+}
+
+/** Cambiar el cliente habitual de una venta rápida ya registrada (o quitarlo). */
+function setPersonaVenta_(b) {
+  const v = findById_('VENTAS', b.venta_id);
+  if (!v || v.canal !== 'publico') throw new Error('Solo se puede en ventas rápidas.');
+  const p = personaVenta_(b);
+  v.persona_id = p ? p.id : ''; v.actualizado = now_(); update_('VENTAS', v);
+  return { ok: true };
 }
 
 // ─────────────────────────────────────────────────────────────

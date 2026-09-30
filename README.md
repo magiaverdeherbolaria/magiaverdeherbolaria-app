@@ -66,7 +66,7 @@ Nunca subas al repositorio la URL /exec ni la clave: van solo en Configuración 
 
 - Cambios en `Code.gs`: **Implementar → Administrar implementaciones → editar (lápiz) → Versión: Nueva versión → Implementar**.
   Así la URL no cambia. (Si creas una implementación nueva, cambia la URL y hay que pegarla otra vez en Configuración.)
-- Cambios en `index.html`: sube el archivo y cambia `VERSION` en `sw.js` (ej. `mv-v12`) para que los celulares tomen la versión nueva.
+- Cambios en `index.html`: sube el archivo y cambia `VERSION` en `sw.js` (ej. `mv-v13`) para que los celulares tomen la versión nueva.
 - Para comprobar: **Configuración → Versión** muestra la versión de la app y la de Apps Script. Los dos primeros
   números deben coincidir (ej. 2.0.x); si no, la app muestra un aviso arriba. El último número puede diferir cuando
   un arreglo toca solo una de las partes.
@@ -96,11 +96,24 @@ Nunca subas al repositorio la URL /exec ni la clave: van solo en Configuración 
   pasa por costeo → postulado → adjudicado → ejecutado → cerrado. Los materiales se indican **por alumno**; al
   **registrar la ejecución** se descuentan del stock según los alumnos reales. **Generar venta** crea la orden por el
   precio ofertado (afecto o exento de IVA) para anotar folio y pagos en Ventas y cobranza.
+- **Canal de venta** (venta rápida): «Feria» es fijo; los demás (Instagram, WhatsApp, Online…) se editan en
+  Configuración → Listas. Cada venta guarda su canal, y si es feria, la feria y el día (según la fecha).
+- **Ferias**: se programan antes (nombre, lugar, días con horario, costo del puesto). Resultado de la feria =
+  ventas sin IVA − costo de los productos − puesto. Si cambias los días, las ventas se reasignan solas. Una feria
+  con ventas se archiva, no se borra.
+- **Clientes habituales**: personas (no empresas) que se asocian a ventas rápidas de cualquier canal. Su ficha muestra
+  compras, cada cuánto vuelve y qué ofrecerle; «Para contactar» lista a quienes ya pasaron su tiempo de recompra
+  (con una sola compra: 45 días).
 - **Servicios o cursos** (ej. el curso online): son productos de tipo servicio, sin receta ni stock. Se venden en
   venta rápida (lugar «Online» y, opcional, el nombre del comprador) y quedan en el historial de ventas.
 
 ## Versiones
 
+- **2.2** — Canal en venta rápida (lista editable + Feria fija, se recuerda en el dispositivo). Sección **Ferias**:
+  calendario con días y horario, costo del puesto, resumen por día, por hora, medios de pago y productos, y resultado.
+  **Clientes habituales** (Clientes → Clientes habituales): ficha con compras, frecuencia, sugerencias y WhatsApp con
+  mensaje listo; lista «Para contactar». Inicio avisa la feria de hoy o próxima y los clientes para contactar.
+  Cambian las dos partes: subir `index.html` y `sw.js`, y en Apps Script pegar `Code.gs` y crear **Nueva versión**.
 - **2.1.4** (solo app) — PDF: ícono de Magia Verde junto al logo; la razón social del cliente ocupa todo el ancho y el local de entrega va debajo, separado. Apps Script sigue en 2.1.0.
 - **2.1.3** (solo app) — En la calculadora de costo, «Factura/Boleta» pasa a ser «Precio tal cual» (por defecto) o «Quitar IVA (19%)», porque no es una compra. Apps Script sigue en 2.1.0.
 - **2.1.2** (solo app) — Calculadora de costo al crear o editar un insumo: precio de un envase + cuánto trae (en g, kg, ml, litro, unidades o un formato) + factura/boleta → costo por unidad, sin registrar compra. Apps Script sigue en 2.1.0.

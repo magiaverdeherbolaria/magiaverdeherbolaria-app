@@ -56,6 +56,13 @@ h2{font-size:16px;font-weight:700;margin:0}
 .check input{width:20px;height:20px;accent-color:var(--oliva)}
 .subsec{border-top:1px solid var(--borde);margin-top:14px;padding-top:14px}
 .minw{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:8px}
+.vrctx{min-width:170px}.vrctx .f{min-height:24px;display:flex;align-items:center;gap:4px}
+#sec-vrapida .head .acts{flex-wrap:wrap}
+.fed,.ohead.fed-h{display:grid;grid-template-columns:44px minmax(0,220px) 150px 150px 36px;gap:8px;align-items:center}
+.fed{margin-bottom:8px}.fed .dn{font-weight:600;color:var(--oliva-texto);font-size:14px}.fed .dn .m{display:none}
+.bars .br{display:grid;grid-template-columns:110px minmax(0,1fr) 110px;gap:8px;align-items:center;font-size:13px;margin-bottom:5px}
+.bars .bf{height:10px;border-radius:6px;background:var(--oliva);min-width:2px}
+.sugs li{margin-bottom:4px}
 .calcbox{background:var(--suave);border:1px solid var(--linea);border-radius:var(--r);padding:12px 12px 10px;margin:0 0 14px}
 .calcbox .fld{margin-bottom:8px}
 .calcrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:10px}
@@ -256,6 +263,9 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
   .prrow{grid-template-columns:minmax(0,1fr) 90px 90px}
   .fmat{grid-template-columns:minmax(0,1fr) 96px 36px}
   .fcos,.ohead.fcos-h{grid-template-columns:minmax(0,1fr) 60px 90px 36px}
+  .ohead.fed-h{display:none}.fed{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 32px;row-gap:6px;padding-bottom:10px;border-bottom:1px solid var(--linea)}.fed .dn{grid-column:1/-1;font-size:13px}.fed .dn .m{display:inline}.fed input[type=date]{grid-column:1/-1}
+  .bars .br{grid-template-columns:84px minmax(0,1fr) 96px}
+  .vrctx{min-width:0;flex:1 1 45%}
   .calcrow{grid-template-columns:1fr}.calcrow2 .seg{min-width:0;width:100%}
   .fmat .cost,.fcos .cost,.fcos-h .cost{display:none}
   .rline .cost{display:none}
@@ -272,6 +282,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
     <div class="grp">Operación</div>
     <button class="nav-i" data-go="inicio"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg></span><span class="tx">Inicio</span></button>
     <button class="nav-i" data-go="vrapida"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7h14l-1.5 12h-11z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg></span><span class="tx">Venta rápida</span></button>
+    <button class="nav-i" data-go="ferias"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l2-5h14l2 5"/><path d="M3 10a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/><path d="M5 12.5V20h14v-7.5"/><path d="M10 20v-5h4v5"/></svg></span><span class="tx">Ferias</span></button>
     <button class="nav-i" data-go="ordenes"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h8l4 4v14H7z"/><path d="M10 12h6M10 16h6"/></svg></span><span class="tx">Órdenes de venta</span></button>
     <button class="nav-i" data-go="consig"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l2-6h14l2 6"/><path d="M4 10h16v10H4z"/><path d="M10 20v-5h4v5"/></svg></span><span class="tx">Consignaciones</span></button>
     <button class="nav-i" data-go="ventas"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><span class="tx">Ventas y cobranza</span></button>
@@ -412,10 +423,12 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
     <!-- VENTA RÁPIDA -->
     <section class="sec" id="sec-vrapida">
       <div class="head">
-        <div><h1>Venta rápida</h1><div class="small muted" id="vrHoy"></div></div>
+        <div><h1>Venta rápida</h1><div class="small muted" id="vrHoy"></div><div class="small" id="vrCtxMsg"></div></div>
         <div class="acts" style="align-items:flex-end">
-          <div style="min-width:200px"><label class="f" for="vrComp">Comprador (opcional) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Para ventas en que importa saber quién compró, como el curso online. Queda anotado en la venta.">i</button></label><input class="in" id="vrComp" placeholder="Nombre o correo"></div>
-          <div style="min-width:220px"><label class="f" for="vrLugar">Lugar <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Opcional. Ej: «Feria Parque Ecuador». Se recuerda en este dispositivo durante el día, y después puedes ver cuánto vendiste en cada feria en Ventas y cobranza.">i</button></label><input class="in" id="vrLugar" list="vrLugares" placeholder="Ej: Feria Parque Ecuador"><datalist id="vrLugares"></datalist></div>
+          <div class="vrctx"><label class="f" for="vrCanal">Canal <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Por dónde fue la venta. «Feria» usa el calendario de Ferias; los demás canales (Instagram, WhatsApp…) se editan en Configuración → Listas. Se recuerda en este dispositivo.">i</button></label><select class="in" id="vrCanal"></select></div>
+          <div class="vrctx" id="vrFeriaBox"><label class="f" for="vrFeria">Feria <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Se elige sola la feria programada para hoy. Si no está, créala con «+» (nombre, días y horario).">i</button></label><div style="display:flex;gap:6px"><select class="in" id="vrFeria" style="min-width:0;flex:1"></select><button class="btn ghost" id="vrFeriaNueva" type="button" aria-label="Nueva feria" style="padding:0 14px">+</button></div></div>
+          <div class="vrctx"><label class="f" for="vrCli">Cliente habitual (opcional) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Si la compradora es una clienta que vuelve, escribe su nombre: la venta queda en su ficha (Clientes → Clientes habituales) para hacerle seguimiento. Si no existe, se crea al registrar la venta.">i</button></label><input class="in" id="vrCli" list="vrClis" placeholder="Nombre" autocomplete="off"><datalist id="vrClis"></datalist></div>
+          <div class="vrctx hidden" id="vrCliTelBox"><label class="f" for="vrCliTel">Teléfono (opcional)</label><input class="in" id="vrCliTel" inputmode="tel" placeholder="9 1234 5678"></div>
         </div>
       </div>
       <input class="in hidden" id="vrQ" type="search" placeholder="Buscar producto">
@@ -470,12 +483,34 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
 
     <!-- CLIENTES -->
     <section class="sec" id="sec-clientes">
-      <div class="head"><h1>Clientes</h1><div class="acts"><button class="btn pri" id="cliNuevo">+ Nuevo cliente</button></div></div>
+      <div class="head"><h1>Clientes</h1><div class="acts"><button class="btn pri" id="cliNuevo">+ Nueva empresa</button><button class="btn pri hidden" id="perNuevo">+ Nuevo cliente habitual</button></div></div>
+      <div class="seg" id="cliTabs" style="max-width:420px;margin-bottom:14px"><button data-t="emp" class="on">Empresas</button><button data-t="per">Clientes habituales</button></div>
+      <div id="cliEmpBox">
       <div class="search">
         <input class="in" id="cliQ" type="search" placeholder="Buscar local, razón social o RUT">
         <div class="chips" id="cliChips"><button class="chip on" data-f="act">Activos</button><button class="chip" data-f="arch">Archivados</button></div>
       </div>
       <div class="grid g3" id="cliGrid"></div>
+      </div>
+      <div id="perBox" class="hidden">
+      <p class="note" style="margin:0 0 10px">Personas que te compran seguido (en ferias, Instagram, WhatsApp…). Cada venta rápida con su nombre queda en su ficha: qué compra, cada cuánto vuelve y qué ofrecerle. «Para contactar» muestra a quienes ya pasaron su tiempo habitual de recompra.</p>
+      <div class="search">
+        <input class="in" id="perQ" type="search" placeholder="Buscar por nombre, teléfono o Instagram">
+        <div class="chips" id="perChips"><button class="chip on" data-f="act">Todos</button><button class="chip" data-f="contactar">Para contactar</button><button class="chip" data-f="arch">Archivados</button></div>
+      </div>
+      <div class="grid g3" id="perGrid"></div>
+      </div>
+    </section>
+
+    <!-- FERIAS -->
+    <section class="sec" id="sec-ferias">
+      <div class="head"><h1>Ferias</h1><div class="acts"><button class="btn pri" id="feNueva">+ Nueva feria</button></div></div>
+      <p class="note" style="margin:0">Programa cada feria antes de que empiece (días y horario). En venta rápida, con el canal «Feria», las ventas quedan en la feria y el día que corresponde; aquí ves cuánto se vendió cada día y cuánto quedó después del puesto.</p>
+      <div class="search">
+        <input class="in" id="feQ" type="search" placeholder="Buscar feria o lugar">
+        <div class="chips" id="feChips"><button class="chip on" data-f="prox">Próximas y en curso</button><button class="chip" data-f="term">Terminadas</button><button class="chip" data-f="arch">Archivadas</button></div>
+      </div>
+      <div class="grid g3" id="feGrid"></div>
     </section>
 
     <!-- FORMACIÓN -->
@@ -494,6 +529,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
       <div class="head"><h1>Más</h1></div>
       <div class="card" style="padding:6px 16px">
         <div class="small muted" style="padding:12px 0 4px">Ventas</div>
+        <button class="nav-i" data-go="ferias" style="padding:14px 0">Ferias</button>
         <button class="nav-i" data-go="consig" style="padding:14px 0">Consignaciones</button>
         <button class="nav-i" data-go="ventas" style="padding:14px 0">Ventas y cobranza</button>
         <button class="nav-i" data-go="clientes" style="padding:14px 0">Clientes</button>
@@ -541,7 +577,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
       </div>
       <div class="card" style="max-width:620px">
         <h2 style="margin-bottom:10px">Listas <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Las opciones que aparecen en los selectores de la app. Renombrar cambia también todos los registros que la usan. Eliminar borra si nadie la usa; si está en uso, la oculta de los selectores sin tocar los registros antiguos.">i</button></h2>
-        <div class="fld"><select class="in" id="lsSel" aria-label="Lista a editar"><option value="tipo_insumo">Tipos de insumo</option><option value="unidad">Unidades</option><option value="categoria">Categorías de producto</option><option value="motivo_ajuste">Motivos de ajuste de stock</option><option value="formatos">Formatos de compra (por insumo)</option></select></div>
+        <div class="fld"><select class="in" id="lsSel" aria-label="Lista a editar"><option value="tipo_insumo">Tipos de insumo</option><option value="unidad">Unidades</option><option value="categoria">Categorías de producto</option><option value="motivo_ajuste">Motivos de ajuste de stock</option><option value="canal_venta">Canales de venta (venta rápida)</option><option value="formatos">Formatos de compra (por insumo)</option></select></div>
         <div id="lsItems"></div>
         <div class="search" style="margin-top:10px"><input class="in" id="lsNuevo" placeholder="Nuevo valor"><button class="btn" id="lsAdd">Agregar</button></div>
         <p class="note" id="lsNote" style="margin-top:10px"></p>
@@ -795,6 +831,41 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
 </div></div>
 
 <!-- MODAL PROYECTO DE FORMACIÓN -->
+<div class="ov" id="mFe"><div class="modal wide" role="dialog" aria-modal="true" aria-labelledby="mFeT">
+  <div class="mh"><h2 id="mFeT">Nueva feria</h2><button class="closeb" data-close aria-label="Cerrar">×</button></div>
+  <input type="hidden" id="feId">
+  <div id="feRes"></div>
+  <div class="row2">
+    <div class="fld"><label class="f" for="feNom">Nombre de la feria</label><input class="in" id="feNom" placeholder="Ej: Feria Verde Parque Ecuador"></div>
+    <div class="fld"><label class="f" for="feLugar">Lugar (opcional)</label><input class="in" id="feLugar" placeholder="Ej: Parque Ecuador, Concepción"></div>
+  </div>
+  <div class="row2">
+    <div class="fld"><label class="f" for="fePuesto">Costo del puesto (opcional) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Lo que se paga por participar (arriendo del puesto, inscripción). Se descuenta del resultado de la feria: ventas sin IVA − costo de los productos − puesto.">i</button></label><input class="in r" id="fePuesto" inputmode="numeric" placeholder="$0"></div>
+    <div class="fld"><label class="f" for="feNotas">Notas (opcional)</label><input class="in" id="feNotas" placeholder="Ej: llevar toldo, llegar 9:00"></div>
+  </div>
+  <div class="small bold" style="margin:6px 0 8px">Días y horario <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Agrega cada día de la feria con su horario. Las ventas se asignan al día según su fecha. Si cambias un día, las ventas ya registradas se reasignan solas.">i</button></div>
+  <div class="ohead fed-h"><span class="fed-n">Día</span><span>Fecha</span><span>Inicio</span><span>Término</span><span></span></div>
+  <div id="feDias"></div>
+  <button class="btn sm ghost" id="feDiaAdd" type="button" style="margin-bottom:6px">+ Día</button>
+  <div class="mf" id="feFoot"></div>
+</div></div>
+
+<div class="ov" id="mPer"><div class="modal wide" role="dialog" aria-modal="true" aria-labelledby="mPerT">
+  <div class="mh"><h2 id="mPerT">Nuevo cliente habitual</h2><button class="closeb" data-close aria-label="Cerrar">×</button></div>
+  <input type="hidden" id="perId">
+  <div id="perRes"></div>
+  <div class="row2">
+    <div class="fld"><label class="f" for="perNom">Nombre</label><input class="in" id="perNom" placeholder="Ej: Carolina Muñoz"></div>
+    <div class="fld"><label class="f" for="perTel">Teléfono / WhatsApp</label><input class="in" id="perTel" inputmode="tel" placeholder="9 1234 5678"></div>
+  </div>
+  <div class="row2">
+    <div class="fld"><label class="f" for="perIg">Instagram (opcional)</label><input class="in" id="perIg" placeholder="@usuario"></div>
+    <div class="fld"><label class="f" for="perMail">Correo (opcional) <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Para enviarle novedades más adelante (mailing).">i</button></label><input class="in" id="perMail" type="email" placeholder="nombre@correo.cl"></div>
+  </div>
+  <div class="fld"><label class="f" for="perNotas">Notas (opcional)</label><textarea class="in" id="perNotas" rows="2" placeholder="Ej: piel sensible, prefiere sin aroma"></textarea></div>
+  <div class="mf" id="perFoot"></div>
+</div></div>
+
 <div class="ov" id="mFP"><div class="modal wide" role="dialog" aria-modal="true" aria-labelledby="mFPT">
   <div class="mh"><h2 id="mFPT">Nuevo proyecto</h2><button class="closeb" data-close aria-label="Cerrar">×</button></div>
   <input type="hidden" id="fpId">
@@ -869,10 +940,10 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
 
 <script>
 // ───────────── Estado ─────────────
-const APP_VERSION = '2.1.4';
+const APP_VERSION = '2.2.0';
 const LS = { url: 'mv_gs_url', key: 'mv_gs_key', cache: 'mv_cache_v1' };
 let GS = lsGet(LS.url), KEY = lsGet(LS.key);
-const DB0 = () => ({ insumos: [], productos: [], recetas: [], compras: [], produccion: [], movimientos: [], stock: {}, formatos: [], listas: [], costos_hist: [], config: {}, empresas: [], locales: [], precios_cliente: [], ventas: [], ventas_det: [], pagos: [], consignaciones: [], consig_det: [], liquidaciones: [], liq_det: [], proyectos: [], proy_mat: [], proy_costos: [] });
+const DB0 = () => ({ insumos: [], productos: [], recetas: [], compras: [], produccion: [], movimientos: [], stock: {}, formatos: [], listas: [], costos_hist: [], config: {}, empresas: [], locales: [], precios_cliente: [], ventas: [], ventas_det: [], pagos: [], consignaciones: [], consig_det: [], liquidaciones: [], liq_det: [], proyectos: [], proy_mat: [], proy_costos: [], ferias: [], feria_dias: [], personas: [] });
 let DB = DB0();
 let busy = false, lastSync = 0;
 const UI = { sec: 'inicio', invTab: 'productos', iFiltro: 'todos', prFiltro: 'act', comDocT: 'factura', insFmts: [] };
@@ -909,7 +980,7 @@ const esServ = p => p && p.tipo === 'servicio';
 const porMil = (i, cu) => i && (i.unidad === 'g' || i.unidad === 'ml') && cu > 0 ? clp(cu * 1000) + (i.unidad === 'g' ? ' / kg' : ' / L') : '';
 
 // ───────────── Listas editables ─────────────
-const LISTA_BASE = { tipo_insumo: ['Materia prima', 'Envase', 'Etiqueta', 'Otro'], unidad: ['g', 'ml', 'u', 'gotas', 'cm'], categoria: [], motivo_ajuste: ['Carga inicial', 'Conteo físico', 'Merma o pérdida', 'Vencido', 'Uso interno o muestra', 'Otro'] };
+const LISTA_BASE = { tipo_insumo: ['Materia prima', 'Envase', 'Etiqueta', 'Otro'], unidad: ['g', 'ml', 'u', 'gotas', 'cm'], categoria: [], motivo_ajuste: ['Carga inicial', 'Conteo físico', 'Merma o pérdida', 'Vencido', 'Uso interno o muestra', 'Otro'], canal_venta: ['Instagram', 'WhatsApp', 'Online', 'Venta directa'] };
 function lista(nombre, conOcultos) {
   const rows = (DB.listas || []).filter(r => r.lista === nombre && (conOcultos || r.estado === 'activo')).sort((a, b) => (Number(a.orden) || 0) - (Number(b.orden) || 0));
   return rows.length || (DB.listas || []).some(r => r.lista === nombre) ? rows.map(r => r.valor) : LISTA_BASE[nombre];
@@ -987,7 +1058,7 @@ async function sync(silencioso) {
 
 /** Ejecuta una escritura, luego refresca todo. */
 async function write(action, body, okMsg) {
-  if (busy) return null;
+  if (busy) { toast('Espera un momento: aún se está guardando lo anterior', 'err', 3000); return null; } // evita guardar dos veces con un doble toque
   busy = true;
   toast('Guardando…', 'load');
   try {
@@ -1060,7 +1131,7 @@ function preguntar(titulo, valor, nota) {
 function go(sec) {
   UI.sec = sec;
   document.querySelectorAll('.sec').forEach(s => s.classList.toggle('on', s.id === 'sec-' + sec));
-  const enMas = ['consig', 'ventas', 'clientes', 'formacion', 'produccion', 'productos', 'insumos', 'config'].includes(sec);
+  const enMas = ['ferias', 'consig', 'ventas', 'clientes', 'formacion', 'produccion', 'productos', 'insumos', 'config'].includes(sec);
   document.querySelectorAll('.bottom [data-go]').forEach(b => b.classList.toggle('on', b.dataset.go === sec || (enMas && b.dataset.go === 'mas')));
   document.querySelectorAll('.side [data-go]').forEach(b => b.classList.toggle('on', b.dataset.go === sec));
   window.scrollTo(0, 0);
@@ -1098,7 +1169,7 @@ const metodoTxt = () => (DB.config && DB.config.metodo_costo) === 'promedio' ? '
 // ───────────── Render general ─────────────
 function renderAll() {
   renderVersion(); renderInicio(); renderProdSelect(); renderPrev(); renderLotes(); renderInv(); renderInsumos(); renderHcFiltros(); renderCompras(); renderProductos();
-  renderVR(); renderOrdenes(); renderConsig(); renderVFiltros(); renderVentas(); renderClientes(); renderFormacion();
+  renderVR(); renderOrdenes(); renderConsig(); renderVFiltros(); renderVentas(); renderClientes(); renderPersonas(); renderFerias(); renderFormacion();
   if (UI.sec === 'config') renderConfig();
 }
 
@@ -1151,6 +1222,11 @@ function renderInicio() {
   venc.forEach(v => pend.push({ t: 'Pago vencido', d: (v.folio ? 'Factura ' + v.folio : v.id) + ' · ' + quien(v), r: clp(saldoDe(v)), f: `abrirVenta('${v.id}')`, c: 'bad-t' }));
   DB.proyectos.filter(p => p.estado === 'adjudicado' && p.fecha_inicio && diasEntre(hoy(), p.fecha_inicio) <= 14).forEach(p => pend.push({ t: 'Taller próximo', d: p.nombre, r: fechaCorta(p.fecha_inicio), f: `abrirFP('${p.id}')`, c: 'warn-t' }));
   DB.proyectos.filter(p => (p.estado === 'ejecutado' || p.estado === 'cerrado') && !ventaFP(p)).forEach(p => pend.push({ t: 'Generar venta del taller', d: p.nombre, r: clp(p.precio_ofertado), f: `abrirFP('${p.id}')` }));
+  DB.ferias.filter(f => f.estado === 'activa').forEach(f => { const ds = diasFeria(f.id), k = ds.findIndex(d => d.fecha === hoy()), prox = ds.find(d => d.fecha > hoy());
+    if (k >= 0) pend.push({ t: 'Feria hoy', d: f.nombre + ' · Día ' + (k + 1), r: horario(ds[k]) || 'Hoy', f: `feVender('${f.id}')` });
+    else if (prox && ds[0].fecha > hoy() && diasEntre(hoy(), prox.fecha) <= 7) pend.push({ t: 'Feria próxima', d: f.nombre, r: diaSem(prox.fecha) + ' ' + fechaCorta(prox.fecha), f: `abrirFeria('${f.id}')`, c: 'warn-t' }); });
+  const cont = DB.personas.filter(p => p.estado === 'activo' && statsPersona(p.id).toca).length;
+  if (cont) pend.push({ t: 'Clientes para contactar', d: 'Ya pasó su tiempo habitual de recompra', r: cont + ' persona' + (cont === 1 ? '' : 's'), f: "go('clientes');cliTab('per');PE.f='contactar';[...$('perChips').children].forEach(c=>c.classList.toggle('on',c.dataset.f==='contactar'));renderPersonas()" });
   DB.ventas.filter(v => v.estado === 'borrador').forEach(v => pend.push({ t: 'Orden en borrador', d: v.id + ' · ' + quien(v), r: clp(v.total), f: `abrirVenta('${v.id}')` }));
   $('cPend').textContent = pend.length;
   $('lPend').innerHTML = pend.length ? pend.slice(0, 7).map(x => `<div class="list-row click" style="cursor:pointer" onclick="${x.f}"><div class="small bold ${x.c || 'ok-t'}">${x.t}</div><div class="lr-top" style="margin-top:2px"><span>${esc(x.d)}</span><span>${esc(x.r)}</span></div></div>`).join('') + (pend.length > 7 ? `<div class="sub" style="padding-top:8px">y ${pend.length - 7} más…</div>` : '')
@@ -1159,7 +1235,7 @@ function renderInicio() {
   const ev = [];
   DB.produccion.filter(l => l.estado === 'activa').slice(0, 5).forEach(l => ev.push({ k: l.fecha + l.creado, t: 'Producción', d: `${qty(l.unidades)} ${l.item_tipo === 'insumo' ? esc(insumo(l.producto_id)?.unidad || '') : 'u'} de ${nombreItem(l.producto_id)}` }));
   DB.compras.filter(c => c.estado === 'activa').slice(0, 5).forEach(c => ev.push({ k: c.fecha + c.creado, t: 'Compra', d: `${qty(c.cantidad)} ${insumo(c.insumo_id)?.unidad || ''} de ${insumo(c.insumo_id)?.nombre || '—'} · ${clp(pagadoDe(c))}` }));
-  ventasActivas().slice(0, 6).forEach(v => ev.push({ k: v.fecha + v.creado, t: v.canal === 'publico' ? 'Venta rápida' : v.canal === 'consignacion' ? 'Liquidación' : v.canal === 'formacion' ? 'Formación' : 'Orden ' + v.id, d: `${v.canal === 'publico' ? (v.lugar || v.medio_pago) + (v.notas ? ' · ' + v.notas : '') : quien(v)} · ${clp(v.total)}` }));
+  ventasActivas().slice(0, 6).forEach(v => ev.push({ k: v.fecha + v.creado, t: v.canal === 'publico' ? (v.feria_id ? 'Venta en feria' : 'Venta rápida') : v.canal === 'consignacion' ? 'Liquidación' : v.canal === 'formacion' ? 'Formación' : 'Orden ' + v.id, d: `${v.canal === 'publico' ? (v.lugar || v.medio_pago) + (v.persona_id && persona(v.persona_id) ? ' · ' + persona(v.persona_id).nombre : v.notas ? ' · ' + v.notas : '') : quien(v)} · ${clp(v.total)}` }));
   ev.sort((a, b) => b.k.localeCompare(a.k));
   $('lAct').innerHTML = ev.length ? ev.slice(0, 6).map(e => `<div class="list-row"><div class="small muted">${e.t} · ${fechaCorta(e.k.slice(0, 10))}</div><div style="font-size:14px;margin-top:2px">${esc(e.d)}</div></div>`).join('')
     : `<div class="empty">Aún no hay registros.</div>`;
@@ -1705,9 +1781,10 @@ const USO_LISTA = {
   tipo_insumo: v => DB.insumos.filter(i => i.tipo === v).length,
   unidad: v => DB.insumos.filter(i => i.unidad === v).length,
   categoria: v => DB.productos.filter(p => p.categoria === v).length,
-  motivo_ajuste: v => DB.movimientos.filter(m => m.tipo === 'ajuste' && m.nota === v).length
+  motivo_ajuste: v => DB.movimientos.filter(m => m.tipo === 'ajuste' && m.nota === v).length,
+  canal_venta: v => DB.ventas.filter(x => x.medio_venta === v).length
 };
-const USO_TXT = { tipo_insumo: 'insumo(s)', unidad: 'insumo(s)', categoria: 'producto(s)', motivo_ajuste: 'ajuste(s)' };
+const USO_TXT = { tipo_insumo: 'insumo(s)', unidad: 'insumo(s)', categoria: 'producto(s)', motivo_ajuste: 'ajuste(s)', canal_venta: 'venta(s)' };
 function renderListas() {
   const L = $('lsSel').value;
   const esFmt = L === 'formatos';
@@ -1723,7 +1800,7 @@ function renderListas() {
     return `<div class="lrow" style="${oc ? 'opacity:.6' : ''}"><div class="v"><b>${esc(r.valor)}</b>${oc ? ' <span class="tag">oculto</span>' : ''}<div class="sub">${n ? 'Usado en ' + n + ' ' + USO_TXT[L] : 'Sin uso'}</div></div>
       ${oc ? `<button class="lnk" data-ls="rest" data-v="${esc(r.valor)}">Restaurar</button>` : `<button class="lnk" data-ls="ren" data-v="${esc(r.valor)}">Renombrar</button><button class="lnk danger" data-ls="del" data-v="${esc(r.valor)}">${n ? 'Ocultar' : 'Eliminar'}</button>`}</div>`; }).join('')
     : '<div class="empty">Lista vacía.</div>';
-  $('lsNote').textContent = L === 'unidad' ? 'La app no convierte entre unidades: si un insumo está en gramos, su receta y sus compras también van en gramos.' : L === 'categoria' ? 'También puedes escribir una categoría nueva al crear un producto: se agrega sola a esta lista.' : '';
+  $('lsNote').textContent = L === 'unidad' ? 'La app no convierte entre unidades: si un insumo está en gramos, su receta y sus compras también van en gramos.' : L === 'categoria' ? 'También puedes escribir una categoría nueva al crear un producto: se agrega sola a esta lista.' : L === 'canal_venta' ? '«Feria» es un canal fijo (tiene su calendario en Ferias) y no aparece aquí. Renombrar un canal actualiza también las ventas anteriores.' : '';
 }
 $('lsSel').addEventListener('change', renderListas);
 $('lsAdd').addEventListener('click', async () => {
@@ -1807,12 +1884,76 @@ function consigResumen() {
 }
 
 // ───────────── Venta rápida ─────────────
-const VR = { carro: {}, medio: '' };
-function lugarGuardado() { try { const x = JSON.parse(lsGet('mv_lugar') || '{}'); return x.dia === hoy() ? x.v : ''; } catch (e) { return ''; } }
-$('vrLugar').addEventListener('input', () => lsSet('mv_lugar', JSON.stringify({ dia: hoy(), v: $('vrLugar').value.trim() })));
+// Canal (Feria + lista editable), feria con su día, y cliente habitual opcional. El contexto se recuerda en el dispositivo.
+const VR = { carro: {}, medio: '', feria: '', canal: '' };
+const CANAL_FERIA = 'Feria';
+const esCanalFeria = c => norm(c) === norm(CANAL_FERIA);
+function vrCtx() { try { return JSON.parse(lsGet('mv_vrctx') || '{}') || {}; } catch (e) { return {}; } }
+function vrCtxSet(o) { lsSet('mv_vrctx', JSON.stringify(Object.assign(vrCtx(), o))); }
+const canalesVenta = () => [CANAL_FERIA, ...lista('canal_venta').filter(c => !esCanalFeria(c))];
+
+// Ferias: datos y estado
+const feria = id => DB.ferias.find(f => f.id === id);
+const diasFeria = id => DB.feria_dias.filter(d => d.feria_id === id).sort((a, b) => a.fecha.localeCompare(b.fecha));
+const horario = d => d.hora_inicio || d.hora_fin ? `${d.hora_inicio || '?'}–${d.hora_fin || '?'}` : '';
+const DSEM = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+const diaSem = f => DSEM[new Date(f + 'T12:00:00').getDay()];
+function estadoFeria(f) {
+  const ds = diasFeria(f.id), h = hoy();
+  if (f.estado === 'archivada') return ['Archivada', ''];
+  if (!ds.length) return ['Sin días', 'warn'];
+  if (ds.some(d => d.fecha === h)) return ['Hoy', 'ok'];
+  if (ds[0].fecha > h) return ['Próxima', 'warn'];
+  if (ds[ds.length - 1].fecha < h) return ['Terminada', ''];
+  return ['En curso', 'ok'];
+}
+const tagFeria = f => { const [t, c] = estadoFeria(f); return `<span class="tag ${c}">${t}</span>`; };
+const fechasFeria = f => { const ds = diasFeria(f.id); return ds.length ? ds.map(d => fechaCorta(d.fecha)).join(', ') : 'sin días'; };
+/** Ferias para vender: las de hoy primero, luego las próximas, luego las recientes (últimos 30 días). */
+function feriasVendibles() {
+  const h = hoy(), orden = f => { const ds = diasFeria(f.id); if (!ds.length) return [3, '']; if (ds.some(d => d.fecha === h)) return [0, '']; if (ds[0].fecha > h) return [1, ds[0].fecha]; return [2, String(-new Date(ds[ds.length - 1].fecha).getTime())]; };
+  return DB.ferias.filter(f => f.estado === 'activa').filter(f => { const ds = diasFeria(f.id); return !ds.length || ds[ds.length - 1].fecha >= fechaMas(h, -30); })
+    .sort((a, b) => { const x = orden(a), y = orden(b); return x[0] - y[0] || x[1].localeCompare(y[1]); });
+}
+function fechaMas(f, n) { const d = new Date(f + 'T12:00:00'); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); }
+const ventasFeria = id => DB.ventas.filter(v => v.feria_id === id && v.estado === 'entregada');
+
+// Clientes habituales: datos
+const persona = id => DB.personas.find(p => p.id === id);
+const personaPorNombre = n => DB.personas.find(p => p.estado === 'activo' && norm(p.nombre) === norm(n));
+
 function renderVR() {
-  if (document.activeElement !== $('vrLugar')) $('vrLugar').value = lugarGuardado();
-  $('vrLugares').innerHTML = [...new Set(DB.ventas.map(v => v.lugar).filter(Boolean))].map(l => `<option value="${esc(l)}">`).join('');
+  // Canal
+  const canales = canalesVenta(), ctx = vrCtx();
+  let canal = VR.canal || ctx.canal || canales[1] || canales[0];
+  if (!canales.some(c => c === canal)) canal = canales[0];
+  VR.canal = canal;
+  $('vrCanal').innerHTML = canales.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join(''); $('vrCanal').value = canal;
+  const fer = esCanalFeria(canal);
+  $('vrFeriaBox').classList.toggle('hidden', !fer);
+  let msg = '';
+  if (fer) {
+    const fs = feriasVendibles(), h = hoy(), deHoy = fs.filter(f => diasFeria(f.id).some(d => d.fecha === h));
+    let fid = VR.feria || ctx.feria_id || '';
+    if (!fs.some(f => f.id === fid)) fid = '';
+    if (deHoy.length && !deHoy.some(f => f.id === fid) && ctx.manual !== h) fid = deHoy[0].id; // la programada para hoy, salvo que la hayas cambiado hoy a mano
+    if (!fid && fs[0]) fid = fs[0].id;
+    VR.feria = fid;
+    $('vrFeria').innerHTML = fs.length ? fs.map(f => `<option value="${f.id}">${esc(f.nombre)} · ${esc(fechasFeria(f))}</option>`).join('') : '<option value="">Sin ferias: crea una con +</option>';
+    $('vrFeria').value = fid;
+    const f = feria(fid);
+    if (f) {
+      const ds = diasFeria(f.id), k = ds.findIndex(d => d.fecha === h);
+      msg = k >= 0 ? `<span class="ok-t">${esc(f.nombre)} · Día ${k + 1} de ${ds.length}${horario(ds[k]) ? ' · ' + horario(ds[k]) : ''}</span>`
+        : `<span class="warn-t">Hoy no es un día programado de esta feria (${esc(fechasFeria(f))}). La venta quedará en la feria, sin día.</span>`;
+      if (deHoy.length > 1) msg += ` <span class="muted">· Hay ${deHoy.length} ferias hoy: revisa que sea la correcta.</span>`;
+    } else msg = '<span class="warn-t">Crea la feria con «+» para registrar ventas en ella.</span>';
+  }
+  $('vrCtxMsg').innerHTML = msg;
+  // Cliente habitual
+  $('vrClis').innerHTML = DB.personas.filter(p => p.estado === 'activo').sort((a, b) => a.nombre.localeCompare(b.nombre)).map(p => `<option value="${esc(p.nombre)}">`).join('');
+  vrCliSync();
+  // Productos y cobro
   const ps = DB.productos.filter(p => p.estado === 'activo' && Number(p.precio_publico) > 0).sort((a, b) => (a.categoria + a.nombre).localeCompare(b.categoria + b.nombre));
   $('vrQ').classList.toggle('hidden', ps.length <= 12);
   const q = $('vrQ').value.toLowerCase().trim();
@@ -1824,11 +1965,21 @@ function renderVR() {
   $('vrItems').innerHTML = items.map(x => `<div class="it"><span>${x.n} × ${esc(x.p.nombre)}</span><span>${clp(x.n * x.p.precio_publico)}</span><button type="button" class="mini" aria-label="Quitar uno" data-menos="${x.p.id}">−</button></div>`).join('');
   $('vrUnid').textContent = unid + ' producto' + (unid === 1 ? '' : 's'); $('vrTotal').textContent = clp(total);
   [...$('vrPagos').children].forEach(b => b.classList.toggle('on', b.dataset.v === VR.medio));
-  const listo = total > 0 && VR.medio;
-  $('vrGo').disabled = !listo; $('vrGo').textContent = !total ? 'Toca los productos vendidos' : !VR.medio ? 'Elige el medio de pago' : 'Registrar venta · ' + clp(total);
+  const faltaFeria = fer && !VR.feria, listo = total > 0 && VR.medio && !faltaFeria;
+  $('vrGo').disabled = !listo; $('vrGo').textContent = !total ? 'Toca los productos vendidos' : faltaFeria ? 'Crea o elige la feria' : !VR.medio ? 'Elige el medio de pago' : 'Registrar venta · ' + clp(total);
   const hoyV = DB.ventas.filter(v => v.canal === 'publico' && v.estado === 'entregada' && v.fecha === hoy());
-  $('vrHoy').textContent = hoyV.length ? `Hoy: ${hoyV.length} venta(s) · ${clp(hoyV.reduce((s, v) => s + v.total, 0))}` : 'Hoy aún no hay ventas rápidas.';
+  const enFeria = fer && VR.feria ? hoyV.filter(v => v.feria_id === VR.feria) : null;
+  $('vrHoy').textContent = !hoyV.length ? 'Hoy aún no hay ventas rápidas.' : `Hoy: ${hoyV.length} venta(s) · ${clp(hoyV.reduce((s, v) => s + v.total, 0))}` + (enFeria && enFeria.length !== hoyV.length ? ` (en esta feria: ${enFeria.length} · ${clp(enFeria.reduce((s, v) => s + v.total, 0))})` : '');
 }
+function vrCliSync() {
+  const n = $('vrCli').value.trim(), p = n ? personaPorNombre(n) : null;
+  $('vrCliTelBox').classList.toggle('hidden', !n || !!p);
+  $('vrCli').title = p ? '' : n ? 'Cliente nuevo: se creará al registrar la venta' : '';
+}
+$('vrCanal').addEventListener('change', () => { VR.canal = $('vrCanal').value; vrCtxSet({ canal: VR.canal }); renderVR(); });
+$('vrFeria').addEventListener('change', () => { VR.feria = $('vrFeria').value; vrCtxSet({ feria_id: VR.feria, manual: hoy() }); renderVR(); });
+$('vrFeriaNueva').addEventListener('click', () => abrirFeria());
+$('vrCli').addEventListener('input', vrCliSync);
 $('vrQ').addEventListener('input', renderVR);
 $('vrGrid').addEventListener('click', e => { const b = e.target.closest('[data-p]'); if (!b) return; VR.carro[b.dataset.p] = (VR.carro[b.dataset.p] || 0) + 1; renderVR(); });
 $('vrItems').addEventListener('click', e => { const b = e.target.closest('[data-menos]'); if (!b) return; VR.carro[b.dataset.menos]--; renderVR(); });
@@ -1836,9 +1987,218 @@ $('vrPagos').addEventListener('click', e => { const b = e.target.closest('button
 $('vrGo').addEventListener('click', async () => {
   const lineas = Object.entries(VR.carro).filter(([, n]) => n > 0).map(([pid, n]) => ({ producto_id: pid, cantidad: n, precio: Number(producto(pid).precio_publico) }));
   if (!lineas.length || !VR.medio) return;
-  const r = await write('ventaRapida', { lineas, medio_pago: VR.medio, lugar: $('vrLugar').value.trim(), comprador: $('vrComp').value.trim(), fecha: hoy() }, 'Venta registrada');
-  if (r) { VR.carro = {}; VR.medio = ''; $('vrComp').value = ''; renderVR(); }
+  const fer = esCanalFeria(VR.canal);
+  if (fer && !VR.feria) return toast('Elige la feria o créala con «+»', 'err');
+  const nom = $('vrCli').value.trim(), p = nom ? personaPorNombre(nom) : null;
+  const body = { lineas, medio_pago: VR.medio, medio_venta: VR.canal, feria_id: fer ? VR.feria : '', fecha: hoy() };
+  if (p) body.persona_id = p.id; else if (nom) body.persona_nueva = { nombre: nom, telefono: $('vrCliTel').value.trim() };
+  const r = await write('ventaRapida', body, 'Venta registrada');
+  if (r) { VR.carro = {}; VR.medio = ''; $('vrCli').value = ''; $('vrCliTel').value = ''; renderVR(); }
 });
+
+// ───────────── Ferias ─────────────
+const FE = { f: 'prox', dias: [] };
+function statsFeria(f) {
+  const vs = ventasFeria(f.id), ds = diasFeria(f.id);
+  const suma = (arr, g) => arr.reduce((s, v) => s + g(v), 0);
+  const total = suma(vs, v => Number(v.total) || 0), neto = suma(vs, v => Number(v.neto) || 0);
+  const costo = suma(vs, v => detDe(v.id).reduce((s, d) => s + d.cantidad * (Number(d.costo_unit) || 0), 0));
+  const puesto = Number(f.costo_puesto) || 0;
+  const porDia = ds.map(d => { const x = vs.filter(v => Number(v.feria_dia) === Number(d.dia) || (!v.feria_dia && v.fecha === d.fecha)); return { d, n: x.length, total: suma(x, v => Number(v.total) || 0) }; });
+  const fuera = vs.filter(v => !ds.some(d => Number(v.feria_dia) === Number(d.dia) || v.fecha === d.fecha));
+  const prods = {}, medios = {}, horas = {};
+  vs.forEach(v => {
+    detDe(v.id).forEach(d => { const o = prods[d.producto_id] = prods[d.producto_id] || { q: 0, monto: 0 }; o.q += Number(d.cantidad) || 0; o.monto += (Number(d.cantidad) || 0) * (Number(d.precio) || 0); });
+    const m = medios[v.medio_pago || '—'] = medios[v.medio_pago || '—'] || { n: 0, total: 0 }; m.n++; m.total += Number(v.total) || 0;
+    const hh = String(v.creado || '').match(/[ T](\d{2}):/); if (hh) { const o = horas[hh[1]] = horas[hh[1]] || { n: 0, total: 0 }; o.n++; o.total += Number(v.total) || 0; }
+  });
+  return { vs, n: vs.length, total, neto, costo, puesto, resultado: neto - costo - puesto, ticket: vs.length ? total / vs.length : 0, porDia, fuera, prods, medios, horas };
+}
+function renderFerias() {
+  const q = norm($('feQ').value), h = hoy();
+  let fs = DB.ferias.filter(f => !q || norm(f.nombre + ' ' + f.lugar).includes(q));
+  const ult = f => { const ds = diasFeria(f.id); return ds.length ? ds[ds.length - 1].fecha : ''; }, pri = f => { const ds = diasFeria(f.id); return ds.length ? ds[0].fecha : ''; };
+  if (FE.f === 'arch') fs = fs.filter(f => f.estado === 'archivada');
+  else if (FE.f === 'term') fs = fs.filter(f => f.estado === 'activa' && ult(f) && ult(f) < h).sort((a, b) => ult(b).localeCompare(ult(a)));
+  else fs = fs.filter(f => f.estado === 'activa' && (!ult(f) || ult(f) >= h)).sort((a, b) => pri(a).localeCompare(pri(b)));
+  $('feGrid').innerHTML = fs.length ? fs.map(f => { const st = statsFeria(f), ds = diasFeria(f.id);
+    return `<button class="pcard" onclick="abrirFeria('${f.id}')"><div style="display:flex;justify-content:space-between;gap:8px"><div><div class="nm">${esc(f.nombre)}</div><div class="sub">${esc(f.lugar || f.id)}</div></div>${tagFeria(f)}</div>
+      ${ds.map(d => `<div class="kv"><span class="muted">Día ${d.dia} · ${diaSem(d.fecha)} ${fechaCorta(d.fecha)}</span><span>${horario(d) || ''}</span></div>`).join('')}
+      <div class="kv"><span class="muted">Ventas</span><b>${st.n ? clp(st.total) + ' · ' + st.n : '—'}</b></div>
+      ${st.n ? `<div class="kv"><span class="muted">Resultado ${f.costo_puesto ? '(después del puesto)' : ''}</span><span class="${st.resultado < 0 ? 'bad-t' : 'ok-t'}">${clp(st.resultado)}</span></div>` : f.costo_puesto ? `<div class="kv"><span class="muted">Puesto</span><span>${clp(f.costo_puesto)}</span></div>` : ''}</button>`; }).join('')
+    : `<div class="card empty" style="grid-column:1/-1">${DB.ferias.length ? 'Nada en este filtro.' : 'Crea tu primera feria con «+ Nueva feria»: nombre, días y horario.'}</div>`;
+}
+$('feQ').addEventListener('input', renderFerias);
+$('feChips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; FE.f = b.dataset.f; [...$('feChips').children].forEach(c => c.classList.toggle('on', c === b)); renderFerias(); });
+$('feNueva').addEventListener('click', () => abrirFeria());
+
+function abrirFeria(id) {
+  const f = id ? feria(id) : null;
+  $('feId').value = f ? f.id : '';
+  $('mFeT').textContent = f ? f.nombre : 'Nueva feria';
+  $('feNom').value = f ? f.nombre : ''; $('feLugar').value = f ? f.lugar : ''; $('feNotas').value = f ? f.notas : '';
+  $('fePuesto').value = f && f.costo_puesto ? Math.round(f.costo_puesto).toLocaleString('es-CL') : '';
+  FE.dias = f ? diasFeria(f.id).map(d => ({ fecha: d.fecha, hora_inicio: d.hora_inicio, hora_fin: d.hora_fin })) : [{ fecha: hoy(), hora_inicio: '', hora_fin: '' }];
+  renderFeDias(); renderFeRes(f); renderFeFoot(f);
+  openM('mFe'); if (!f) setTimeout(() => $('feNom').focus(), 50);
+}
+function feLeerDias() {
+  document.querySelectorAll('#feDias .fed').forEach((r, k) => { const [a, b, c] = r.querySelectorAll('input'); if (FE.dias[k]) { FE.dias[k].fecha = a.value; FE.dias[k].hora_inicio = b.value; FE.dias[k].hora_fin = c.value; } });
+}
+function renderFeDias() {
+  $('feDias').innerHTML = FE.dias.map((d, k) => `<div class="fed"><span class="dn"><span class="m">Día </span>${k + 1}</span><input class="in" type="date" aria-label="Fecha del día ${k + 1}" value="${esc(d.fecha)}"><input class="in" type="time" aria-label="Hora de inicio" value="${esc(d.hora_inicio)}"><input class="in" type="time" aria-label="Hora de término" value="${esc(d.hora_fin)}"><button class="xbtn" type="button" aria-label="Quitar día" onclick="feDiaDel(${k})">×</button></div>`).join('')
+    || '<p class="note" style="margin:0 0 8px">Agrega al menos un día.</p>';
+}
+function feDiaDel(k) { feLeerDias(); FE.dias.splice(k, 1); renderFeDias(); }
+$('feDiaAdd').addEventListener('click', () => {
+  feLeerDias(); const u = FE.dias[FE.dias.length - 1];
+  FE.dias.push(u ? { fecha: u.fecha ? fechaMas(u.fecha, 1) : '', hora_inicio: u.hora_inicio, hora_fin: u.hora_fin } : { fecha: hoy(), hora_inicio: '', hora_fin: '' });
+  renderFeDias();
+});
+function renderFeRes(f) {
+  const st = f ? statsFeria(f) : null;
+  if (!st || !st.n) { $('feRes').innerHTML = f ? '<p class="note" style="margin:0 0 12px">Aún no hay ventas en esta feria. En Venta rápida elige el canal «Feria» y esta feria.</p>' : ''; return; }
+  const kpi = (a, b) => `<div class="card kpi" style="padding:12px"><div class="lbl">${a}</div><div class="val" style="font-size:17px">${b}</div></div>`;
+  const maxD = Math.max(1, ...st.porDia.map(x => x.total)), prods = Object.entries(st.prods).sort((a, b) => b[1].q - a[1].q);
+  const horas = Object.entries(st.horas).sort((a, b) => a[0].localeCompare(b[0])), maxH = Math.max(1, ...horas.map(([, o]) => o.total));
+  $('feRes').innerHTML = `<div class="grid g4 kpis" style="margin-bottom:14px">${kpi('Ventas (con IVA)', clp(st.total))}${kpi('N° de ventas · ticket', `${st.n} · ${clp(st.ticket)}`)}${kpi('Costo productos + puesto', clp(st.costo + st.puesto))}${kpi('Resultado <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Ventas sin IVA − costo de los productos vendidos (al momento de la venta) − costo del puesto.">i</button>', `<span class="${st.resultado < 0 ? 'bad-t' : 'ok-t'}">${clp(st.resultado)}${st.neto ? ' · ' + pct(st.resultado / st.neto) : ''}</span>`)}</div>
+    <div class="grid g2" style="gap:14px;margin-bottom:14px;align-items:start">
+      <div class="box"><div class="small bold" style="margin-bottom:8px">Ventas por día</div><div class="bars">${st.porDia.map(x => `<div class="br"><span>Día ${x.d.dia} · ${fechaCorta(x.d.fecha)}</span><div><div class="bf" style="width:${Math.round(x.total / maxD * 100)}%"></div></div><span class="r">${clp(x.total)} · ${x.n}</span></div>`).join('')}${st.fuera.length ? `<div class="sub">Fuera de los días programados: ${st.fuera.length} venta(s) · ${clp(st.fuera.reduce((s, v) => s + v.total, 0))}</div>` : ''}</div></div>
+      <div class="box"><div class="small bold" style="margin-bottom:8px">Medios de pago</div>${Object.entries(st.medios).sort((a, b) => b[1].total - a[1].total).map(([m, o]) => `<div class="ln"><span>${esc(m)} · ${o.n}</span><span>${clp(o.total)}</span></div>`).join('')}</div>
+      <div class="box"><div class="small bold" style="margin-bottom:8px">Productos vendidos</div>${prods.map(([pid, o]) => `<div class="ln"><span>${qty(o.q)} × ${esc(nombreItem(pid))}</span><span>${clp(o.monto)}</span></div>`).join('')}</div>
+      ${horas.length ? `<div class="box"><div class="small bold" style="margin-bottom:8px">Ventas por hora (todos los días)</div><div class="bars">${horas.map(([hh, o]) => `<div class="br"><span>${hh}:00</span><div><div class="bf" style="width:${Math.round(o.total / maxH * 100)}%"></div></div><span class="r">${clp(o.total)} · ${o.n}</span></div>`).join('')}</div></div>` : ''}
+    </div>`;
+}
+function renderFeFoot(f) {
+  const B = (fn, t, cls) => `<button class="btn ${cls || ''}" type="button" onclick="${fn}">${t}</button>`;
+  const conV = f && ventasFeria(f.id).length;
+  $('feFoot').innerHTML = (f ? (f.estado === 'archivada' ? B(`feRestaurar('${f.id}')`, 'Restaurar') : B(`feBorrar('${f.id}')`, conV ? 'Archivar' : 'Eliminar', 'danger')) : '')
+    + '<span class="sp"></span>' + (f && f.estado === 'activa' ? B(`feVender('${f.id}')`, 'Vender en esta feria') : '') + B("closeM('mFe')", 'Cerrar', 'ghost') + B('feGuardar()', f ? 'Guardar cambios' : 'Guardar feria', 'pri');
+}
+async function feGuardar() {
+  feLeerDias();
+  const d = { id: $('feId').value, nombre: $('feNom').value.trim(), lugar: $('feLugar').value.trim(), costo_puesto: parseNum($('fePuesto').value), notas: $('feNotas').value.trim() };
+  if (!d.nombre) return toast('Falta el nombre de la feria', 'err');
+  const dias = FE.dias.filter(x => x.fecha);
+  if (!dias.length) return toast('Agrega al menos un día con su fecha', 'err');
+  if (dias.some(x => x.hora_inicio && x.hora_fin && x.hora_fin <= x.hora_inicio)) return toast('Revisa el horario: el término debe ser después del inicio', 'err');
+  const r = await write('saveFeria', { feria: d, dias }, 'Feria guardada');
+  if (!r) return;
+  if (UI.sec === 'vrapida') { VR.canal = CANAL_FERIA; VR.feria = r.feria.id; vrCtxSet({ canal: CANAL_FERIA, feria_id: r.feria.id, manual: hoy() }); closeM('mFe'); renderVR(); }
+  else abrirFeria(r.feria.id);
+}
+async function feBorrar(id) {
+  const f = feria(id), conV = ventasFeria(id).length;
+  if (!await confirmar(conV ? 'Archivar feria' : 'Eliminar feria', conV ? `«${f.nombre}» tiene ${conV} venta(s): se archiva y sus ventas se conservan.` : `Se eliminará «${f.nombre}». No tiene ventas.`, conV ? 'Archivar' : 'Eliminar', true)) return;
+  if (await write('deleteFeria', { id }, conV ? 'Feria archivada' : 'Feria eliminada')) closeM('mFe');
+}
+async function feRestaurar(id) { if (await write('restoreFeria', { id }, 'Feria restaurada')) abrirFeria(id); }
+function feVender(id) { VR.canal = CANAL_FERIA; VR.feria = id; vrCtxSet({ canal: CANAL_FERIA, feria_id: id, manual: hoy() }); closeM('mFe'); go('vrapida'); }
+
+// ───────────── Clientes habituales (fidelización) ─────────────
+const PE = { f: 'act', tab: 'emp' };
+/** Compras de una persona, frecuencia de recompra y si ya toca contactarla. */
+function statsPersona(id) {
+  const vs = DB.ventas.filter(v => v.persona_id === id && v.estado === 'entregada').sort((a, b) => (a.fecha + a.creado).localeCompare(b.fecha + b.creado));
+  const fechas = [...new Set(vs.map(v => v.fecha))].sort();
+  const total = vs.reduce((s, v) => s + (Number(v.total) || 0), 0), ultima = fechas[fechas.length - 1] || '';
+  const intervalo = fechas.length >= 2 ? diasEntre(fechas[0], ultima) / (fechas.length - 1) : null;
+  const dias = ultima ? diasEntre(ultima, hoy()) : null;
+  const espera = intervalo ? Math.max(14, Math.round(intervalo)) : 45; // con una sola compra: sugerir contacto a los 45 días
+  const prods = {};
+  vs.forEach(v => { const vistos = {}; detDe(v.id).forEach(d => { const o = prods[d.producto_id] = prods[d.producto_id] || { q: 0, veces: 0, ultima: '' }; o.q += Number(d.cantidad) || 0; if (!vistos[d.producto_id]) { o.veces++; vistos[d.producto_id] = 1; } o.ultima = v.fecha; }); });
+  return { vs, n: vs.length, total, ultima, intervalo, dias, espera, toca: dias !== null && dias >= espera, prods, proxima: ultima ? fechaMas(ultima, espera) : '' };
+}
+/** Qué ofrecerle: lo que suele llevar (para recompra) y productos de sus categorías que aún no prueba (los más vendidos primero). */
+function sugerenciasPersona(st) {
+  const suyos = Object.entries(st.prods).sort((a, b) => b[1].veces - a[1].veces || b[1].q - a[1].q).map(([pid]) => producto(pid)).filter(p => p && p.estado === 'activo');
+  const recompra = suyos.filter(p => !esServ(p)).slice(0, 3);
+  const cats = new Set(suyos.map(p => p.categoria).filter(Boolean)), desde = fechaMas(hoy(), -120), pop = {};
+  DB.ventas.filter(v => v.estado === 'entregada' && v.fecha >= desde).forEach(v => detDe(v.id).forEach(d => { pop[d.producto_id] = (pop[d.producto_id] || 0) + (Number(d.cantidad) || 0); }));
+  const nuevos = DB.productos.filter(p => p.estado === 'activo' && !esServ(p) && Number(p.precio_publico) > 0 && !st.prods[p.id] && stockDe(p.id) > 0);
+  const deSusCats = nuevos.filter(p => cats.has(p.categoria)).sort((a, b) => (pop[b.id] || 0) - (pop[a.id] || 0));
+  const otros = nuevos.filter(p => !cats.has(p.categoria)).sort((a, b) => (pop[b.id] || 0) - (pop[a.id] || 0));
+  return { recompra, nuevos: [...deSusCats, ...otros].slice(0, 2) };
+}
+function mensajePersona(p, sg) {
+  const nom = String(p.nombre || '').split(' ')[0];
+  let t = `¡Hola ${nom}! 🌿 Te escribe Javi de Magia Verde Herbolaria.`;
+  if (sg.recompra.length) t += ` ¿Cómo te ha ido con ${sg.recompra.map(x => x.nombre).slice(0, 2).join(' y ')}? Si se te está acabando, te lo puedo reservar.`;
+  if (sg.nuevos.length) t += ` También te quería contar de ${sg.nuevos[0].nombre}${sg.nuevos[0].presentacion ? ' ' + sg.nuevos[0].presentacion : ''}, que creo que te podría gustar.`;
+  return t + ' ¡Un abrazo!';
+}
+function renderPersonas() {
+  const q = norm($('perQ').value);
+  let ps = DB.personas.filter(p => (PE.f === 'arch' ? p.estado === 'archivado' : p.estado === 'activo')).filter(p => !q || norm(p.nombre + ' ' + p.telefono + ' ' + p.instagram + ' ' + p.email).includes(q));
+  const st = {}; ps.forEach(p => { st[p.id] = statsPersona(p.id); });
+  if (PE.f === 'contactar') ps = ps.filter(p => st[p.id].toca).sort((a, b) => (st[b.id].dias / st[b.id].espera) - (st[a.id].dias / st[a.id].espera));
+  else ps.sort((a, b) => (st[b.id].ultima || '').localeCompare(st[a.id].ultima || '') || a.nombre.localeCompare(b.nombre));
+  const cont = DB.personas.filter(p => p.estado === 'activo' && statsPersona(p.id).toca).length;
+  $('perChips').children[1].textContent = 'Para contactar' + (cont ? ` (${cont})` : '');
+  $('perGrid').innerHTML = ps.length ? ps.map(p => { const s = st[p.id];
+    return `<button class="pcard" onclick="abrirPersona('${p.id}')"><div style="display:flex;justify-content:space-between;gap:8px"><div><div class="nm">${esc(p.nombre)}</div><div class="sub">${esc([p.telefono, p.instagram ? '@' + p.instagram : ''].filter(Boolean).join(' · ') || 'Sin contacto')}</div></div>${s.toca ? '<span class="tag warn">Contactar</span>' : ''}</div>
+      <div class="kv"><span class="muted">Compras</span><span>${s.n ? s.n + ' · ' + clp(s.total) : '—'}</span></div>
+      <div class="kv"><span class="muted">Última compra</span><span>${s.ultima ? fechaCorta(s.ultima) + ` <span class="muted">(hace ${s.dias} d)</span>` : '—'}</span></div>
+      <div class="kv"><span class="muted">Vuelve cada</span><span>${s.intervalo ? '~' + Math.round(s.intervalo) + ' días' : '—'}</span></div></button>`; }).join('')
+    : `<div class="card empty" style="grid-column:1/-1">${PE.f === 'contactar' ? 'Nadie para contactar por ahora.' : PE.f === 'arch' ? 'No hay clientes archivados.' : DB.personas.length ? 'Sin resultados.' : 'Aún no hay clientes habituales. Se crean al escribir su nombre en una venta rápida, o con «+ Nuevo cliente habitual».'}</div>`;
+}
+$('perQ').addEventListener('input', renderPersonas);
+$('perChips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; PE.f = b.dataset.f; [...$('perChips').children].forEach(c => c.classList.toggle('on', c === b)); renderPersonas(); });
+$('cliTabs').addEventListener('click', e => { const b = e.target.closest('button'); if (b) cliTab(b.dataset.t); });
+function cliTab(t) {
+  PE.tab = t; [...$('cliTabs').children].forEach(x => x.classList.toggle('on', x.dataset.t === t));
+  $('cliEmpBox').classList.toggle('hidden', t !== 'emp'); $('perBox').classList.toggle('hidden', t !== 'per');
+  $('cliNuevo').classList.toggle('hidden', t !== 'emp'); $('perNuevo').classList.toggle('hidden', t !== 'per');
+}
+$('perNuevo').addEventListener('click', () => abrirPersona());
+
+function abrirPersona(id) {
+  const p = id ? persona(id) : null;
+  $('perId').value = p ? p.id : ''; $('mPerT').textContent = p ? p.nombre : 'Nuevo cliente habitual';
+  $('perNom').value = p ? p.nombre : ''; $('perTel').value = p ? p.telefono : ''; $('perIg').value = p && p.instagram ? '@' + p.instagram : ''; $('perMail').value = p ? p.email : ''; $('perNotas').value = p ? p.notas : '';
+  const st = p ? statsPersona(p.id) : null;
+  if (st && st.n) {
+    const sg = sugerenciasPersona(st), prods = Object.entries(st.prods).sort((a, b) => b[1].q - a[1].q);
+    const kpi = (a, b) => `<div class="card kpi" style="padding:12px"><div class="lbl">${a}</div><div class="val" style="font-size:17px">${b}</div></div>`;
+    const tel = telWa(p.telefono), msg = mensajePersona(p, sg);
+    $('perRes').innerHTML = `<div class="grid g4 kpis" style="margin-bottom:14px">${kpi('Compras', `${st.n} · ${clp(st.total)}`)}${kpi('Ticket promedio', clp(st.total / st.n))}${kpi('Última compra', `${fechaCorta(st.ultima)} <span class="small muted">hace ${st.dias} d</span>`)}${kpi('Vuelve cada <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Promedio de días entre sus compras. Con una sola compra se sugiere contactarla a los 45 días.">i</button>', st.intervalo ? '~' + Math.round(st.intervalo) + ' días' : 'aún sin patrón')}</div>
+      <div class="box" style="margin-bottom:14px;${st.toca ? 'border-color:var(--alerta)' : ''}">
+        <div class="small bold ${st.toca ? 'warn-t' : 'ok-t'}" style="margin-bottom:6px">${st.toca ? 'Toca contactarla: ya pasó su tiempo habitual de recompra' : 'Próximo contacto sugerido: ' + fechaCorta(st.proxima)}</div>
+        <div class="grid g2" style="gap:12px">
+          <div><div class="small muted">Suele llevar</div><ul class="sugs" style="margin:4px 0 0;padding-left:18px">${sg.recompra.map(x => `<li>${esc(x.nombre)}${x.presentacion ? ' ' + esc(x.presentacion) : ''} <span class="muted small">(${st.prods[x.id].veces} ${st.prods[x.id].veces === 1 ? 'vez' : 'veces'})</span></li>`).join('') || '<li class="muted">—</li>'}</ul></div>
+          <div><div class="small muted">Podrías ofrecerle <button type="button" class="tip" aria-label="¿Qué significa?" data-tip="Productos con stock que aún no ha comprado, de las mismas categorías que lleva (los más vendidos de los últimos 4 meses primero).">i</button></div><ul class="sugs" style="margin:4px 0 0;padding-left:18px">${sg.nuevos.map(x => `<li>${esc(x.nombre)}${x.presentacion ? ' ' + esc(x.presentacion) : ''} <span class="muted small">${clp(x.precio_publico)}</span></li>`).join('') || '<li class="muted">—</li>'}</ul></div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">${tel ? `<a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/${tel}?text=${encodeURIComponent(msg)}">Escribirle por WhatsApp</a>` : '<span class="small muted">Agrega su teléfono para escribirle por WhatsApp.</span>'}${p.instagram ? `<a class="btn ghost" target="_blank" rel="noopener" href="https://instagram.com/${encodeURIComponent(p.instagram)}">Ver Instagram</a>` : ''}</div>
+      </div>
+      <details style="margin-bottom:14px"><summary class="small bold" style="cursor:pointer">Historial de compras (${st.n})</summary><div style="margin-top:8px">${st.vs.slice().reverse().map(v => `<div class="ln" style="cursor:pointer" onclick="closeM('mPer');abrirVenta('${v.id}')"><span>${fechaCorta(v.fecha)} · ${esc(v.lugar || v.medio_venta || '—')}<div class="sub">${detDe(v.id).map(d => qty(d.cantidad) + ' × ' + esc(nombreItem(d.producto_id))).join(', ')}</div></span><span>${clp(v.total)}</span></div>`).join('')}</div></details>
+      <details style="margin-bottom:14px"><summary class="small bold" style="cursor:pointer">Productos que ha comprado (${prods.length})</summary><div style="margin-top:8px">${prods.map(([pid, o]) => `<div class="ln"><span>${esc(nombreItem(pid))}</span><span>${qty(o.q)} u · última ${fechaCorta(o.ultima)}</span></div>`).join('')}</div></details>`;
+  } else $('perRes').innerHTML = p ? '<p class="note" style="margin:0 0 12px">Aún no tiene compras. En Venta rápida escribe su nombre en «Cliente habitual».</p>' : '';
+  const B = (fn, t, cls) => `<button class="btn ${cls || ''}" type="button" onclick="${fn}">${t}</button>`;
+  $('perFoot').innerHTML = (p ? (p.estado === 'archivado' ? B(`perRestaurar('${p.id}')`, 'Restaurar') : B(`perBorrar('${p.id}')`, st && st.n ? 'Archivar' : 'Eliminar', 'danger')) : '') + '<span class="sp"></span>' + B("closeM('mPer')", 'Cerrar', 'ghost') + B('perGuardar()', p ? 'Guardar cambios' : 'Guardar', 'pri');
+  openM('mPer'); if (!p) setTimeout(() => $('perNom').focus(), 50);
+}
+async function perGuardar() {
+  const d = { id: $('perId').value, nombre: $('perNom').value.trim(), telefono: $('perTel').value.trim(), instagram: $('perIg').value.trim(), email: $('perMail').value.trim(), notas: $('perNotas').value.trim() };
+  if (!d.nombre) return toast('Falta el nombre', 'err');
+  if (d.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email)) return toast('Revisa el correo', 'err');
+  const r = await write('savePersona', d, 'Cliente guardado');
+  if (r) abrirPersona(r.persona.id);
+}
+async function perBorrar(id) {
+  const p = persona(id), n = statsPersona(id).n;
+  if (!await confirmar(n ? 'Archivar cliente' : 'Eliminar cliente', n ? `${p.nombre} tiene ${n} compra(s): se archiva y sus ventas se conservan.` : `Se eliminará a ${p.nombre}. No tiene compras.`, n ? 'Archivar' : 'Eliminar', true)) return;
+  if (await write('deletePersona', { id }, n ? 'Cliente archivado' : 'Cliente eliminado')) closeM('mPer');
+}
+async function perRestaurar(id) { if (await write('restorePersona', { id }, 'Cliente restaurado')) abrirPersona(id); }
+/** Asignar (o cambiar) el cliente habitual de una venta rápida ya registrada. */
+async function asignarPersona(vid) {
+  const v = DB.ventas.find(x => x.id === vid), actual = v && v.persona_id ? (persona(v.persona_id) || {}).nombre : '';
+  const n = await preguntar('Cliente habitual de la venta', actual || '', 'Escribe su nombre. Si no existe, se crea. Deja vacío para quitarlo.');
+  if (n === null) return;
+  const p = n.trim() ? personaPorNombre(n) : null, body = { venta_id: vid };
+  if (p) body.persona_id = p.id; else if (n.trim()) body.persona_nueva = { nombre: n.trim() };
+  if (await write('setPersonaVenta', body, n.trim() ? 'Cliente asignado' : 'Cliente quitado')) abrirVenta(vid);
+}
 
 // ───────────── Órdenes de venta / entregas en consignación ─────────────
 const OV = { mod: 'directa', lines: [], rut: '', localId: '' };
@@ -1966,7 +2326,7 @@ function abrirVenta(id) {
   const st = [['borrador', 'Borrador'], ['entregada', 'Entregada'], ['folio', 'Facturada'], ['pagada', 'Pagada']];
   const hecho = { borrador: true, entregada: v.estado === 'entregada', folio: !!v.folio, pagada: v.estado === 'entregada' && saldoDe(v) <= 0 };
   $('vdSteps').innerHTML = v.estado === 'anulada' ? '<span class="tag bad">Anulada</span>' : pub ? '' : st.map(([k, t]) => `<span class="${hecho[k] ? 'on' : ''}">${t}</span>`).join('');
-  $('vdInfo').innerHTML = `<div class="box" style="margin-bottom:10px">${pub ? `<div class="ln"><span>Fecha</span><span>${fechaCorta(v.fecha)}</span></div><div class="ln"><span>Lugar</span><span>${esc(v.lugar || '—')}</span></div><div class="ln"><span>Medio de pago</span><span>${esc(v.medio_pago)}</span></div>${v.notas ? `<div class="ln"><span>Comprador</span><span>${esc(v.notas)}</span></div>` : ''}`
+  $('vdInfo').innerHTML = `<div class="box" style="margin-bottom:10px">${pub ? `<div class="ln"><span>Fecha</span><span>${fechaCorta(v.fecha)}</span></div><div class="ln"><span>Canal</span><span>${esc(v.medio_venta || v.lugar || '—')}</span></div>${v.feria_id ? `<div class="ln"><span>Feria</span><span><button class="lnk" onclick="closeM('mVD');abrirFeria('${v.feria_id}')">${esc(v.lugar)}</button>${v.feria_dia ? ' · Día ' + v.feria_dia : ''}</span></div>` : ''}<div class="ln"><span>Medio de pago</span><span>${esc(v.medio_pago)}</span></div><div class="ln"><span>Cliente habitual</span><span>${v.persona_id && persona(v.persona_id) ? `<button class="lnk" onclick="closeM('mVD');abrirPersona('${v.persona_id}')">${esc(persona(v.persona_id).nombre)}</button> · ` : ''}${v.estado === 'entregada' ? `<button class="lnk" onclick="asignarPersona('${v.id}')">${v.persona_id ? 'Cambiar' : 'Asignar'}</button>` : '—'}</span></div>${v.notas ? `<div class="ln"><span>Comprador</span><span>${esc(v.notas)}</span></div>` : ''}`
       : v.canal === 'formacion' ? `<div class="ln"><span>Institución</span><b>${esc(v.lugar)}</b></div>${v.rut ? `<div class="ln"><span>RUT</span><span>${esc(fmtRut(v.rut))}</span></div>` : ''}<div class="ln"><span>Proyecto</span><span><button class="lnk" onclick="closeM('mVD');abrirFP('${v.origen}')">${esc(v.origen)}</button> ${esc(v.notas)}</span></div><div class="ln"><span>Fecha</span><span>${fechaCorta(v.fecha)}</span></div>`
       : `<div class="ln"><span>Local</span><b>${esc(l ? l.nombre : '—')}</b></div><div class="ln"><span>Cliente</span><span>${esc(e ? e.razon_social : '')} · ${esc(fmtRut(v.rut))}</span></div><div class="ln"><span>Fecha${v.estado === 'borrador' ? '' : ' de entrega'}</span><span>${fechaCorta(v.fecha)}</span></div>${v.origen ? `<div class="ln"><span>Origen</span><span>Liquidación ${esc(v.origen)}</span></div>` : ''}${v.notas ? `<div class="ln"><span>Notas</span><span>${esc(v.notas)}</span></div>` : ''}`}</div>
     <div class="tw"><table><thead><tr><th>Producto</th><th class="r">Cant.</th><th class="r">Precio ${pub ? '' : 'neto'}</th><th class="r">Subtotal</th></tr></thead><tbody>${detDe(v.id).map(d => `<tr><td>${esc(nombreItem(d.producto_id))}</td><td class="r">${qty(d.cantidad)}</td><td class="r">${clp(d.precio)}</td><td class="r">${clp(d.subtotal)}</td></tr>`).join('')}</tbody></table></div>
@@ -2271,7 +2631,7 @@ function renderVentas() {
   $('vHead').innerHTML = `<tr>${fac ? '<th></th>' : ''}<th>N°</th><th>Fecha</th><th>Canal</th><th>Cliente / lugar</th><th class="r">Total</th>${VT.tab === 'cobrar' ? '<th class="r">Saldo</th><th>Vence</th>' : ''}<th>Estado</th></tr>`;
   $('tVen').innerHTML = vs.length ? vs.slice(0, 300).map(v => `<tr class="click" style="${v.estado === 'anulada' ? 'opacity:.55' : ''}">${fac ? `<td onclick="event.stopPropagation()"><input type="checkbox" aria-label="Seleccionar ${v.id}" ${VT.sel.has(v.id) ? 'checked' : ''} onchange="vSel('${v.id}',this.checked)" style="width:18px;height:18px;accent-color:var(--oliva)"></td>` : ''}
     <td class="bold nw" onclick="abrirVenta('${v.id}')">${esc(v.id)}</td><td class="nw" onclick="abrirVenta('${v.id}')">${fechaCorta(v.fecha)}</td><td onclick="abrirVenta('${v.id}')">${CANAL[v.canal]}</td>
-    <td onclick="abrirVenta('${v.id}')">${v.canal === 'publico' ? esc(v.lugar || '—') + `<div class="sub">${esc(v.medio_pago)}</div>` : esc(quien(v)) + `<div class="sub">${esc(v.canal === 'formacion' ? v.notas : ((empresaDe(v.rut) || {}).razon_social || ''))}${v.folio ? ' · Factura ' + esc(v.folio) : ''}</div>`}</td>
+    <td onclick="abrirVenta('${v.id}')">${v.canal === 'publico' ? esc(v.lugar || '—') + `<div class="sub">${esc(v.medio_pago)}${v.feria_dia ? ' · Día ' + v.feria_dia : ''}${v.persona_id && persona(v.persona_id) ? ' · ' + esc(persona(v.persona_id).nombre) : ''}</div>` : esc(quien(v)) + `<div class="sub">${esc(v.canal === 'formacion' ? v.notas : ((empresaDe(v.rut) || {}).razon_social || ''))}${v.folio ? ' · Factura ' + esc(v.folio) : ''}</div>`}</td>
     <td class="r" onclick="abrirVenta('${v.id}')">${clp(v.total)}</td>${VT.tab === 'cobrar' ? `<td class="r bold">${clp(saldoDe(v))}</td><td class="nw ${vencida(v) ? 'bad-t' : ''}">${fechaCorta(venceDe(v))}</td>` : ''}<td onclick="abrirVenta('${v.id}')">${tagEstado(v)}</td></tr>`).join('')
     : `<tr><td colspan="8"><div class="empty">Nada en este filtro.</div></td></tr>`;
   $('vMulti').classList.toggle('hidden', !fac || !vs.length);
@@ -2283,8 +2643,8 @@ $('vFolioMulti').addEventListener('click', () => { if (!VT.sel.size) return toas
 $('vCsv').addEventListener('click', () => {
   const vs = ventasFiltradas();
   const q = x => '"' + String(x == null ? '' : x).replace(/"/g, '""') + '"';
-  const cols = ['N°', 'Fecha', 'Canal', 'Cliente', 'RUT', 'Local', 'Lugar', 'Medio de pago', 'Folio', 'Neto', 'IVA', 'Total', 'Pagado', 'Saldo', 'Estado', 'Productos'];
-  const filas = vs.map(v => [v.id, v.fecha, CANAL[v.canal], (empresaDe(v.rut) || {}).razon_social, fmtRut(v.rut), nombreLocal(v.local_id), v.lugar, v.medio_pago, v.folio, v.neto, v.iva, v.total, pagado(v), saldoDe(v), estadoVenta(v)[0], detDe(v.id).map(d => d.cantidad + ' x ' + nombreItem(d.producto_id)).join(' | ')].map(q).join(';'));
+  const cols = ['N°', 'Fecha', 'Canal', 'Cliente', 'RUT', 'Local', 'Lugar', 'Canal de venta', 'Feria', 'Día feria', 'Cliente habitual', 'Medio de pago', 'Folio', 'Neto', 'IVA', 'Total', 'Pagado', 'Saldo', 'Estado', 'Productos'];
+  const filas = vs.map(v => [v.id, v.fecha, CANAL[v.canal], (empresaDe(v.rut) || {}).razon_social, fmtRut(v.rut), nombreLocal(v.local_id), v.lugar, v.medio_venta, v.feria_id ? (feria(v.feria_id) || {}).nombre : '', v.feria_dia || '', v.persona_id ? (persona(v.persona_id) || {}).nombre : '', v.medio_pago, v.folio, v.neto, v.iva, v.total, pagado(v), saldoDe(v), estadoVenta(v)[0], detDe(v.id).map(d => d.cantidad + ' x ' + nombreItem(d.producto_id)).join(' | ')].map(q).join(';'));
   const blob = new Blob(['﻿' + cols.map(q).join(';') + '\n' + filas.join('\n')], { type: 'text/csv;charset=utf-8' });
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `ventas_${VT.tab}_${hoy()}.csv`; document.body.appendChild(a); a.click(); a.remove();
 });
