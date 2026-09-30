@@ -67,6 +67,9 @@ h2{font-size:16px;font-weight:700;margin:0}
 .calnav{display:flex;align-items:center;gap:8px}.calnav b{min-width:150px;text-align:center;font-size:17px}.calnav .btn{padding:0 14px}
 .t-feria{--c:#5d6623}.t-taller{--c:#b85a78}.t-licitacion{--c:#9a6418}.t-otro{--c:#6b6660}
 .cdot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c);margin-right:6px;vertical-align:-1px}
+#calTipos .chip{background:var(--tarjeta);border-color:var(--borde);color:var(--gris);display:inline-flex;align-items:center}
+#calTipos .chip.on{background:var(--oliva-tinte);border-color:var(--oliva-osc);color:var(--oliva-texto)}
+#calTipos .chip:not(.on){opacity:.7}
 .chip:not(.on) .cdot{opacity:.35}
 .cal{background:var(--tarjeta);border:1px solid var(--borde);border-radius:var(--r);overflow:hidden}
 .calh,.calg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
@@ -1023,7 +1026,7 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--oliva);box-s
 
 <script>
 // ───────────── Estado ─────────────
-const APP_VERSION = '2.3.0';
+const APP_VERSION = '2.3.1';
 const LS = { url: 'mv_gs_url', key: 'mv_gs_key', cache: 'mv_cache_v1' };
 let GS = lsGet(LS.url), KEY = lsGet(LS.key);
 const DB0 = () => ({ insumos: [], productos: [], recetas: [], compras: [], produccion: [], movimientos: [], stock: {}, formatos: [], listas: [], costos_hist: [], config: {}, empresas: [], locales: [], precios_cliente: [], ventas: [], ventas_det: [], pagos: [], consignaciones: [], consig_det: [], liquidaciones: [], liq_det: [], proyectos: [], proy_mat: [], proy_costos: [], ferias: [], feria_dias: [], personas: [], proy_sesiones: [], eventos: [] });

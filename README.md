@@ -66,7 +66,7 @@ Nunca subas al repositorio la URL /exec ni la clave: van solo en Configuración 
 
 - Cambios en `Code.gs`: **Implementar → Administrar implementaciones → editar (lápiz) → Versión: Nueva versión → Implementar**.
   Así la URL no cambia. (Si creas una implementación nueva, cambia la URL y hay que pegarla otra vez en Configuración.)
-- Cambios en `index.html`: sube el archivo y cambia `VERSION` en `sw.js` (ej. `mv-v14`) para que los celulares tomen la versión nueva.
+- Cambios en `index.html`: sube el archivo y cambia `VERSION` en `sw.js` (ej. `mv-v15`) para que los celulares tomen la versión nueva.
 - Para comprobar: **Configuración → Versión** muestra la versión de la app y la de Apps Script. Los dos primeros
   números deben coincidir (ej. 2.0.x); si no, la app muestra un aviso arriba. El último número puede diferir cuando
   un arreglo toca solo una de las partes.
@@ -128,6 +128,7 @@ día anterior). Se actualiza solo al guardar; si Google falla, el guardado igual
 
 ## Versiones
 
+- **2.3.1** (solo app) — Botones de tipo del calendario en tinte oliva con borde verde oscuro (más livianos). Apps Script sigue en 2.3.0.
 - **2.3** — **Calendario** (mes y agenda) con ferias, sesiones y eventos libres; **sesiones** en los proyectos de
   Formación; copia opcional a **Google Calendar** con recordatorios; documento al generar la venta de un taller
   (factura, boleta o sin documento); días de seguimiento de clientes editables en Configuración; los insumos
